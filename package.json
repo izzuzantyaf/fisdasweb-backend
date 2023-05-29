@@ -1,7 +1,7 @@
 {
-  "name": "fisdascms-server",
+  "name": "fisdasweb-backend",
   "version": "0.1.0",
-  "description": "Server-side app of Fisdas CMS",
+  "description": "Fisdas lab website backend",
   "author": "Izzu Zantya Fawwas",
   "private": true,
   "license": "UNLICENSED",

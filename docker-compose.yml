@@ -6,7 +6,7 @@ services:
     container_name: fdcms-mongo
     restart: always
     ports:
-      - 27017:27017
+      - 27018:27017
     networks:
       - fdcms
   fdcms-server:

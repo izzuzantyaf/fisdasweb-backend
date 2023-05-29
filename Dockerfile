@@ -10,17 +10,20 @@ COPY . .
 # Update the package manager
 RUN apk update && apk upgrade
 
+# Install pnpm
+RUN npm install -g pnpm@^8.0.0
+
 # Install the app's dependencies
-RUN yarn install
+RUN pnpm install
 
 # Build the app
-RUN yarn build
+RUN pnpm build
 
 # Remove the dev dependencies
-RUN yarn autoclean --production
+RUN pnpm prune
 
 # Expose the port that the app will listen on
 EXPOSE 8080
 
 # Start the app using the built code
-CMD ["yarn", "start"]
+CMD ["pnpm", "start"]

@@ -36,7 +36,6 @@ export class ArticleService {
     }
   }
 
-  @Timeout(1000)
   cronGenerateArticles() {
     try {
       this.logger.log(`Cron job generate articles started`);

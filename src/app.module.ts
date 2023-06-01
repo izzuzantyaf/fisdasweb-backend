@@ -15,6 +15,7 @@ import { PracticumModuleModule } from './domains/practicum-module/practicum-modu
 import { RequestLoggingMiddleware } from './middleware/request-logging.middleware';
 import { SocialMediaModule } from './domains/social-media/social-media.module';
 import { ArticleModule } from './domains/article/article.module';
+import { OpenAIModule } from './modules/openai/openai.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ArticleModule } from './domains/article/article.module';
     PracticumModuleModule,
     SocialMediaModule,
     ArticleModule,
+    OpenAIModule,
   ],
 })
 export class AppModule implements NestModule {

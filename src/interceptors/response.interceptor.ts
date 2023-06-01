@@ -18,8 +18,8 @@ export class ResponseInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((responseData) => {
         this.logger.debug(
-          `Response ${request.method} ${request.path} : 
-${JSON.stringify(responseData, undefined, 2)}`,
+          `Response ${request.method} ${request.path} :`,
+          responseData,
         );
         return responseData;
       }),

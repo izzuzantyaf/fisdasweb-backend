@@ -14,7 +14,8 @@ import { AssistantModule } from './domains/assistant/assistant.module';
 import { PracticumModuleModule } from './domains/practicum-module/practicum-module.module';
 import { RequestLoggingMiddleware } from './middleware/request-logging.middleware';
 import { SocialMediaModule } from './domains/social-media/social-media.module';
-import { BlogModule } from './domains/blog/blog.module';
+import { ArticleModule } from './domains/article/article.module';
+
 @Module({
   imports: [
     AdminModule,
@@ -26,7 +27,7 @@ import { BlogModule } from './domains/blog/blog.module';
     AssistantModule,
     PracticumModuleModule,
     SocialMediaModule,
-    BlogModule,
+    ArticleModule,
   ],
 })
 export class AppModule implements NestModule {

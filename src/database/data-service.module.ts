@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DataServiceService } from './data-service.service';
@@ -31,9 +31,14 @@ import {
   SocialMedia,
   SocialMediaSchema,
 } from 'src/domains/social-media/entities/social-media.entity';
+import {
+  Article,
+  ArticleSchema,
+} from 'src/domains/article/entities/article.entity';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     MongooseModule.forFeature([
       { name: Admin.name, schema: AdminSchema },
       { name: Handout.name, schema: HandoutSchema },
@@ -43,8 +48,8 @@ import {
       { name: Assistant.name, schema: AssistantSchema },
       { name: PracticumModule.name, schema: PracticumModuleSchema },
       { name: SocialMedia.name, schema: SocialMediaSchema },
+      // { name: Article.name, schema: ArticleSchema },
     ]),
-    ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGO_URI),
   ],
   providers: [DataServiceService],

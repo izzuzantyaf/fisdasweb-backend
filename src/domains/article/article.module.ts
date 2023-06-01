@@ -6,12 +6,14 @@ import { ArticleMongoRepository } from './repo/article-mongo.repo';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Article, ArticleSchema } from './entities/article.entity';
 import { ScheduleModule } from '@nestjs/schedule';
+import { OpenAIModule } from 'src/modules/openai/openai.module';
 
 @Module({
   imports: [
     DataServiceModule,
     MongooseModule.forFeature([{ name: Article.name, schema: ArticleSchema }]),
     ScheduleModule.forRoot(),
+    OpenAIModule,
   ],
   controllers: [ArticleController],
   providers: [ArticleService, ArticleMongoRepository],

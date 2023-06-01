@@ -22,7 +22,8 @@ export class ArticleMongoRepository implements ArticleRepositoryInterface {
     const storedArticle = await this.model.create(article);
     return storedArticle;
   }
-  getMany(): Promise<Article[]> {
-    throw new Error('Method not implemented.');
+  async getMany(): Promise<Article[]> {
+    const articles = await this.model.find().sort({ created_at: -1 }).exec();
+    return articles;
   }
 }

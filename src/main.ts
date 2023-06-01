@@ -9,12 +9,14 @@ async function bootstrap() {
     cors: true,
     logger: process.env.NODE_ENV === 'production' ? ['log'] : ['debug'],
   });
+
   app.useGlobalPipes(
     new ValidationPipe({
       enableDebugMessages: true, // menampilkan pesan pada console jika terjadi error,
     }),
   );
   app.useGlobalInterceptors(new ResponseInterceptor());
+
   const config = new DocumentBuilder()
     .setTitle('Fisdas CMS OpenAPI')
     .setDescription('Dokumentasi API Fisdas CMS')
@@ -24,8 +26,13 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   const logger = new Logger('NestApplication');
-  await app.listen(process.env.PORT).then(() => {
-    logger.log(`Application started in port ${process.env.PORT}`);
-  });
+  await app
+    .listen(process.env.PORT)
+    .then(() => {
+      logger.log(`Application started in http://localhost:${process.env.PORT}`);
+    })
+    .catch((error) => {
+      logger.error(`Application failed to start: `, error);
+    });
 }
 bootstrap();

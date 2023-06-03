@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AdminService } from '../admin/admin.service';
 import { JwtService } from '@nestjs/jwt';
-import { isNotEmpty } from 'class-validator';
 
 @Injectable()
 export class AuthService {

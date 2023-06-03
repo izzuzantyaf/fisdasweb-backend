@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Faculty, Language } from 'src/core/constants';
 import { Document } from 'mongoose';
 import { isNotEmpty, isNotEmptyObject, isObject, isURL } from 'class-validator';
+import { Faculty, Language } from 'src/domains/common/constants';
 
 export type HandoutDocument = Handout & Document;
 

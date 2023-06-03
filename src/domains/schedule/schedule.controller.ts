@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Logger, Put, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { SuccessfulResponse } from 'src/core/dtos/response.dto';
+import { SuccessfulResponseDto } from 'src/domains/common/dto/response.dto';
 import {
   ScheduleQuery,
   UpdateScheduleDto,
@@ -17,7 +17,7 @@ export class ScheduleController {
   @Get()
   async getAll(@Query() filter?: ScheduleQuery) {
     const schedules = await this.scheduleService.getAll(filter);
-    return new SuccessfulResponse('Sukses', schedules);
+    return new SuccessfulResponseDto('Sukses', schedules);
   }
 
   @Put()
@@ -25,6 +25,9 @@ export class ScheduleController {
     const updatedSchedule = await this.scheduleService.update(
       updateScheduleDto,
     );
-    return new SuccessfulResponse('Jadwal berhasil diupdate', updatedSchedule);
+    return new SuccessfulResponseDto(
+      'Jadwal berhasil diupdate',
+      updatedSchedule,
+    );
   }
 }

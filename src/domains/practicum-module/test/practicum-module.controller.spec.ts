@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UpdatePracticumModuleDto } from 'src/domains/practicum-module/dto/practicum-module.dto';
-import { SuccessfulResponse } from 'src/core/dtos/response.dto';
+import { SuccessfulResponseDto } from 'src/domains/common/dto/response.dto';
 import { PracticumModule } from 'src/domains/practicum-module/entities/practicum-module.entity';
 import { PracticumModuleController } from '../practicum-module.controller';
 import { PracticumModuleModule } from '../practicum-module.module';
@@ -21,10 +21,10 @@ describe('PracticumModuleController', () => {
   });
 
   describe('getAll()', () => {
-    it(`harus mengembalikan object bertipe ${SuccessfulResponse.name} berisi data array ${PracticumModule.name}`, async () => {
+    it(`harus mengembalikan object bertipe ${SuccessfulResponseDto.name} berisi data array ${PracticumModule.name}`, async () => {
       const response = await controller.getAll();
       const practicumMaterials = response.data as PracticumModule[];
-      expect(response).toBeInstanceOf(SuccessfulResponse);
+      expect(response).toBeInstanceOf(SuccessfulResponseDto);
       expect(
         practicumMaterials.every(
           (material) => material instanceof PracticumModule,
@@ -86,12 +86,12 @@ describe('PracticumModuleController', () => {
     beforeAll(async () => {
       practicumModule = (await controller.getAll()).data[0];
     });
-    it(`harus berhasil update dan return object bertipe ${SuccessfulResponse.name} berisi data ${PracticumModule.name} yang telah diupdate`, async () => {
+    it(`harus berhasil update dan return object bertipe ${SuccessfulResponseDto.name} berisi data ${PracticumModule.name} yang telah diupdate`, async () => {
       const response = await controller.update(
         practicumModule as UpdatePracticumModuleDto,
       );
       const updatedPracticumModule = response.data as PracticumModule;
-      expect(response).toBeInstanceOf(SuccessfulResponse);
+      expect(response).toBeInstanceOf(SuccessfulResponseDto);
       expect(updatedPracticumModule).toBeInstanceOf(PracticumModule);
     });
   });

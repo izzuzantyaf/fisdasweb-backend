@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateOrganigramDto } from 'src/domains/organigram/dto/organigram.dto';
-import { SuccessfulResponse } from 'src/core/dtos/response.dto';
+import { SuccessfulResponseDto } from 'src/domains/common/dto/response.dto';
 import { OrganigramService } from 'src/domains/organigram/organigram.service';
 
 @ApiTags('organigram')
@@ -12,7 +12,7 @@ export class OrganigramController {
   @Get()
   async getAll() {
     const organigram = await this.organigramService.getOne();
-    return new SuccessfulResponse('Sukses', organigram);
+    return new SuccessfulResponseDto('Sukses', organigram);
   }
 
   @Put()
@@ -20,7 +20,7 @@ export class OrganigramController {
     const updatedOrganigram = await this.organigramService.update(
       updateOrganigramDto,
     );
-    return new SuccessfulResponse(
+    return new SuccessfulResponseDto(
       'Organigram berhasil diupdate',
       updatedOrganigram,
     );

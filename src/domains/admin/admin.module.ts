@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AdminController } from './admin.controller';
 import { AdminService } from './admin.service';
-import { DataServiceModule } from 'src/database/data-service.module';
+import { MongoModule } from 'src/infrastructure/database/mongodb/mongo.module';
 import { AdminFactoryService } from './admin-factory.service';
 
 @Module({
-  imports: [DataServiceModule],
+  imports: [MongoModule],
   controllers: [AdminController],
   providers: [AdminService, AdminFactoryService],
   exports: [AdminService, AdminFactoryService],

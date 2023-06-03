@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { SuccessfulResponse } from 'src/core/dtos/response.dto';
+import { SuccessfulResponseDto } from 'src/domains/common/dto/response.dto';
 import { Organigram } from 'src/domains/organigram/entities/organigram.entity';
 import { OrganigramController } from '../organigram.controller';
 import { OrganigramModule } from '../organigram.module';
@@ -21,10 +21,10 @@ describe('OrganigramController', () => {
   });
 
   describe('getOne()', () => {
-    it(`harus return object bertipe ${SuccessfulResponse.name} berisi data ${Organigram.name}`, async () => {
+    it(`harus return object bertipe ${SuccessfulResponseDto.name} berisi data ${Organigram.name}`, async () => {
       const response = await controller.getAll();
       const organigram = response.data;
-      expect(response).toBeInstanceOf(SuccessfulResponse);
+      expect(response).toBeInstanceOf(SuccessfulResponseDto);
       expect(organigram).toBeInstanceOf(Organigram);
     });
   });
@@ -34,13 +34,13 @@ describe('OrganigramController', () => {
     beforeAll(async () => {
       organigram = (await controller.getAll()).data;
     });
-    it(`harus berhasil update dan return object bertipe ${SuccessfulResponse.name} berisi organigram yang telah diupdate`, async () => {
+    it(`harus berhasil update dan return object bertipe ${SuccessfulResponseDto.name} berisi organigram yang telah diupdate`, async () => {
       const response = await controller.update({
         _id: organigram._id,
         url: faker.internet.url(),
       });
       const updatedOrganigram = response.data;
-      expect(response).toBeInstanceOf(SuccessfulResponse);
+      expect(response).toBeInstanceOf(SuccessfulResponseDto);
       expect(updatedOrganigram).toBeInstanceOf(Organigram);
     });
     it('harus gagal update karena URL tidak valid', async () => {

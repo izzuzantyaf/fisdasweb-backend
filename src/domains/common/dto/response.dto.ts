@@ -1,10 +1,10 @@
-interface AppResponse {
+interface AppResponseDtoInterface {
   isSuccess: boolean;
   message: string;
   data: any;
 }
 
-export class SuccessfulResponse implements AppResponse {
+export class SuccessfulResponseDto implements AppResponseDtoInterface {
   isSuccess = true;
   message: string;
   data: any;
@@ -15,7 +15,7 @@ export class SuccessfulResponse implements AppResponse {
   }
 }
 
-export class ErrorResponse implements AppResponse {
+export class ErrorResponseDto implements AppResponseDtoInterface {
   isSuccess = false;
   message: string;
   data: null;

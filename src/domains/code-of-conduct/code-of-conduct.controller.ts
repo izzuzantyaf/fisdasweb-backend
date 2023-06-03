@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateCodeOfConductDto } from 'src/domains/code-of-conduct/dto/code-of-conduct.dto';
-import { SuccessfulResponse } from 'src/core/dtos/response.dto';
+import { SuccessfulResponseDto } from 'src/domains/common/dto/response.dto';
 import { CodeOfConductService } from 'src/domains/code-of-conduct/code-of-conduct.service';
 
 @ApiTags('code of conduct')
@@ -12,7 +12,7 @@ export class CodeOfConductController {
   @Get()
   async getAll() {
     const codeOfConduct = await this.codeOfConductService.getOne();
-    return new SuccessfulResponse('Sukses', codeOfConduct);
+    return new SuccessfulResponseDto('Sukses', codeOfConduct);
   }
 
   @Put()
@@ -20,7 +20,7 @@ export class CodeOfConductController {
     const updatedCodeOfConduct = await this.codeOfConductService.update(
       updateCodeOfConductDto,
     );
-    return new SuccessfulResponse(
+    return new SuccessfulResponseDto(
       'Tata tertib berhasil diupdate',
       updatedCodeOfConduct,
     );

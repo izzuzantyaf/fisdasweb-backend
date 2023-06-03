@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { isEmpty, isNotEmpty } from 'class-validator';
-import { DataServiceService } from 'src/database/data-service.service';
-import { ErrorResponse } from 'src/core/dtos/response.dto';
+import { MongoService } from 'src/infrastructure/database/mongodb/mongo.service';
+import { ErrorResponseDto } from 'src/domains/common/dto/response.dto';
 import { HandoutFactoryService } from './handout-factory.service';
 import {
   HandoutQuery,
@@ -13,7 +13,7 @@ export class HandoutService {
   private readonly logger = new Logger(HandoutService.name);
 
   constructor(
-    private dataService: DataServiceService,
+    private dataService: MongoService,
     private handoutFactory: HandoutFactoryService,
   ) {}
 
@@ -37,7 +37,7 @@ export class HandoutService {
         `Handout data is not valid ${JSON.stringify(validationErrors)}`,
       );
       throw new BadRequestException(
-        new ErrorResponse('Data tidak valid', { validationErrors }),
+        new ErrorResponseDto('Data tidak valid', { validationErrors }),
       );
     }
     const updatedHandout = await this.dataService.handouts.updateById(
@@ -51,7 +51,7 @@ export class HandoutService {
         })}`,
       );
       throw new BadRequestException(
-        new ErrorResponse('Handout gagal diupdate'),
+        new ErrorResponseDto('Handout gagal diupdate'),
       );
     }
     this.logger.debug(

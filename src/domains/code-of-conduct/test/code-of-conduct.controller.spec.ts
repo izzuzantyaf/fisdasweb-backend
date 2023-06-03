@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { SuccessfulResponse } from 'src/core/dtos/response.dto';
+import { SuccessfulResponseDto } from 'src/domains/common/dto/response.dto';
 import { CodeOfConduct } from 'src/domains/code-of-conduct/entities/code-of-conduct.entity';
 import { CodeOfConductController } from '../code-of-conduct.controller';
 import { CodeOfConductModule } from '../code-of-conduct.module';
@@ -21,10 +21,10 @@ describe('CodeOfConductController', () => {
   });
 
   describe('getAll()', () => {
-    it(`harus return object bertipe ${SuccessfulResponse.name} berisi data ${CodeOfConduct.name}`, async () => {
+    it(`harus return object bertipe ${SuccessfulResponseDto.name} berisi data ${CodeOfConduct.name}`, async () => {
       const response = await controller.getAll();
       const codeOfConduct = response.data;
-      expect(response).toBeInstanceOf(SuccessfulResponse);
+      expect(response).toBeInstanceOf(SuccessfulResponseDto);
       expect(codeOfConduct).toBeInstanceOf(CodeOfConduct);
     });
   });
@@ -39,7 +39,7 @@ describe('CodeOfConductController', () => {
         _id: codeOfConduct._id,
         url: faker.internet.url(),
       });
-      expect(response).toBeInstanceOf(SuccessfulResponse);
+      expect(response).toBeInstanceOf(SuccessfulResponseDto);
     });
     it('harus gagal karena format link tidak valid', async () => {
       await expect(

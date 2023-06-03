@@ -2,7 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { SuccessfulResponseDto } from 'src/domains/common/dto/response.dto';
 
-@Controller('articles')
+@Controller('api/articles')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 

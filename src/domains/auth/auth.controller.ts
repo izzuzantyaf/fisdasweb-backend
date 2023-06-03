@@ -15,7 +15,7 @@ import { JwtAuthGuard } from 'src/domains/auth/guards/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/domains/auth/guards/local-auth-guard';
 
 @ApiTags('auth')
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
 

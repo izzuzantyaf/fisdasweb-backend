@@ -13,7 +13,7 @@ const fakeAdmin = {
   role: AdminRole.OWNER,
 };
 @ApiTags('admin')
-@Controller('admin')
+@Controller('api/admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 

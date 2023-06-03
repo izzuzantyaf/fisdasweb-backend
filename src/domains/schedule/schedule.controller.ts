@@ -8,7 +8,7 @@ import {
 import { ScheduleService } from 'src/domains/schedule/schedule.service';
 
 @ApiTags('schedule')
-@Controller('schedule')
+@Controller('api/schedule')
 export class ScheduleController {
   private readonly logger = new Logger(ScheduleController.name);
 

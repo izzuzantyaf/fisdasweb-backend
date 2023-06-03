@@ -8,7 +8,7 @@ import { SuccessfulResponse } from 'src/core/dtos/response.dto';
 import { HandoutService } from 'src/domains/handout/handout.service';
 
 @ApiTags('handout')
-@Controller('api/handout')
+@Controller('handout')
 export class HandoutController {
   private readonly logger = new Logger(HandoutController.name);
 

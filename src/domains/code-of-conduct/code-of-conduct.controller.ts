@@ -5,7 +5,7 @@ import { SuccessfulResponse } from 'src/core/dtos/response.dto';
 import { CodeOfConductService } from 'src/domains/code-of-conduct/code-of-conduct.service';
 
 @ApiTags('code of conduct')
-@Controller('api/code-of-conduct')
+@Controller('code-of-conduct')
 export class CodeOfConductController {
   constructor(private codeOfConductService: CodeOfConductService) {}
 

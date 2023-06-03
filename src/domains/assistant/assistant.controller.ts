@@ -18,7 +18,7 @@ import { SuccessfulResponse } from 'src/core/dtos/response.dto';
 import { AssistantService } from 'src/domains/assistant/assistant.service';
 
 @ApiTags('assistant')
-@Controller('api/assistant')
+@Controller('assistant')
 export class AssistantController {
   constructor(private assistantService: AssistantService) {}
 

@@ -12,7 +12,7 @@ import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { SuccessfulResponse } from 'src/core/dtos/response.dto';
 
-@Controller('/api/articles')
+@Controller('articles')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 

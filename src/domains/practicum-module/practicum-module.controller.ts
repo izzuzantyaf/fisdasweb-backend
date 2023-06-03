@@ -5,7 +5,7 @@ import { SuccessfulResponse } from 'src/core/dtos/response.dto';
 import { PracticumModuleService } from './practicum-module.service';
 
 @ApiTags('practicum material')
-@Controller('api/practicum-module')
+@Controller('practicum-module')
 export class PracticumModuleController {
   constructor(private practicumModuleService: PracticumModuleService) {}
 

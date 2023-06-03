@@ -6,7 +6,7 @@ import { ResponseInterceptor } from './interceptors/response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    cors: true,
+    cors: true, // jika cors true maka semua origin bisa mengakses API
     logger: process.env.NODE_ENV === 'production' ? ['log'] : ['debug'],
   });
 
@@ -16,6 +16,7 @@ async function bootstrap() {
     }),
   );
   app.useGlobalInterceptors(new ResponseInterceptor());
+  app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
     .setTitle('Fisdas CMS OpenAPI')

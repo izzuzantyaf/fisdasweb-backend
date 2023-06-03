@@ -31,28 +31,24 @@ export class MongoGenericRepository<T> {
   }
 
   async updateById(id: string, newItem: T): Promise<Awaited<T>> {
-    let updatedAssistant;
+    let updatedItem;
     try {
-      updatedAssistant = await this._repository
+      updatedItem = await this._repository
         .findByIdAndUpdate(id, newItem, { new: true })
         .exec();
     } catch (error) {
       this.logger.debug(error);
     }
-    return updatedAssistant;
-  }
-
-  updateMany(items: T[]) {
-    throw new Error('Method not implemented.');
+    return updatedItem;
   }
 
   async deleteById(id: string) {
-    let deletedAdmin;
+    let deletedItem;
     try {
-      deletedAdmin = await this._repository.findByIdAndDelete(id).exec();
+      deletedItem = await this._repository.findByIdAndDelete(id).exec();
     } catch (error) {
       this.logger.debug(error);
     }
-    return deletedAdmin;
+    return deletedItem;
   }
 }

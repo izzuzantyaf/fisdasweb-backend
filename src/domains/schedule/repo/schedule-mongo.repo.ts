@@ -1,7 +1,7 @@
 import { Schedule, ScheduleDocument } from '../entities/schedule.entity';
 import { Model } from 'mongoose';
 import { isEmpty } from 'class-validator';
-import { MongoGenericRepository } from 'src/database/repo/mongo-generic.repo';
+import { MongoGenericRepository } from 'src/infrastructure/database/mongodb/repo/mongo-generic.repo';
 
 export class ScheduleMongoRepository extends MongoGenericRepository<Schedule> {
   constructor(repository: Model<ScheduleDocument>) {

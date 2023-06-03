@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Faculty } from 'src/core/constants';
 import { Document } from 'mongoose';
 import { isNotEmpty, isURL, isObject, isNotEmptyObject } from 'class-validator';
+import { Faculty } from 'src/domains/common/constants';
 
 export type ScheduleDocument = Schedule & Document;
 

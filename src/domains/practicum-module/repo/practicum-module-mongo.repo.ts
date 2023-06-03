@@ -8,7 +8,7 @@ import {
 } from '../entities/practicum-module.entity';
 import { FilterQuery, Model } from 'mongoose';
 import { isEmpty } from 'class-validator';
-import { MongoGenericRepository } from 'src/database/repo/mongo-generic.repo';
+import { MongoGenericRepository } from 'src/infrastructure/database/mongodb/repo/mongo-generic.repo';
 
 export class PracticumModuleMongoRepository extends MongoGenericRepository<PracticumModule> {
   mustPresentProjection = {

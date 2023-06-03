@@ -12,10 +12,10 @@ import { OrganigramModule } from './domains/organigram/organigram.module';
 import { ScheduleModule } from './domains/schedule/schedule.module';
 import { AssistantModule } from './domains/assistant/assistant.module';
 import { PracticumModuleModule } from './domains/practicum-module/practicum-module.module';
-import { RequestLoggingMiddleware } from './middleware/request-logging.middleware';
+import { RequestLoggingMiddleware } from './infrastructure/middleware/request-logging.middleware';
 import { SocialMediaModule } from './domains/social-media/social-media.module';
 import { ArticleModule } from './domains/article/article.module';
-import { OpenAIModule } from './modules/openai/openai.module';
+import { OpenAIModule } from './infrastructure/openai/openai.module';
 
 @Module({
   imports: [

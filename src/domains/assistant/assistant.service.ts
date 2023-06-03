@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { isEmpty, isMongoId, isNotEmpty } from 'class-validator';
-import { DataServiceService } from 'src/database/data-service.service';
+import { MongoService } from 'src/infrastructure/database/mongodb/mongo.service';
 import { Assistant } from 'src/domains/assistant/entities/assistant.entity';
-import { ErrorResponse } from 'src/core/dtos/response.dto';
+import { ErrorResponseDto } from 'src/domains/common/dto/response.dto';
 import { AssistantFactoryService } from './assistant-factory.service';
 import {
   CreateAssistantDto,
@@ -15,7 +15,7 @@ export class AssistantService {
   private readonly logger = new Logger(AssistantService.name);
 
   constructor(
-    private dataService: DataServiceService,
+    private dataService: MongoService,
     private assistantFactory: AssistantFactoryService,
   ) {}
 
@@ -30,7 +30,7 @@ export class AssistantService {
         `Assistant data is not valid ${JSON.stringify(validationErrors)}`,
       );
       throw new BadRequestException(
-        new ErrorResponse('Data tidak valid', { errors: validationErrors }),
+        new ErrorResponseDto('Data tidak valid', { errors: validationErrors }),
       );
     }
     const storedAssistant = this.assistantFactory.create(
@@ -73,7 +73,7 @@ export class AssistantService {
         `Assistant data is not valid ${JSON.stringify(validationErrors)}`,
       );
       throw new BadRequestException(
-        new ErrorResponse('Data tidak valid', { errors: validationErrors }),
+        new ErrorResponseDto('Data tidak valid', { errors: validationErrors }),
       );
     }
     const updateResult = await this.dataService.assistants.updateById(
@@ -87,7 +87,7 @@ export class AssistantService {
         })}`,
       );
       throw new BadRequestException(
-        new ErrorResponse('Asisten gagal diupdate'),
+        new ErrorResponseDto('Asisten gagal diupdate'),
       );
     }
     const updatedAssistant = this.assistantFactory.create(updateResult);
@@ -108,7 +108,9 @@ export class AssistantService {
       this.logger.log(
         `Assistant delete failed ${JSON.stringify({ assistantId: id })}`,
       );
-      throw new BadRequestException(new ErrorResponse('Asisten gagal dihapus'));
+      throw new BadRequestException(
+        new ErrorResponseDto('Asisten gagal dihapus'),
+      );
     }
     const deletedAssistant = this.assistantFactory.create(deleteResult);
     this.logger.debug(

@@ -1,18 +1,8 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { ArticleService } from './article.service';
-import { CreateArticleDto } from './dto/create-article.dto';
-import { UpdateArticleDto } from './dto/update-article.dto';
-import { SuccessfulResponse } from 'src/core/dtos/response.dto';
+import { SuccessfulResponseDto } from 'src/domains/common/dto/response.dto';
 
-@Controller('/api/articles')
+@Controller('articles')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
@@ -24,7 +14,10 @@ export class ArticleController {
   @Get()
   async findAll() {
     const articles = await this.articleService.findMany();
-    return new SuccessfulResponse('Berhasil mengambil data artikel', articles);
+    return new SuccessfulResponseDto(
+      'Berhasil mengambil data artikel',
+      articles,
+    );
   }
 
   // @Get(':id')

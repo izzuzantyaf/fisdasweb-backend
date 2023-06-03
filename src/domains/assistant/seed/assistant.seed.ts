@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
-import { AssistantLevel, Gender } from 'src/core/constants';
+import { AssistantLevel } from 'src/domains/assistant/constants';
+import { Gender } from 'src/domains/common/constants';
 
 export const assistantSeeder = Array(50)
   .fill(null)

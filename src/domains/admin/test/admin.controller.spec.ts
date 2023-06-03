@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AdminController } from '../admin.controller';
-import { SuccessfulResponse } from 'src/core/dtos/response.dto';
+import { SuccessfulResponseDto } from 'src/domains/common/dto/response.dto';
 import { AdminModule } from 'src/domains/admin/admin.module';
 import { Admin } from 'src/domains/admin/entities/admin.entity';
 import { faker } from '@faker-js/faker';
-import { AdminRole } from 'src/core/constants';
 import { BadRequestException, ConflictException } from '@nestjs/common';
+import { AdminRole } from 'src/domains/admin/constants';
 
 const createFakeAdmin = () => ({
   name: faker.person.fullName(),
@@ -30,9 +30,9 @@ describe('AdminController', () => {
 
   describe('create()', () => {
     const fakeAdmin = createFakeAdmin();
-    it(`harus berhasil menambahkan admin ke database dan return object bertipe ${SuccessfulResponse.name}`, async () => {
+    it(`harus berhasil menambahkan admin ke database dan return object bertipe ${SuccessfulResponseDto.name}`, async () => {
       const response = await controller.create(fakeAdmin);
-      expect(response).toBeInstanceOf(SuccessfulResponse);
+      expect(response).toBeInstanceOf(SuccessfulResponseDto);
       expect(response.data).toBeInstanceOf(Admin);
     });
     it('harus gagal karena nama kosong', async () => {
@@ -83,10 +83,10 @@ describe('AdminController', () => {
   });
 
   describe('getAll()', () => {
-    it(`harus return object bertipe ${SuccessfulResponse.name} dan data berupa array ${Admin.name}`, async () => {
+    it(`harus return object bertipe ${SuccessfulResponseDto.name} dan data berupa array ${Admin.name}`, async () => {
       const response = await controller.getAll();
       const admins = response.data as Admin[];
-      expect(await controller.getAll()).toBeInstanceOf(SuccessfulResponse);
+      expect(await controller.getAll()).toBeInstanceOf(SuccessfulResponseDto);
       expect(admins.every((admin) => admin instanceof Admin)).toBeTruthy();
     });
   });
@@ -98,9 +98,9 @@ describe('AdminController', () => {
         .data as Admin;
       adminId = storedFakeAdmin._id;
     });
-    it(`harus berhasil menghapus admin dan return object bertipe ${SuccessfulResponse.name}`, async () => {
+    it(`harus berhasil menghapus admin dan return object bertipe ${SuccessfulResponseDto.name}`, async () => {
       const response = await controller.delete(adminId);
-      expect(response).toBeInstanceOf(SuccessfulResponse);
+      expect(response).toBeInstanceOf(SuccessfulResponseDto);
     });
     it('harus gagal menghapus admin karena id tidak valid', async () => {
       await expect(controller.delete('salah')).rejects.toThrow();

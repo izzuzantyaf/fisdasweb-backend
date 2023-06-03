@@ -1,4 +1,4 @@
-import { Faculty } from 'src/core/constants';
+import { Faculty } from 'src/domains/common/constants';
 
 export const scheduleSeeder = [
   { faculty: null, isActive: true, url: null },

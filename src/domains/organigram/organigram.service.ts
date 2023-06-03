@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { isEmpty, isNotEmpty } from 'class-validator';
-import { DataServiceService } from 'src/database/data-service.service';
-import { ErrorResponse } from 'src/core/dtos/response.dto';
+import { MongoService } from 'src/infrastructure/database/mongodb/mongo.service';
+import { ErrorResponseDto } from 'src/domains/common/dto/response.dto';
 import { OrganigramFactoryService } from './organigram-factory.service';
 import { UpdateOrganigramDto } from 'src/domains/organigram/dto/organigram.dto';
 
@@ -10,7 +10,7 @@ export class OrganigramService {
   private readonly logger = new Logger(OrganigramService.name);
 
   constructor(
-    private dataService: DataServiceService,
+    private dataService: MongoService,
     private organigramFactory: OrganigramFactoryService,
   ) {}
 
@@ -36,7 +36,7 @@ export class OrganigramService {
         `Organigram data is not valid ${JSON.stringify(validationError)}`,
       );
       throw new BadRequestException(
-        new ErrorResponse('Data tidak valid', { validationError }),
+        new ErrorResponseDto('Data tidak valid', { validationError }),
       );
     }
     const updateResult = await this.dataService.organigrams.updateById(
@@ -50,7 +50,7 @@ export class OrganigramService {
         })}`,
       );
       throw new BadRequestException(
-        new ErrorResponse('Organigram gagal diupdate'),
+        new ErrorResponseDto('Organigram gagal diupdate'),
       );
     }
     this.logger.debug(

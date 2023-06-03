@@ -1,7 +1,7 @@
 import { Admin, AdminDocument } from '../entities/admin.entity';
 import { Model } from 'mongoose';
 import { isEmpty } from 'class-validator';
-import { MongoGenericRepository } from 'src/database/repo/mongo-generic.repo';
+import { MongoGenericRepository } from 'src/infrastructure/database/mongodb/repo/mongo-generic.repo';
 
 export class AdminMongoRepository extends MongoGenericRepository<Admin> {
   constructor(repository: Model<AdminDocument>) {

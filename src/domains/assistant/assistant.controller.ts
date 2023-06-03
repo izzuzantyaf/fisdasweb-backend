@@ -14,11 +14,11 @@ import {
   CreateAssistantDto,
   UpdateAssistantDto,
 } from 'src/domains/assistant/dto/assistant.dto';
-import { SuccessfulResponse } from 'src/core/dtos/response.dto';
+import { SuccessfulResponseDto } from 'src/domains/common/dto/response.dto';
 import { AssistantService } from 'src/domains/assistant/assistant.service';
 
 @ApiTags('assistant')
-@Controller('api/assistant')
+@Controller('assistant')
 export class AssistantController {
   constructor(private assistantService: AssistantService) {}
 
@@ -27,7 +27,7 @@ export class AssistantController {
     const storedAssistant = await this.assistantService.create(
       createAssistantDto,
     );
-    return new SuccessfulResponse(
+    return new SuccessfulResponseDto(
       'Asisten berhasil ditambahkan',
       storedAssistant,
     );
@@ -38,7 +38,7 @@ export class AssistantController {
     const assistants = isNotEmpty(keyword)
       ? await this.assistantService.search(keyword)
       : await this.assistantService.getAll();
-    return new SuccessfulResponse('Sukses', assistants);
+    return new SuccessfulResponseDto('Sukses', assistants);
   }
 
   @Put()
@@ -46,7 +46,7 @@ export class AssistantController {
     const updatedAssistant = await this.assistantService.update(
       updateAssistantDto,
     );
-    return new SuccessfulResponse(
+    return new SuccessfulResponseDto(
       'Asisten berhasil diupdate',
       updatedAssistant,
     );
@@ -55,7 +55,10 @@ export class AssistantController {
   @Delete(':id')
   async delete(@Param('id') id: string) {
     const deletedAssistant = await this.assistantService.delete(id);
-    return new SuccessfulResponse('Asisten berhasil dihapus', deletedAssistant);
+    return new SuccessfulResponseDto(
+      'Asisten berhasil dihapus',
+      deletedAssistant,
+    );
   }
 
   @Delete()
@@ -63,7 +66,7 @@ export class AssistantController {
     const deletedAdmins = await this.assistantService.deleteMany(
       deleteAdminsDto.ids,
     );
-    return new SuccessfulResponse(
+    return new SuccessfulResponseDto(
       `${deletedAdmins.length} asisten berhasil dihapus`,
       {
         deletedAdmins,

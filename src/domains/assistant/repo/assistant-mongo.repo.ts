@@ -1,7 +1,7 @@
 import { Assistant, AssistantDocument } from '../entities/assistant.entity';
 import { Model } from 'mongoose';
 import { isEmpty } from 'class-validator';
-import { MongoGenericRepository } from 'src/database/repo/mongo-generic.repo';
+import { MongoGenericRepository } from 'src/infrastructure/database/mongodb/repo/mongo-generic.repo';
 
 export class AssistantMongoRepository extends MongoGenericRepository<Assistant> {
   constructor(repository: Model<AssistantDocument>) {

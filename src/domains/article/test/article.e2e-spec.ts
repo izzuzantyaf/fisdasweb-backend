@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { faker } from '@faker-js/faker';
 import { ArticleModule } from 'src/domains/article/article.module';
@@ -28,7 +28,7 @@ describe('Application (e2e)', () => {
 
   it('/api/articles (GET)', async () => {
     const response = await request(app.getHttpServer()).get('/api/articles');
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
   });
 
   // afterAll(async () => {

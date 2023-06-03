@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ArticleController } from './article.controller';
-import { ArticleModule } from './article.module';
+import { ArticleController } from '../article.controller';
+import { ArticleModule } from '../article.module';
 
 describe('ArticleController', () => {
   let controller: ArticleController;

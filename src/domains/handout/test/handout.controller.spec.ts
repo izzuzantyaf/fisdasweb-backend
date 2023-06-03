@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UpdateHandoutDto } from 'src/domains/handout/dto/handout.dto';
-import { SuccessfulResponse } from 'src/core/dtos/response.dto';
+import { SuccessfulResponseDto } from 'src/domains/common/dto/response.dto';
 import { Handout } from 'src/domains/handout/entities/handout.entity';
 import { HandoutController } from '../handout.controller';
 import { HandoutModule } from '../handout.module';
@@ -22,10 +22,10 @@ describe('HandoutController', () => {
   });
 
   describe('getAll()', () => {
-    it(`harus return array object bertipe ${SuccessfulResponse.name} berisi data array ${Handout.name}`, async () => {
+    it(`harus return array object bertipe ${SuccessfulResponseDto.name} berisi data array ${Handout.name}`, async () => {
       const response = await controller.getAll();
       const handouts = response.data as Handout[];
-      expect(response).toBeInstanceOf(SuccessfulResponse);
+      expect(response).toBeInstanceOf(SuccessfulResponseDto);
       expect(
         handouts.every((handout) => handout instanceof Handout),
       ).toBeTruthy();
@@ -45,14 +45,14 @@ describe('HandoutController', () => {
     beforeAll(async () => {
       handout = (await controller.getAll()).data[0];
     });
-    it(`harus berhasil update dan return object bertipe ${SuccessfulResponse.name} berisi data ${Handout.name} yang telah diupdate`, async () => {
+    it(`harus berhasil update dan return object bertipe ${SuccessfulResponseDto.name} berisi data ${Handout.name} yang telah diupdate`, async () => {
       const response = await controller.update({
         ...handout,
         url: faker.internet.url(),
         isActive: !handout.isActive,
       } as UpdateHandoutDto);
       const updatedHandout = response.data as Handout;
-      expect(response).toBeInstanceOf(SuccessfulResponse);
+      expect(response).toBeInstanceOf(SuccessfulResponseDto);
       expect(updatedHandout).toBeInstanceOf(Handout);
     });
     it('harus gagal update karena URL tidak valid', async () => {

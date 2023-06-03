@@ -1,40 +1,36 @@
-import { Global, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { DataServiceService } from './data-service.service';
-import { Admin, AdminSchema } from '../domains/admin/entities/admin.entity';
+import { MongoService } from './mongo.service';
+import { Admin, AdminSchema } from 'src/domains/admin/entities/admin.entity';
 import {
   Handout,
   HandoutSchema,
-} from '../domains/handout/entities/handout.entity';
+} from 'src/domains/handout/entities/handout.entity';
 import {
   CodeOfConduct,
   CodeOfConductSchema,
-} from '../domains/code-of-conduct/entities/code-of-conduct.entity';
+} from 'src/domains/code-of-conduct/entities/code-of-conduct.entity';
 import {
   Organigram,
   OrganigramSchema,
-} from '../domains/organigram/entities/organigram.entity';
+} from 'src/domains/organigram/entities/organigram.entity';
 import {
   Schedule,
   ScheduleSchema,
-} from '../domains/schedule/entities/schedule.entity';
+} from 'src/domains/schedule/entities/schedule.entity';
 import {
   Assistant,
   AssistantSchema,
-} from '../domains/assistant/entities/assistant.entity';
+} from 'src/domains/assistant/entities/assistant.entity';
 import {
   PracticumModule,
   PracticumModuleSchema,
-} from '../domains/practicum-module/entities/practicum-module.entity';
+} from 'src/domains/practicum-module/entities/practicum-module.entity';
 import {
   SocialMedia,
   SocialMediaSchema,
 } from 'src/domains/social-media/entities/social-media.entity';
-import {
-  Article,
-  ArticleSchema,
-} from 'src/domains/article/entities/article.entity';
 
 @Module({
   imports: [
@@ -48,11 +44,10 @@ import {
       { name: Assistant.name, schema: AssistantSchema },
       { name: PracticumModule.name, schema: PracticumModuleSchema },
       { name: SocialMedia.name, schema: SocialMediaSchema },
-      // { name: Article.name, schema: ArticleSchema },
     ]),
     MongooseModule.forRoot(process.env.MONGO_URI),
   ],
-  providers: [DataServiceService],
-  exports: [DataServiceService],
+  providers: [MongoService],
+  exports: [MongoService],
 })
-export class DataServiceModule {}
+export class MongoModule {}

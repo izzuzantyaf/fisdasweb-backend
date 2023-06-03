@@ -1,12 +1,12 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { isJWT } from 'class-validator';
-import { AdminRole } from 'src/core/constants';
-import { SuccessfulResponse } from 'src/core/dtos/response.dto';
+import { SuccessfulResponseDto } from 'src/domains/common/dto/response.dto';
 import { AdminController } from 'src/domains/admin/admin.controller';
 import { AdminModule } from 'src/domains/admin/admin.module';
 import { AuthController } from '../auth.controller';
 import { AuthModule } from '../auth.module';
+import { AdminRole } from 'src/domains/admin/constants';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -36,11 +36,11 @@ describe('AuthController', () => {
     beforeAll(async () => {
       await adminController.create(fakeAdmin);
     });
-    it(`harus berhasil login, return object bertipe ${SuccessfulResponse.name} berisi access_token`, async () => {
+    it(`harus berhasil login, return object bertipe ${SuccessfulResponseDto.name} berisi access_token`, async () => {
       const response = await controller.signin({
         user: { username: fakeAdmin.email, password: fakeAdmin.password },
       });
-      expect(response).toBeInstanceOf(SuccessfulResponse);
+      expect(response).toBeInstanceOf(SuccessfulResponseDto);
       const access_token = response.data.access_token;
       expect(isJWT(access_token)).toBeTruthy();
     });

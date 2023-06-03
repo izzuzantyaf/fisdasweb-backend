@@ -1,7 +1,7 @@
 import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { isNotEmpty, isNotEmptyObject, isObject, isURL } from 'class-validator';
 import { Document } from 'mongoose';
-import { Language } from 'src/core/constants';
+import { Language } from 'src/domains/common/constants';
 
 export type PracticumModuleDocument = PracticumModule & Document;
 

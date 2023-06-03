@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { SuccessfulResponse } from 'src/core/dtos/response.dto';
+import { SuccessfulResponseDto } from 'src/domains/common/dto/response.dto';
 import { Schedule } from 'src/domains/schedule/entities/schedule.entity';
 import { ScheduleController } from '../schedule.controller';
 import { ScheduleModule } from '../schedule.module';
@@ -22,10 +22,10 @@ describe('ScheduleController', () => {
   });
 
   describe('getAll()', () => {
-    it(`harus mengembalikan object bertipe ${SuccessfulResponse.name} dan data berupa array ${Schedule.name}`, async () => {
+    it(`harus mengembalikan object bertipe ${SuccessfulResponseDto.name} dan data berupa array ${Schedule.name}`, async () => {
       const response = await controller.getAll();
       const schedules = response.data as Schedule[];
-      expect(response).toBeInstanceOf(SuccessfulResponse);
+      expect(response).toBeInstanceOf(SuccessfulResponseDto);
       expect(
         schedules.every((schedule) => schedule instanceof Schedule),
       ).toBeTruthy();
@@ -46,7 +46,7 @@ describe('ScheduleController', () => {
       schedule = (await controller.getAll()).data[0];
     });
 
-    it(`harus berhasil update dan return object bertipe ${SuccessfulResponse.name} berisi data jadwal yang telah diupdate`, async () => {
+    it(`harus berhasil update dan return object bertipe ${SuccessfulResponseDto.name} berisi data jadwal yang telah diupdate`, async () => {
       schedule.url = faker.internet.url();
       schedule.isActive = !schedule.isActive;
       const response = await controller.update({
@@ -55,7 +55,7 @@ describe('ScheduleController', () => {
         isActive: schedule.isActive,
       });
       const updatedSchedule = response.data;
-      expect(response).toBeInstanceOf(SuccessfulResponse);
+      expect(response).toBeInstanceOf(SuccessfulResponseDto);
       expect(updatedSchedule).toBeInstanceOf(Schedule);
     });
     it('harus gagal karena link tidak valid', async () => {

@@ -1,6 +1,5 @@
-import { ApiHideProperty, ApiProperty, ApiQuery } from '@nestjs/swagger';
-import { AdminRole } from '../../../core/constants';
-import { Admin } from '../entities/admin.entity';
+import { ApiProperty } from '@nestjs/swagger';
+import { AdminRole } from 'src/domains/admin/constants';
 
 export class CreateAdminDto {
   @ApiProperty()

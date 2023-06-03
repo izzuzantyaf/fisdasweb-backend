@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { isEmpty, isNotEmpty } from 'class-validator';
-import { DataServiceService } from 'src/database/data-service.service';
+import { MongoService } from 'src/infrastructure/database/mongodb/mongo.service';
 import {
   Schedule,
   ScheduleConstructorProps,
 } from 'src/domains/schedule/entities/schedule.entity';
-import { ErrorResponse } from 'src/core/dtos/response.dto';
+import { ErrorResponseDto } from 'src/domains/common/dto/response.dto';
 import { ScheduleFactoryService } from './schedule-factory.service';
 import {
   ScheduleQuery,
@@ -17,7 +17,7 @@ export class ScheduleService {
   private readonly logger = new Logger(ScheduleService.name);
 
   constructor(
-    private dataService: DataServiceService,
+    private dataService: MongoService,
     private scheduleFactory: ScheduleFactoryService,
   ) {}
 
@@ -54,7 +54,7 @@ export class ScheduleService {
         `Schedule data is not valid ${JSON.stringify(validationError)}`,
       );
       throw new BadRequestException(
-        new ErrorResponse('Data tidak valid', { validationError }),
+        new ErrorResponseDto('Data tidak valid', { validationError }),
       );
     }
     const updateResult = await this.dataService.schedules.updateById(
@@ -67,7 +67,9 @@ export class ScheduleService {
           scheduleId: newSchedule._id,
         })}`,
       );
-      throw new BadRequestException(new ErrorResponse('Jadwal gagal diupdate'));
+      throw new BadRequestException(
+        new ErrorResponseDto('Jadwal gagal diupdate'),
+      );
     }
     this.logger.debug(
       `Updated schedules ${JSON.stringify(updateResult, undefined, 2)}`,

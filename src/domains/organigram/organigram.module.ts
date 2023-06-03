@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { OrganigramController } from './organigram.controller';
-import { DataServiceModule } from '../../database/data-service.module';
+import { MongoModule } from 'src/infrastructure/database/mongodb/mongo.module';
 import { OrganigramFactoryService } from './organigram-factory.service';
 import { OrganigramService } from './organigram.service';
 
 @Module({
-  imports: [DataServiceModule],
+  imports: [MongoModule],
   providers: [OrganigramService, OrganigramFactoryService],
   controllers: [OrganigramController],
   exports: [OrganigramService, OrganigramFactoryService],

@@ -7,7 +7,8 @@ import {
   isObject,
 } from 'class-validator';
 import { Document } from 'mongoose';
-import { AssistantLevel, Gender } from 'src/core/constants';
+import { AssistantLevel } from 'src/domains/assistant/constants';
+import { Gender } from 'src/domains/common/constants';
 
 export type AssistantDocument = Assistant & Document;
 

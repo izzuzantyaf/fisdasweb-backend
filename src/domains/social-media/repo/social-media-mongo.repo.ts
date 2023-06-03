@@ -4,7 +4,7 @@ import {
   SocialMedia,
   SocialMediaDocument,
 } from '../entities/social-media.entity';
-import { MongoGenericRepository } from 'src/database/repo/mongo-generic.repo';
+import { MongoGenericRepository } from 'src/infrastructure/database/mongodb/repo/mongo-generic.repo';
 
 export class SocialMediaMongoRepository extends MongoGenericRepository<SocialMedia> {
   constructor(repository: Model<SocialMediaDocument>) {

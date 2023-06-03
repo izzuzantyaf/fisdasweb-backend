@@ -4,7 +4,7 @@ import {
 } from '../entities/code-of-conduct.entity';
 import { Model } from 'mongoose';
 import { isEmpty } from 'class-validator';
-import { MongoGenericRepository } from 'src/database/repo/mongo-generic.repo';
+import { MongoGenericRepository } from 'src/infrastructure/database/mongodb/repo/mongo-generic.repo';
 
 export class CodeOfConductMongoRepository extends MongoGenericRepository<CodeOfConduct> {
   constructor(repository: Model<CodeOfConductDocument>) {

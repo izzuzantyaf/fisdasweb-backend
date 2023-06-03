@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { isEmpty, isNotEmpty } from 'class-validator';
 import { CreateAdminDto } from 'src/domains/admin/dto/admin.dto';
-import { ErrorResponse } from 'src/core/dtos/response.dto';
-import { DataServiceService } from 'src/database/data-service.service';
+import { ErrorResponseDto } from 'src/domains/common/dto/response.dto';
+import { MongoService } from 'src/infrastructure/database/mongodb/mongo.service';
 import { AdminFactoryService } from './admin-factory.service';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class AdminService {
   private readonly logger = new Logger(AdminService.name);
 
   constructor(
-    private dataService: DataServiceService,
+    private dataService: MongoService,
     private adminFactoryService: AdminFactoryService,
   ) {}
 
@@ -28,7 +28,7 @@ export class AdminService {
     if (isNotEmpty(errors)) {
       this.logger.log(`User data not valid ${JSON.stringify(errors)}`);
       throw new BadRequestException(
-        new ErrorResponse('Data tidak valid', { errors }),
+        new ErrorResponseDto('Data tidak valid', { errors }),
       );
     }
     const admin = await this.dataService.admins.getByEmail(newAdmin.email);
@@ -39,7 +39,9 @@ export class AdminService {
           adminId: admin._id,
         })}`,
       );
-      throw new ConflictException(new ErrorResponse('Email sudah terdaftar'));
+      throw new ConflictException(
+        new ErrorResponseDto('Email sudah terdaftar'),
+      );
     }
     await newAdmin.hashPassword();
     const storedAdmin = await this.dataService.admins.create(newAdmin);
@@ -66,7 +68,7 @@ export class AdminService {
     );
     if (isEmpty(deletedAdmin)) {
       this.logger.log(`Remove admin failed ${JSON.stringify({ adminId: id })}`);
-      throw new BadRequestException(new ErrorResponse('Akun gagal dihapus'));
+      throw new BadRequestException(new ErrorResponseDto('Akun gagal dihapus'));
     }
     this.logger.log(
       `Remove admin success ${JSON.stringify({ adminId: deletedAdmin._id })}`,
@@ -87,14 +89,14 @@ export class AdminService {
       `Admin from database ${JSON.stringify(adminFromDb, undefined, 2)}`,
     );
     if (isEmpty(adminFromDb))
-      throw new BadRequestException(new ErrorResponse('Login gagal'));
+      throw new BadRequestException(new ErrorResponseDto('Login gagal'));
     const admin = this.adminFactoryService.create(adminFromDb);
     const isPasswordMatch = await admin.verifyPassword(password);
     this.logger.debug(
       `Is password match ${JSON.stringify({ isPasswordMatch })}`,
     );
     if (!isPasswordMatch)
-      throw new BadRequestException(new ErrorResponse('Login gagal'));
+      throw new BadRequestException(new ErrorResponseDto('Login gagal'));
     return admin;
   }
 }

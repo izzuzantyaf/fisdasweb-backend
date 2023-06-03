@@ -1,10 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateArticleDto } from './dto/create-article.dto';
-import { UpdateArticleDto } from './dto/update-article.dto';
 import { ArticleMongoRepository } from './repo/article-mongo.repo';
-import { Cron, Timeout } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule';
 import { Article } from './entities/article.entity';
-import { OpenAIService } from 'src/modules/openai/openai.service';
+import { OpenAIService } from 'src/infrastructure/openai/openai.service';
 
 @Injectable()
 export class ArticleService {
@@ -110,15 +109,15 @@ export class ArticleService {
     }
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} blog`;
-  }
+  // findOne(id: string) {
+  //   return `This action returns a #${id} blog`;
+  // }
 
-  update(id: number, updateArticleDto: UpdateArticleDto) {
-    return `This action updates a #${id} blog`;
-  }
+  // update(id: number, updateArticleDto: UpdateArticleDto) {
+  //   return `This action updates a #${id} blog`;
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} blog`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} blog`;
+  // }
 }

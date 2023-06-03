@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { isEmpty, isNotEmpty } from 'class-validator';
-import { DataServiceService } from 'src/database/data-service.service';
-import { ErrorResponse } from 'src/core/dtos/response.dto';
+import { MongoService } from 'src/infrastructure/database/mongodb/mongo.service';
+import { ErrorResponseDto } from 'src/domains/common/dto/response.dto';
 import { CodeOfConductFactoryService } from './code-of-conduct-factory.service';
 import { UpdateCodeOfConductDto } from 'src/domains/code-of-conduct/dto/code-of-conduct.dto';
 
@@ -9,7 +9,7 @@ import { UpdateCodeOfConductDto } from 'src/domains/code-of-conduct/dto/code-of-
 export class CodeOfConductService {
   private readonly logger = new Logger(CodeOfConductService.name);
   constructor(
-    private dataService: DataServiceService,
+    private dataService: MongoService,
     private codeOfConductFactory: CodeOfConductFactoryService,
   ) {}
 
@@ -37,7 +37,7 @@ export class CodeOfConductService {
         `Code of conduct data is not valid ${JSON.stringify(errors)}`,
       );
       throw new BadRequestException(
-        new ErrorResponse('Tata tertib gagal diupdate', { errors }),
+        new ErrorResponseDto('Tata tertib gagal diupdate', { errors }),
       );
     }
     const updateResult = await this.dataService.codeOfConducts.updateById(
@@ -51,7 +51,7 @@ export class CodeOfConductService {
         })}`,
       );
       throw new BadRequestException(
-        new ErrorResponse('Tata tertib gagal diupdate'),
+        new ErrorResponseDto('Tata tertib gagal diupdate'),
       );
     }
     const updatedCodeOfConduct = this.codeOfConductFactory.create(updateResult);

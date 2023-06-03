@@ -2,7 +2,6 @@ import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { AdminRole } from 'src/core/constants';
 import {
   isEmail,
   isEmpty,
@@ -13,6 +12,7 @@ import {
   minLength,
 } from 'class-validator';
 import { ApiHideProperty } from '@nestjs/swagger';
+import { AdminRole } from 'src/domains/admin/constants';
 
 export type AdminDocument = Admin & Document;
 

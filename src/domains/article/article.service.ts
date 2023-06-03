@@ -38,7 +38,7 @@ export class ArticleService {
     }
   }
 
-  @Cron('0 0 7,10,13,15,18 * * *')
+  @Cron('0 0 0,3,6,8,10 * * *')
   cronGenerateArticles() {
     try {
       this.logger.log(`Cron job generate articles started`);

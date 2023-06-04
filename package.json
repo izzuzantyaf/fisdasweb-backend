@@ -11,17 +11,18 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\"",
     "start:dev": "nest start",
     "dev": "nest start --debug --watch",
     "start": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest --silent --verbose --onlyChanged --forceExit",
-    "test:changed": "jest -o --forceExit",
+    "test": "jest --silent --verbose --forceExit",
+    "test:changed": "jest --silent --verbose --onlyChanged --forceExit",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./jest-e2e.json --silent --verbose --onlyChanged --forceExit"
+    "test:e2e": "jest --config ./jest-e2e.json --silent --verbose --forceExit",
+    "test:e2e:changed": "jest --config ./jest-e2e.json --silent --verbose --onlyChanged --forceExit"
   },
   "dependencies": {
     "@faker-js/faker": "^8.0.2",

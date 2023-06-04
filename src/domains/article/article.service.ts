@@ -1,9 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { ArticleMongoRepository } from './repo/article-mongo.repo';
-import { Cron } from '@nestjs/schedule';
+import { Cron, Timeout } from '@nestjs/schedule';
 import { Article } from './entities/article.entity';
 import { OpenAIService } from 'src/infrastructure/openai/openai.service';
+import { faker } from '@faker-js/faker';
 
 @Injectable()
 export class ArticleService {
@@ -38,58 +39,67 @@ export class ArticleService {
     }
   }
 
+  async generateArticleUsingAI() {
+    try {
+      this.logger.debug(`Generating article title`);
+      const context = [
+        'teknologi',
+        'tubuh manusia',
+        'gadget',
+        'kendaraan',
+        'kesehatan',
+        'industri',
+      ];
+      function articleTitleGenerationPropmtTemplate(context = '') {
+        return `berikan satu fakta atau pertanyaan tentang ${context} yang berkaitan dengan ilmu fisika, tuliskan dalam satu kalimat yang mudah dipahami yang terdiri dari 15 sampai 20 kata`;
+      }
+
+      let articleTitle = (
+        await this.openAIService.openAIApi.createCompletion({
+          model: 'text-davinci-003',
+          prompt: articleTitleGenerationPropmtTemplate(
+            context[
+              faker.number.int({
+                min: 0,
+                max: context.length - 1,
+              })
+            ],
+          ),
+          max_tokens: 2048,
+        })
+      ).data.choices[0].text;
+      this.logger.debug(`Article title:`, articleTitle);
+
+      this.logger.debug(`Generating article content`);
+      const articleContent = (
+        await this.openAIService.openAIApi.createCompletion({
+          model: 'text-davinci-003',
+          prompt: `buatkan satu artikel tentang ${articleTitle} dari sudut pandang ilmu fisika menggunakan Bahasa Indonesia tanpa pembuka dan penutup`,
+          max_tokens: 2048,
+        })
+      ).data.choices[0].text;
+      this.logger.debug(`Article content: ${articleContent}`);
+      articleTitle = articleTitle.replace(/\n/g, ''); // remove new line
+      articleTitle = articleTitle.replace(/^['"]|['"]$/g, ''); // remove quotes di awal dan di akhir
+      this.logger.debug(`cleaned title`, articleTitle);
+
+      return new Article({
+        title: articleTitle,
+        content: articleContent,
+      });
+    } catch (error) {
+      this.logger.debug(`Failed to generate article:`, error);
+    }
+  }
+
+  // @Timeout(1000)
   @Cron('0 0 0,3,6,8,10 * * *')
-  cronGenerateArticles() {
+  // @Cron('*/10 * * * * *')
+  async cronGenerateAndStoreArticle() {
     try {
       this.logger.log(`Cron job generate articles started`);
-      const ARTICLE_AMOUNT = 1;
-      const articleStorePromises: Promise<Article>[] = [];
-      for (let i = 0; i < ARTICLE_AMOUNT; i++) {
-        const generateArticlePromise = new Promise<Article>(
-          async (resolve, reject) => {
-            try {
-              this.logger.debug(`Generating article title [${i + 1}]`);
-              let articleTitle = (
-                await this.openAIService.openAIApi.createCompletion({
-                  model: 'text-davinci-003',
-                  prompt:
-                    'tuliskan satu baris judul artikel tentang fisika yang membuat pembaca penasaran namun tidak terlalu rumit dan membosankan dalam bahasa indonesia',
-                  max_tokens: 2048,
-                })
-              ).data.choices[0].text;
-              this.logger.debug(`Article title [${i + 1}]:`, articleTitle);
-
-              this.logger.debug(`Generating article content [${i + 1}]`);
-              const articleContent = (
-                await this.openAIService.openAIApi.createCompletion({
-                  model: 'text-davinci-003',
-                  prompt: `buatkan satu artikel dengan judul ${articleTitle} dalam bahasa indonesia tanpa judul dan penutup`,
-                  max_tokens: 2048,
-                })
-              ).data.choices[0].text;
-              this.logger.debug(
-                `Article content [${i + 1}]: ${articleContent}`,
-              );
-              articleTitle = articleTitle.replace(/\n/g, ''); // remove new line
-              articleTitle = articleTitle.replace(/^['"]|['"]$/g, ''); // remove quotes di awal dan di akhir
-              this.logger.debug(`cleaned title`, articleTitle);
-              const storeArticlePromise = this.store({
-                title: articleTitle,
-                content: articleContent,
-              });
-              resolve(storeArticlePromise);
-            } catch (error) {
-              this.logger.debug(
-                `Failed to generate article [${i + 1}]:`,
-                error,
-              );
-              reject(error);
-            }
-          },
-        );
-        articleStorePromises.push(generateArticlePromise);
-      }
-      Promise.allSettled(articleStorePromises).finally(() => {
+      const generatedArticle = await this.generateArticleUsingAI();
+      this.store(generatedArticle).then(() => {
         this.logger.log(`Cron job generate articles done`);
       });
       return;

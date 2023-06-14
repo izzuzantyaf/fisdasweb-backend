@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Article, ArticleSchema } from './entities/article.entity';
 import { ScheduleModule } from '@nestjs/schedule';
 import { OpenAIModule } from 'src/infrastructure/openai/openai.module';
+import { UnsplashModule } from 'src/infrastructure/unsplash/unsplash.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { OpenAIModule } from 'src/infrastructure/openai/openai.module';
     MongooseModule.forFeature([{ name: Article.name, schema: ArticleSchema }]),
     ScheduleModule.forRoot(),
     OpenAIModule,
+    UnsplashModule,
   ],
   controllers: [ArticleController],
   providers: [ArticleService, ArticleMongoRepository],

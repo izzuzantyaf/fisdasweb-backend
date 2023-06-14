@@ -5,6 +5,8 @@ import { Cron, Timeout } from '@nestjs/schedule';
 import { Article } from './entities/article.entity';
 import { OpenAIService } from 'src/infrastructure/openai/openai.service';
 import { faker } from '@faker-js/faker';
+import { UnsplashService } from 'src/infrastructure/unsplash/unsplash.service';
+import { Language } from 'unsplash-js';
 
 @Injectable()
 export class ArticleService {
@@ -13,6 +15,7 @@ export class ArticleService {
   constructor(
     private readonly articleRepository: ArticleMongoRepository,
     private readonly openAIService: OpenAIService,
+    private readonly unsplashService: UnsplashService,
   ) {}
 
   /**
@@ -39,7 +42,8 @@ export class ArticleService {
     }
   }
 
-  async generateArticleUsingAI() {
+  // @Timeout(1000)
+  async generateArticleUsingOpenAI() {
     try {
       this.logger.debug(`Generating article title`);
       const context = [
@@ -50,25 +54,42 @@ export class ArticleService {
         'kesehatan',
         'industri',
       ];
-      function articleTitleGenerationPropmtTemplate(context = '') {
-        return `berikan satu fakta atau pertanyaan tentang ${context} yang berkaitan dengan ilmu fisika, tuliskan dalam satu kalimat yang mudah dipahami yang terdiri dari 15 sampai 20 kata`;
-      }
+      const articleTitleGenerationPropmtTemplates = [
+        (context: string) => {
+          return `berikan satu fakta tentang ${context} yang berkaitan dengan ilmu fisika, tuliskan dalam satu kalimat yang mudah dipahami yang terdiri dari 15 sampai 20 kata`;
+        },
+        (context: string) => {
+          return `berikan satu pertanyaan tentang ${context} yang berkaitan dengan ilmu fisika, tuliskan dalam satu kalimat yang mudah dipahami yang terdiri dari 15 sampai 20 kata`;
+        },
+      ];
 
       let articleTitle = (
         await this.openAIService.openAIApi.createCompletion({
           model: 'text-davinci-003',
-          prompt: articleTitleGenerationPropmtTemplate(
-            context[
-              faker.number.int({
-                min: 0,
-                max: context.length - 1,
-              })
-            ],
-          ),
+          prompt: articleTitleGenerationPropmtTemplates[
+            faker.number.int({
+              min: 0,
+              max: articleTitleGenerationPropmtTemplates.length - 1,
+            })
+          ](context[faker.number.int({ min: 0, max: context.length - 1 })]),
           max_tokens: 2048,
         })
       ).data.choices[0].text;
       this.logger.debug(`Article title:`, articleTitle);
+
+      const keyword = (
+        await this.openAIService.openAIApi.createCompletion({
+          model: 'text-davinci-003',
+          // prompt: `cari kata kunci dari judul artikel "${articleTitle}" lalu terjemahkan ke bahasa Inggris, tuliskan dalam satu kata`,
+          // prompt: `terjemahkan judul artikel ini "${articleTitle}" ke bahasa Inggris`,
+          prompt: `ambil satu kata yang paling mewakili dari judul artikel ini "${articleTitle}", tuliskan dalam bahsaa Inggris`,
+        })
+      ).data.choices[0].text;
+      this.logger.debug('Article keyword:', keyword);
+
+      const photos = await this.unsplashService.searchPhotos(keyword);
+      const photoUrl = photos.results[0].urls.regular;
+      this.logger.debug('Article photos:', photoUrl);
 
       this.logger.debug(`Generating article content`);
       const articleContent = (
@@ -86,6 +107,7 @@ export class ArticleService {
       return new Article({
         title: articleTitle,
         content: articleContent,
+        cover_image_url: photoUrl,
       });
     } catch (error) {
       this.logger.debug(`Failed to generate article:`, error);
@@ -98,7 +120,7 @@ export class ArticleService {
   async cronGenerateAndStoreArticle() {
     try {
       this.logger.log(`Cron job generate articles started`);
-      const generatedArticle = await this.generateArticleUsingAI();
+      const generatedArticle = await this.generateArticleUsingOpenAI();
       this.store(generatedArticle).then(() => {
         this.logger.log(`Cron job generate articles done`);
       });

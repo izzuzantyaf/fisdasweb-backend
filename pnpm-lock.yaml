@@ -43,6 +43,9 @@ dependencies:
   mongoose:
     specifier: ^7.2.2
     version: 7.2.2
+  node-fetch:
+    specifier: ^2.6.11
+    version: 2.6.11
   openai:
     specifier: ^3.2.1
     version: 3.2.1
@@ -64,6 +67,9 @@ dependencies:
   rxjs:
     specifier: ^7.8.1
     version: 7.8.1
+  unsplash-js:
+    specifier: ^7.0.18
+    version: 7.0.18
 
 devDependencies:
   '@nestjs/cli':
@@ -87,6 +93,9 @@ devDependencies:
   '@types/node':
     specifier: ^20.2.5
     version: 20.2.5
+  '@types/node-fetch':
+    specifier: ^2.6.4
+    version: 2.6.4
   '@types/passport-jwt':
     specifier: ^3.0.8
     version: 3.0.8
@@ -1290,6 +1299,10 @@ packages:
       '@types/node': 20.2.5
     dev: true
 
+  /@types/content-type@1.1.5:
+    resolution: {integrity: sha512-dgMN+syt1xb7Hk8LU6AODOfPlvz5z1CbXpPuJE5ZrX9STfBOIXF09pEB8N7a97WT9dbngt3ksDCm6GW6yMrxfQ==}
+    dev: false
+
   /@types/cookiejar@2.1.2:
     resolution: {integrity: sha512-t73xJJrvdTjXrn4jLS9VSGRbz0nUY3cl2DMGDU48lKl+HR9dbbjW2A9r3g40VA++mQpy6uuHg33gy7du2BKpog==}
     dev: true
@@ -1381,6 +1394,13 @@ packages:
 
   /@types/mime@3.0.1:
     resolution: {integrity: sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==}
+    dev: true
+
+  /@types/node-fetch@2.6.4:
+    resolution: {integrity: sha512-1ZX9fcN4Rvkvgv4E6PAY5WXUFWFcRWxZa3EW83UjycOB9ljJCedb2CupIP4RZMEwF/M3eTcCihbBRgwtGbg5Rg==}
+    dependencies:
+      '@types/node': 20.2.5
+      form-data: 3.0.1
     dev: true
 
   /@types/node@20.2.5:
@@ -2979,6 +2999,15 @@ packages:
       tapable: 2.2.1
       typescript: 4.9.5
       webpack: 5.82.1
+    dev: true
+
+  /form-data@3.0.1:
+    resolution: {integrity: sha512-RHkBKtLWUVwd7SqRIvCZMEvAMoGUp0XU+seQiZejj0COz3RI3hWP4sCv3gZWWLjJTd7rGwcsF5eKZGii0r/hbg==}
+    engines: {node: '>= 6'}
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      mime-types: 2.1.35
     dev: true
 
   /form-data@4.0.0:
@@ -5472,6 +5501,14 @@ packages:
   /unpipe@1.0.0:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
     engines: {node: '>= 0.8'}
+
+  /unsplash-js@7.0.18:
+    resolution: {integrity: sha512-R3HTszj9EFWVqubcI+ncukGJ4JusWLBKGk5ZbT7ZYcUjNpa5VkHgTh2qu2pWEVX00Br7OI9z60zyoIMVKXhrWg==}
+    engines: {node: '>=10'}
+    dependencies:
+      '@types/content-type': 1.1.5
+      content-type: 1.0.5
+    dev: false
 
   /update-browserslist-db@1.0.11(browserslist@4.21.7):
     resolution: {integrity: sha512-dCwEFf0/oT85M1fHBg4F0jtLwJrutGoHSQXCh7u4o2t1drG+c0a9Flnqww6XUKSfQMPpJBRjU8d4RXB09qtvaA==}

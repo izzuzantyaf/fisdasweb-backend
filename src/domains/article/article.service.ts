@@ -47,19 +47,40 @@ export class ArticleService {
     try {
       this.logger.debug(`Generating article title`);
       const context = [
-        'teknologi',
-        'tubuh manusia',
-        'gadget',
-        'kendaraan',
-        'kesehatan',
-        'industri',
+        'Teknologi',
+        'Gadget',
+        'Kendaraan',
+        'Industri',
+        'Alam semesta',
+        'Lingkungan',
+        'Listrik',
+        'Magnet',
+        'Cahaya',
+        'Optik',
+        'Suara',
+        'Panas',
+        'Termodinamika',
+        'Partikel',
+        'Atom',
+        'Molekul',
+        'Radiasi',
+        'Gravitasi',
+        'Hukum Newton',
+        'Hukum Kekekalan Energi',
+        'Gelombang elektromagnetik',
+        'Medan elektromagnetik',
+        'Relativitas',
+        'Fisika nuklir',
+        'Fisika partikel',
+        'Fisika kuantum',
+        'Fisika fluida',
       ];
       const articleTitleGenerationPropmtTemplates = [
         (context: string) => {
-          return `berikan satu fakta tentang ${context} yang berkaitan dengan ilmu fisika, tuliskan dalam satu kalimat yang mudah dipahami yang terdiri dari 15 sampai 20 kata`;
+          return `berikan satu fakta tentang ${context}, tuliskan dalam satu kalimat yang mudah dipahami yang terdiri dari 15 sampai 20 kata`;
         },
         (context: string) => {
-          return `berikan satu pertanyaan tentang ${context} yang berkaitan dengan ilmu fisika, tuliskan dalam satu kalimat yang mudah dipahami yang terdiri dari 15 sampai 20 kata`;
+          return `berikan satu pertanyaan tentang ${context}, tuliskan dalam satu kalimat yang mudah dipahami yang terdiri dari 15 sampai 20 kata`;
         },
       ];
 
@@ -80,22 +101,24 @@ export class ArticleService {
       const keyword = (
         await this.openAIService.openAIApi.createCompletion({
           model: 'text-davinci-003',
-          // prompt: `cari kata kunci dari judul artikel "${articleTitle}" lalu terjemahkan ke bahasa Inggris, tuliskan dalam satu kata`,
-          // prompt: `terjemahkan judul artikel ini "${articleTitle}" ke bahasa Inggris`,
-          prompt: `ambil satu kata yang paling mewakili dari judul artikel ini "${articleTitle}", tuliskan dalam bahsaa Inggris`,
+          prompt: `you have an article with title "${articleTitle}", describe a real life article thumbnail picture of that article in English, in one line, without quotes and numbering`,
+          max_tokens: 2048,
         })
       ).data.choices[0].text;
       this.logger.debug('Article keyword:', keyword);
 
-      const photos = await this.unsplashService.searchPhotos(keyword);
-      const photoUrl = photos.results[0].urls.regular;
+      const generatePhotoResponse =
+        await this.openAIService.openAIApi.createImage({
+          prompt: keyword,
+        });
+      const photoUrl = generatePhotoResponse.data.data[0].url;
       this.logger.debug('Article photos:', photoUrl);
 
       this.logger.debug(`Generating article content`);
       const articleContent = (
         await this.openAIService.openAIApi.createCompletion({
           model: 'text-davinci-003',
-          prompt: `buatkan satu artikel tentang ${articleTitle} dari sudut pandang ilmu fisika menggunakan Bahasa Indonesia tanpa pembuka dan penutup`,
+          prompt: `buatkan satu artikel tentang ${articleTitle} dengan mencantumkan data yang relevan menggunakan Bahasa Indonesia tanpa pembuka dan penutup`,
           max_tokens: 2048,
         })
       ).data.choices[0].text;

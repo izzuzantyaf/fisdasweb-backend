@@ -138,7 +138,7 @@ export class ArticleService {
   }
 
   // @Timeout(1000)
-  @Cron('0 0 0,3,6,8,10 * * *')
+  // @Cron('0 0 0,3,6,8,10 * * *')
   // @Cron('*/10 * * * * *')
   async cronGenerateAndStoreArticle() {
     try {

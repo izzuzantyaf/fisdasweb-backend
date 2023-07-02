@@ -5,7 +5,7 @@ import { SuccessfulResponseDto } from 'src/domains/common/dto/response.dto';
 import { OrganigramService } from 'src/domains/organigram/organigram.service';
 
 @ApiTags('organigram')
-@Controller('api/organigram')
+@Controller('organigram')
 export class OrganigramController {
   constructor(private organigramService: OrganigramService) {}
 

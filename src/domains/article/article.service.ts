@@ -41,7 +41,7 @@ export class ArticleService {
       throw error;
     }
   }
-
+  
   // @Timeout(1000)
   async generateArticleUsingOpenAI() {
     try {

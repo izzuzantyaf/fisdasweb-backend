@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongoService } from './mongo.service';
@@ -31,6 +31,10 @@ import {
   SocialMedia,
   SocialMediaSchema,
 } from 'src/domains/social-media/entities/social-media.entity';
+import {
+  Article,
+  ArticleSchema,
+} from 'src/domains/article/entities/article.entity';
 
 @Module({
   imports: [
@@ -44,6 +48,7 @@ import {
       { name: Assistant.name, schema: AssistantSchema },
       { name: PracticumModule.name, schema: PracticumModuleSchema },
       { name: SocialMedia.name, schema: SocialMediaSchema },
+      // { name: Article.name, schema: ArticleSchema },
     ]),
     MongooseModule.forRoot(process.env.MONGO_URI),
   ],

@@ -16,6 +16,7 @@ import { RequestLoggingMiddleware } from './infrastructure/middleware/request-lo
 import { SocialMediaModule } from './domains/social-media/social-media.module';
 import { ArticleModule } from './domains/article/article.module';
 import { OpenAIModule } from './infrastructure/openai/openai.module';
+import { UnsplashModule } from './infrastructure/unsplash/unsplash.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { OpenAIModule } from './infrastructure/openai/openai.module';
     SocialMediaModule,
     ArticleModule,
     OpenAIModule,
+    UnsplashModule,
   ],
 })
 export class AppModule implements NestModule {

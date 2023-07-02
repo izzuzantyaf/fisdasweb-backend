@@ -16,7 +16,6 @@ async function bootstrap() {
     }),
   );
   app.useGlobalInterceptors(new ResponseInterceptor());
-  app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
     .setTitle('Fisdas CMS OpenAPI')

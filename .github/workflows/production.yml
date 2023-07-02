@@ -1,0 +1,14 @@
+name: Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-to-railway:
+    uses: ./.github/workflows/railway-deploy.yml
+    with:
+      environment: production
+      working-directory: .
+    secrets: inherit

@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Update the package manager
-RUN apk update && apk upgrade
+RUN apk update
 
 # Install pnpm
 RUN npm install -g pnpm@^8.0.0
@@ -22,8 +22,5 @@ RUN pnpm build
 # Remove the dev dependencies
 RUN pnpm prune
 
-# Expose the port that the app will listen on
-EXPOSE 8080
-
 # Start the app using the built code
-CMD ["pnpm", "start"]
+CMD pnpm start

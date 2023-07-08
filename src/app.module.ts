@@ -4,19 +4,19 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
-import { AdminModule } from './domains/admin/admin.module';
-import { AuthModule } from './domains/auth/auth.module';
-import { HandoutModule } from './domains/handout/handout.module';
-import { CodeOfConductModule } from './domains/code-of-conduct/code-of-conduct.module';
-import { OrganigramModule } from './domains/organigram/organigram.module';
-import { ScheduleModule } from './domains/schedule/schedule.module';
-import { AssistantModule } from './domains/assistant/assistant.module';
-import { PracticumModuleModule } from './domains/practicum-module/practicum-module.module';
-import { RequestLoggingMiddleware } from './infrastructure/middleware/request-logging.middleware';
-import { SocialMediaModule } from './domains/social-media/social-media.module';
-import { ArticleModule } from './domains/article/article.module';
-import { OpenAIModule } from './infrastructure/openai/openai.module';
-import { UnsplashModule } from './infrastructure/unsplash/unsplash.module';
+import { AdminModule } from './admin/admin.module';
+import { AuthModule } from 'src/auth/auth.module';
+import { HandoutModule } from 'src/handout/handout.module';
+import { CodeOfConductModule } from 'src/code-of-conduct/code-of-conduct.module';
+import { OrganigramModule } from 'src/organigram/organigram.module';
+import { ScheduleModule } from 'src/schedule/schedule.module';
+import { AssistantModule } from 'src/assistant/assistant.module';
+import { PracticumModuleModule } from 'src/practicum-module/practicum-module.module';
+import { RequestLoggingMiddleware } from './common/middleware/request-logging.middleware';
+import { SocialMediaModule } from 'src/social-media/social-media.module';
+import { ArticleModule } from 'src/article/article.module';
+import { OpenAIModule } from './common/openai/openai.module';
+import { UnsplashModule } from './common/unsplash/unsplash.module';
 
 @Module({
   imports: [

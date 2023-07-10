@@ -17,13 +17,13 @@ async function bootstrap() {
   );
   app.useGlobalInterceptors(new ResponseInterceptor());
 
-  const config = new DocumentBuilder()
-    .setTitle('Fisdas CMS OpenAPI')
-    .setDescription('Dokumentasi API Fisdas CMS')
-    .setVersion('1.0.0')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  // const config = new DocumentBuilder()
+  //   .setTitle('Fisdas CMS OpenAPI')
+  //   .setDescription('Dokumentasi API Fisdas CMS')
+  //   .setVersion('1.0.0')
+  //   .build();
+  // const document = SwaggerModule.createDocument(app, config);
+  // SwaggerModule.setup('api', app, document);
 
   const logger = new Logger('NestApplication');
   await app

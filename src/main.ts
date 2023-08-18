@@ -1,20 +1,17 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+// import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
+    // TODO: don't allow cors in production, only allow the fisdasweb and fisdascms
     cors: true, // jika cors true maka semua origin bisa mengakses API
     logger: process.env.NODE_ENV === 'production' ? ['log'] : ['debug'],
   });
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      enableDebugMessages: true, // menampilkan pesan pada console jika terjadi error,
-    }),
-  );
+  app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new ResponseInterceptor());
 
   // const config = new DocumentBuilder()

@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
-// import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 
 async function bootstrap() {
@@ -13,14 +12,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new ResponseInterceptor());
-
-  // const config = new DocumentBuilder()
-  //   .setTitle('Fisdas CMS OpenAPI')
-  //   .setDescription('Dokumentasi API Fisdas CMS')
-  //   .setVersion('1.0.0')
-  //   .build();
-  // const document = SwaggerModule.createDocument(app, config);
-  // SwaggerModule.setup('api', app, document);
+  app.setGlobalPrefix('api');
 
   const logger = new Logger('NestApplication');
   await app

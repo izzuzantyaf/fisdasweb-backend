@@ -9,7 +9,7 @@ import { AuthModule } from '../auth.module';
 import { AdminRole } from 'src/admin/constants';
 
 describe('AuthController', () => {
-  let controller: AuthController;
+  let authController: AuthController;
   let adminController: AdminController;
 
   beforeAll(async () => {
@@ -17,13 +17,13 @@ describe('AuthController', () => {
       imports: [AdminModule, AuthModule],
     }).compile();
 
-    controller = module.get(AuthController);
+    authController = module.get(AuthController);
     adminController = module.get(AdminController);
   });
 
   it('should be defined', () => {
     expect(adminController).toBeDefined();
-    expect(controller).toBeDefined();
+    expect(authController).toBeDefined();
   });
 
   describe('signin()', () => {
@@ -37,7 +37,7 @@ describe('AuthController', () => {
       await adminController.create(fakeAdmin);
     });
     it(`harus berhasil login, return object bertipe ${SuccessfulResponseDto.name} berisi access_token`, async () => {
-      const response = await controller.signin({
+      const response = await authController.signin({
         user: { username: fakeAdmin.email, password: fakeAdmin.password },
       });
       expect(response).toBeInstanceOf(SuccessfulResponseDto);

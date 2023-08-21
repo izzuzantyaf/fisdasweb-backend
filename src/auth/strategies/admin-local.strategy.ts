@@ -5,15 +5,16 @@ import { AuthService } from '../auth.service';
 import { ErrorResponseDto } from 'src/common/dto/response.dto';
 
 @Injectable()
-export class LocalStrategy extends PassportStrategy(Strategy) {
+export class AdminLocalStrategy extends PassportStrategy(Strategy) {
   constructor(private authService: AuthService) {
     super({ userNameField: 'email' });
   }
 
   async validate(email: string, password: string) {
-    const admin = await this.authService.validateAdmin(email, password);
-    if (!admin)
-      throw new UnauthorizedException(new ErrorResponseDto('Login gagal'));
+    const admin = await this.authService.loginAdminUsingLocalStrategy(
+      email,
+      password,
+    );
     return admin;
   }
 }

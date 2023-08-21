@@ -1,17 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { CreateAdminDto } from 'src/admin/dto/create-admin.dto';
+import { Controller, Delete, Get, Param } from '@nestjs/common';
 import { SuccessfulResponseDto } from 'src/common/dto/response.dto';
 import { AdminService } from 'src/admin/admin.service';
 
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
-
-  @Post()
-  async create(@Body() createAdminDto: CreateAdminDto) {
-    const storedAdmin = await this.adminService.create(createAdminDto);
-    return new SuccessfulResponseDto('Registrasi berhasil', storedAdmin);
-  }
 
   @Get()
   async getAll() {

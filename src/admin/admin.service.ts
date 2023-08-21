@@ -1,11 +1,5 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
-import { isEmpty, isNotEmpty } from 'class-validator';
-import { CreateAdminDto } from 'src/admin/dto/admin.dto';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { isEmpty } from 'class-validator';
 import { ErrorResponseDto } from 'src/common/dto/response.dto';
 import { MongoService } from 'src/common/database/mongodb/mongo.service';
 import { AdminFactoryService } from './admin-factory.service';
@@ -18,41 +12,6 @@ export class AdminService {
     private dataService: MongoService,
     private adminFactoryService: AdminFactoryService,
   ) {}
-
-  async create(createAdminDto: CreateAdminDto) {
-    this.logger.debug(
-      `createAdminDto ${JSON.stringify(createAdminDto, undefined, 2)}`,
-    );
-    const newAdmin = this.adminFactoryService.create(createAdminDto);
-    const errors = newAdmin.validateProps();
-    if (isNotEmpty(errors)) {
-      this.logger.log(`User data not valid ${JSON.stringify(errors)}`);
-      throw new BadRequestException(
-        new ErrorResponseDto('Data tidak valid', { errors }),
-      );
-    }
-    const admin = await this.dataService.admins.getByEmail(newAdmin.email);
-    this.logger.debug(`Existing admin ${JSON.stringify(admin, undefined, 2)}`);
-    if (isNotEmpty(admin)) {
-      this.logger.log(
-        `Email is already registered to user ${JSON.stringify({
-          adminId: admin._id,
-        })}`,
-      );
-      throw new ConflictException(
-        new ErrorResponseDto('Email sudah terdaftar'),
-      );
-    }
-    await newAdmin.hashPassword();
-    const storedAdmin = await this.dataService.admins.create(newAdmin);
-    this.logger.debug(
-      `Stored admin ${JSON.stringify(storedAdmin, undefined, 2)}`,
-    );
-    this.logger.log(
-      `New admin created ${JSON.stringify({ adminId: storedAdmin._id })}`,
-    );
-    return this.adminFactoryService.create(storedAdmin);
-  }
 
   async getAll() {
     const admins = this.adminFactoryService.createMany(
@@ -74,29 +33,5 @@ export class AdminService {
       `Remove admin success ${JSON.stringify({ adminId: deletedAdmin._id })}`,
     );
     return this.adminFactoryService.create(deletedAdmin);
-  }
-
-  async validateAdmin(email: string, password: string) {
-    this.logger.debug(
-      `Incoming credentials ${JSON.stringify(
-        { email, password },
-        undefined,
-        2,
-      )}`,
-    );
-    const adminFromDb = await this.dataService.admins.getByEmail(email);
-    this.logger.debug(
-      `Admin from database ${JSON.stringify(adminFromDb, undefined, 2)}`,
-    );
-    if (isEmpty(adminFromDb))
-      throw new BadRequestException(new ErrorResponseDto('Login gagal'));
-    const admin = this.adminFactoryService.create(adminFromDb);
-    const isPasswordMatch = await admin.verifyPassword(password);
-    this.logger.debug(
-      `Is password match ${JSON.stringify({ isPasswordMatch })}`,
-    );
-    if (!isPasswordMatch)
-      throw new BadRequestException(new ErrorResponseDto('Login gagal'));
-    return admin;
   }
 }

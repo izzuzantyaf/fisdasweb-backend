@@ -1,13 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { AdminRole } from 'src/admin/constants';
+import IAdmin from '../entities/admin';
 
-export class CreateAdminDto {
-  @ApiProperty()
+export class CreateAdminDto
+  implements Omit<IAdmin, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>
+{
   name: string;
-  @ApiProperty()
   email: string;
-  @ApiProperty()
   password: string;
-  @ApiProperty()
   role: AdminRole;
 }

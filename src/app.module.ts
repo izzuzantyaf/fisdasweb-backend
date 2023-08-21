@@ -17,9 +17,34 @@ import { SocialMediaModule } from 'src/social-media/social-media.module';
 import { ArticleModule } from 'src/article/article.module';
 import { OpenAIModule } from './common/openai/openai.module';
 import { UnsplashModule } from './common/unsplash/unsplash.module';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { typeOrmModuleOptions } from './common/database/typeorm/data-source-config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [
+        () => ({
+          NODE_ENV: process.env.NODE_ENV,
+          PORT: parseInt(process.env.PORT, 10),
+          JWT_SECRET: process.env.JWT_SECRET,
+          MONGO: {
+            URI: process.env.MONGO_URI,
+          },
+          OPENAI: {
+            ORGANIZATION_ID: process.env.OPENAI_ORGANIZATION_ID,
+            API_KEY: process.env.OPENAI_API_KEY,
+          },
+          UNSPLASH: {
+            ACCESS_KEY: process.env.UNSPLASH_ACCESS_KEY,
+            SECRET_KEY: process.env.UNSPLASH_SECRET_KEY,
+          },
+        }),
+      ],
+    }),
+    TypeOrmModule.forRoot(typeOrmModuleOptions),
     AdminModule,
     AuthModule,
     HandoutModule,

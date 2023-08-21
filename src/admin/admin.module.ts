@@ -3,11 +3,14 @@ import { AdminController } from './admin.controller';
 import { AdminService } from './admin.service';
 import { MongoModule } from 'src/common/database/mongodb/mongo.module';
 import { AdminFactoryService } from './admin-factory.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Admin } from 'src/admin/entities/admin.entity';
+import AdminPostgresRepository from 'src/admin/repo/admin-postgres.repo';
 
 @Module({
-  imports: [MongoModule],
+  imports: [MongoModule, TypeOrmModule.forFeature([Admin])],
   controllers: [AdminController],
-  providers: [AdminService, AdminFactoryService],
-  exports: [AdminService, AdminFactoryService],
+  providers: [AdminService, AdminFactoryService, AdminPostgresRepository],
+  exports: [AdminService, AdminFactoryService, AdminPostgresRepository],
 })
 export class AdminModule {}

@@ -83,7 +83,7 @@ export class MongoService {
       this.practicumModuleModel,
     );
     this.socialMedias = new SocialMediaMongoRepository(this.socialMediaModel);
-    this.seedAdmin();
+    // this.seedAdmin();
     this.seedHandout();
     this.seedCodeOfConduct();
     this.seedOrganigram();
@@ -93,11 +93,11 @@ export class MongoService {
     this.seedSocialMedia();
   }
 
-  protected async seedAdmin() {
-    const admin = new Admin(adminSeeder);
-    await admin.hashPassword();
-    this.admins.seed(admin);
-  }
+  // protected async seedAdmin() {
+  //   const admin = new Admin(adminSeeder);
+  //   await admin.hashPassword();
+  //   this.admins.seed(admin);
+  // }
 
   protected seedHandout() {
     const handouts = handoutSeeder.map(

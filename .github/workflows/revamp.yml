@@ -1,0 +1,44 @@
+name: Revamp
+
+on:
+  push:
+    branches:
+      - revamp
+
+env:
+  working-directory: .
+
+jobs:
+  db-migration:
+    name: Database migration
+    runs-on: ubuntu-latest
+    environment: revamp
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Setup pnpm
+        run: npm install -g pnpm@^8.0.0
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: ${{ env.working-directory }}
+      - name: Run migration
+        run: pnpm typeorm:migration:run
+        working-directory: ${{ env.working-directory }}
+        env:
+          NODE_ENV: ${{ vars.NODE_ENV }}
+          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+          POSTGRES_USER: ${{ vars.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_PORT: ${{ vars.POSTGRES_PORT }}
+          POSTGRES_DB: ${{ vars.POSTGRES_DB }}
+  deploy-to-railway:
+    needs: db-migration
+    uses: ./.github/workflows/railway-deploy.yml
+    with:
+      environment: revamp
+      working-directory: .
+    secrets: inherit

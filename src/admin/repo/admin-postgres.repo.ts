@@ -1,12 +1,9 @@
 import { Logger } from '@nestjs/common';
-import { Timeout } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AdminRole } from 'src/admin/constants';
 import IAdmin from 'src/admin/entities/admin';
 import { Admin } from 'src/admin/entities/admin.entity';
 import IAdminRepository from 'src/admin/repo/admin.repo';
 import { Repository } from 'typeorm';
-import { CreateAdminDto } from '../dto/create-admin.dto';
 
 export default class AdminPostgresRepository implements IAdminRepository {
   private logger = new Logger(AdminPostgresRepository.name);
@@ -34,9 +31,6 @@ export default class AdminPostgresRepository implements IAdminRepository {
       insertResult.raw[0] as IAdmin,
     );
     this.logger.debug(`Stored admin: ${JSON.stringify(storedAdmin)}`);
-    this.logger.log(
-      `New admin stored: ${JSON.stringify({ id: storedAdmin.id })}`,
-    );
     return storedAdmin;
   }
 

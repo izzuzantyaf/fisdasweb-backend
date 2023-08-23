@@ -24,5 +24,5 @@ const typeOrmDataSource = new DataSource({
   ...typeOrmDataSourceOptions,
   entities: ['src/**/admin.entity.ts'],
   migrations: ['src/common/database/postgres/migration/*.ts'],
-} as DataSourceOptions);
+});
 export default typeOrmDataSource;

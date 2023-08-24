@@ -22,9 +22,8 @@ export class ScheduleController {
 
   @Put()
   async update(@Body() updateScheduleDto: UpdateScheduleDto) {
-    const updatedSchedule = await this.scheduleService.update(
-      updateScheduleDto,
-    );
+    const updatedSchedule =
+      await this.scheduleService.update(updateScheduleDto);
     return new SuccessfulResponseDto(
       'Jadwal berhasil diupdate',
       updatedSchedule,

@@ -17,9 +17,8 @@ export class OrganigramController {
 
   @Put()
   async update(@Body() updateOrganigramDto: UpdateOrganigramDto) {
-    const updatedOrganigram = await this.organigramService.update(
-      updateOrganigramDto,
-    );
+    const updatedOrganigram =
+      await this.organigramService.update(updateOrganigramDto);
     return new SuccessfulResponseDto(
       'Organigram berhasil diupdate',
       updatedOrganigram,

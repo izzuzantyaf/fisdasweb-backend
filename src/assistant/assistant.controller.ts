@@ -24,9 +24,8 @@ export class AssistantController {
 
   @Post()
   async create(@Body() createAssistantDto: CreateAssistantDto) {
-    const storedAssistant = await this.assistantService.create(
-      createAssistantDto,
-    );
+    const storedAssistant =
+      await this.assistantService.create(createAssistantDto);
     return new SuccessfulResponseDto(
       'Asisten berhasil ditambahkan',
       storedAssistant,
@@ -43,9 +42,8 @@ export class AssistantController {
 
   @Put()
   async update(@Body() updateAssistantDto: UpdateAssistantDto) {
-    const updatedAssistant = await this.assistantService.update(
-      updateAssistantDto,
-    );
+    const updatedAssistant =
+      await this.assistantService.update(updateAssistantDto);
     return new SuccessfulResponseDto(
       'Asisten berhasil diupdate',
       updatedAssistant,

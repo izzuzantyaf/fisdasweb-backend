@@ -13,8 +13,8 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { SuccessfulResponseDto } from 'src/common/dto/response.dto';
 import { AuthService } from 'src/auth/auth.service';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { LocalAuthGuard } from 'src/auth/guards/local-auth-guard';
+import { AdminJwtAuthGuard } from 'src/auth/guards/admin-jwt-auth.guard';
+import { AdminLocalAuthGuard } from 'src/auth/guards/admin-local-auth-guard';
 import { CreateAdminDto } from '../admin/dto/create-admin.dto';
 
 @ApiTags('auth')
@@ -32,7 +32,7 @@ export class AuthController {
     return new SuccessfulResponseDto('Registrasi berhasil', storedAdmin);
   }
 
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(AdminLocalAuthGuard)
   @Post('admin/login')
   @HttpCode(HttpStatus.OK)
   async signin(@Request() req) {
@@ -42,7 +42,7 @@ export class AuthController {
     return new SuccessfulResponseDto('Login berhasil', result);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AdminJwtAuthGuard)
   @Get('admin/me')
   async profile(@Req() req: any) {
     return new SuccessfulResponseDto('Sukses', req.user);

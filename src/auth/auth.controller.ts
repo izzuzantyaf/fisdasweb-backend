@@ -6,10 +6,9 @@ import {
   HttpStatus,
   Logger,
   Post,
+  Req,
   Request,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { SuccessfulResponseDto } from 'src/common/dto/response.dto';
@@ -44,10 +43,8 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  async profile() {
-    return {
-      profile: 'asfsaflaksfjskl',
-    };
+  @Get('admin/me')
+  async profile(@Req() req: any) {
+    return new SuccessfulResponseDto('Sukses', req.user);
   }
 }

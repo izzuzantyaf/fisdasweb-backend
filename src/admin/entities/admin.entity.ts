@@ -34,7 +34,6 @@ export class Admin {
     type: 'varchar',
     length: 200,
     nullable: false,
-    // unique: true,
   })
   @Unique('UQ_admin_email', ['email'])
   @Prop({ required: true, unique: true })

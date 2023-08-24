@@ -1,11 +1,16 @@
+enum AppResponseStatus {
+  SUCCESS = 'success',
+  ERROR = 'error',
+}
+
 interface AppResponseDtoInterface {
-  isSuccess: boolean;
+  status: AppResponseStatus;
   message: string;
   data: any;
 }
 
 export class SuccessfulResponseDto implements AppResponseDtoInterface {
-  isSuccess = true;
+  status = AppResponseStatus.SUCCESS;
   message: string;
   data: any;
 
@@ -16,7 +21,7 @@ export class SuccessfulResponseDto implements AppResponseDtoInterface {
 }
 
 export class ErrorResponseDto implements AppResponseDtoInterface {
-  isSuccess = false;
+  status = AppResponseStatus.ERROR;
   message: string;
   data: null;
 

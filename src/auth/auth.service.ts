@@ -8,7 +8,6 @@ import { AdminService } from '../admin/admin.service';
 import { JwtService } from '@nestjs/jwt';
 import { CreateAdminDto } from '../admin/dto/create-admin.dto';
 import RegisterAdminValidationHelper from './helpers/register-admin-validation.helper';
-import { isNotEmptyObject } from 'class-validator';
 import AdminPostgresRepository from '../admin/repo/admin-postgres.repo';
 import { ErrorResponseDto } from '../common/dto/response.dto';
 import * as bcrypt from 'bcrypt';

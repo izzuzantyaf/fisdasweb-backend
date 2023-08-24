@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { AdminRole } from '../constants';
+import AdminRole from '../constants/admin-role.constant';
 import {
   Column,
   CreateDateColumn,

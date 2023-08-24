@@ -6,7 +6,7 @@ import {
   isEmpty,
   isString,
 } from 'class-validator';
-import { AdminRole } from '../../admin/constants';
+import AdminRole from '../../admin/constants/admin-role.constant';
 import { CreateAdminDto } from '../../admin/dto/create-admin.dto';
 import { Logger } from '@nestjs/common';
 

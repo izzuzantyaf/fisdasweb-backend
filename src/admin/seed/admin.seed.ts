@@ -1,4 +1,4 @@
-import AdminRole from 'src/admin/constants/admin-role.constant';
+import { AdminRole } from 'src/admin/constants';
 
 export const adminSeeder =
   process.env.NODE_ENV === 'production'

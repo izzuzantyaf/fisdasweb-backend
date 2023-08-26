@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     // TODO: don't allow cors in production, only allow the fisdasweb and fisdascms
     cors: true, // jika cors true maka semua origin bisa mengakses API
-    logger: process.env.NODE_ENV === 'production' ? ['log'] : ['debug'],
+    logger: process.env.NODE_ENV === 'production' ? ['log'] : ['verbose'],
   });
 
   app.useGlobalPipes(new ValidationPipe());

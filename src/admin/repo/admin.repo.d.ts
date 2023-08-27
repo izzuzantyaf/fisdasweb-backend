@@ -1,12 +1,12 @@
-import IAdmin from 'src/admin/entities/admin';
+import Admin from 'src/admin/entities/admin.entity';
 
 export default interface IAdminRepository {
   store(
-    admin: Omit<IAdmin, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>,
-  ): Promise<IAdmin>;
-  get(): Promise<IAdmin[]>;
-  getById(id: IAdmin['id']): Promise<IAdmin>;
-  getByEmail(email: IAdmin['email']): Promise<IAdmin>;
-  checkIsExistByEmail(email: IAdmin['email']): Promise<boolean>;
-  deleteById(id: IAdmin['id']): Promise<any>;
+    admin: Omit<Admin, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>,
+  ): Promise<Admin>;
+  get(): Promise<Admin[]>;
+  getById(id: Admin['id']): Promise<Admin>;
+  getByEmail(email: Admin['email']): Promise<Admin>;
+  checkIsExistByEmail(email: Admin['email']): Promise<boolean>;
+  deleteById(id: Admin['id']): Promise<any>;
 }

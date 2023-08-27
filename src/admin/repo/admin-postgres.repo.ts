@@ -1,7 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import IAdmin from 'src/admin/entities/admin';
-import { Admin } from 'src/admin/entities/admin.entity';
+import Admin from 'src/admin/entities/admin.entity';
 import IAdminRepository from 'src/admin/repo/admin.repo';
 import { Repository } from 'typeorm';
 
@@ -25,8 +24,8 @@ export default class AdminPostgresRepository implements IAdminRepository {
   }
 
   async store(
-    admin: Omit<IAdmin, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>,
-  ): Promise<IAdmin> {
+    admin: Omit<Admin, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>,
+  ): Promise<Admin> {
     const insertResult = await this.adminRepository
       .createQueryBuilder()
       .insert()
@@ -35,22 +34,22 @@ export default class AdminPostgresRepository implements IAdminRepository {
       .returning('*')
       .execute();
     const storedAdmin = this.adminRepository.create(
-      insertResult.raw[0] as IAdmin,
+      insertResult.raw[0] as Admin,
     );
     this.logger.debug(`Stored admin: ${JSON.stringify(storedAdmin)}`);
     return storedAdmin;
   }
 
-  get(): Promise<IAdmin[]> {
+  get(): Promise<Admin[]> {
     throw new Error('Method not implemented.');
   }
 
-  async getById(id: string): Promise<IAdmin> {
+  async getById(id: string): Promise<Admin> {
     return await this.adminRepository.findOneBy({ id });
     throw new Error('Method not implemented.');
   }
 
-  async getByEmail(email: string): Promise<IAdmin> {
+  async getByEmail(email: string): Promise<Admin> {
     return await this.adminRepository.findOneBy({ email });
     throw new Error('Method not implemented.');
   }

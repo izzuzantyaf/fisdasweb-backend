@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Admin, AdminDocument } from 'src/admin/entities/admin.entity';
 import {
   Assistant,
   AssistantDocument,
@@ -23,14 +22,12 @@ import {
   Schedule,
   ScheduleDocument,
 } from 'src/schedule/entities/schedule.entity';
-import { adminSeeder } from 'src/admin/seed/admin.seed';
 import { assistantSeeder } from 'src/assistant/seed/assistant.seed';
 import { codeOfConductSeeder } from 'src/code-of-conduct/seed/code-of-conduct.seed';
 import { handoutSeeder } from 'src/handout/seed/handout.seed';
 import { organigramSeeder } from 'src/organigram/seed/organigram.seed';
 import { practicumModuleSeeder } from 'src/practicum-module/seed/practicum-module.seed';
 import { scheduleSeeder } from 'src/schedule/seed/schedule.seed';
-import { AdminMongoRepository } from 'src/admin/repo/admin-mongo.repo';
 import { AssistantMongoRepository } from 'src/assistant/repo/assistant-mongo.repo';
 import { CodeOfConductMongoRepository } from 'src/code-of-conduct/repo/code-of-conduct-mongo.repo';
 import { HandoutMongoRepository } from 'src/handout/repo/handout-mongo.repo';
@@ -46,7 +43,6 @@ import { socialMediaSeeder } from 'src/social-media/seed/social-media.seed';
 
 @Injectable()
 export class MongoService {
-  admins: AdminMongoRepository;
   handouts: HandoutMongoRepository;
   codeOfConducts: CodeOfConductMongoRepository;
   organigrams: OrganigramMongoRepository;
@@ -56,7 +52,6 @@ export class MongoService {
   socialMedias: SocialMediaMongoRepository;
 
   constructor(
-    @InjectModel(Admin.name) private adminModel: Model<AdminDocument>,
     @InjectModel(Handout.name) private handoutModel: Model<HandoutDocument>,
     @InjectModel(CodeOfConduct.name)
     private codeOfConductModel: Model<CodeOfConductDocument>,
@@ -71,7 +66,6 @@ export class MongoService {
     @InjectModel(SocialMedia.name)
     private socialMediaModel: Model<SocialMediaDocument>,
   ) {
-    this.admins = new AdminMongoRepository(this.adminModel);
     this.handouts = new HandoutMongoRepository(this.handoutModel);
     this.codeOfConducts = new CodeOfConductMongoRepository(
       this.codeOfConductModel,
@@ -83,7 +77,6 @@ export class MongoService {
       this.practicumModuleModel,
     );
     this.socialMedias = new SocialMediaMongoRepository(this.socialMediaModel);
-    // this.seedAdmin();
     this.seedHandout();
     this.seedCodeOfConduct();
     this.seedOrganigram();
@@ -92,12 +85,6 @@ export class MongoService {
     this.seedPracticumModule();
     this.seedSocialMedia();
   }
-
-  // protected async seedAdmin() {
-  //   const admin = new Admin(adminSeeder);
-  //   await admin.hashPassword();
-  //   this.admins.seed(admin);
-  // }
 
   protected seedHandout() {
     const handouts = handoutSeeder.map(

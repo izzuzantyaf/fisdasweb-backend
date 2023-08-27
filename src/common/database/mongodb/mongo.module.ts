@@ -1,8 +1,7 @@
-import { Global, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongoService } from './mongo.service';
-import { Admin, AdminSchema } from 'src/admin/entities/admin.entity';
 import { Handout, HandoutSchema } from 'src/handout/entities/handout.entity';
 import {
   CodeOfConduct,
@@ -28,13 +27,11 @@ import {
   SocialMedia,
   SocialMediaSchema,
 } from 'src/social-media/entities/social-media.entity';
-import { Article, ArticleSchema } from 'src/article/entities/article.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forFeature([
-      { name: Admin.name, schema: AdminSchema },
       { name: Handout.name, schema: HandoutSchema },
       { name: CodeOfConduct.name, schema: CodeOfConductSchema },
       { name: Organigram.name, schema: OrganigramSchema },
@@ -42,7 +39,6 @@ import { Article, ArticleSchema } from 'src/article/entities/article.entity';
       { name: Assistant.name, schema: AssistantSchema },
       { name: PracticumModule.name, schema: PracticumModuleSchema },
       { name: SocialMedia.name, schema: SocialMediaSchema },
-      // { name: Article.name, schema: ArticleSchema },
     ]),
     MongooseModule.forRoot(process.env.MONGO_URI),
   ],

@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AdminController } from '../admin.controller';
 import { SuccessfulResponseDto } from 'src/common/dto/response.dto';
 import { AdminModule } from 'src/admin/admin.module';
-import { Admin } from 'src/admin/entities/admin.entity';
+import Admin from 'src/admin/entities/admin.entity';
 import { faker } from '@faker-js/faker';
 import { BadRequestException, ConflictException } from '@nestjs/common';
 import { AdminRole } from 'src/admin/constants';

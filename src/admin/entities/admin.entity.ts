@@ -1,5 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Prop, Schema } from '@nestjs/mongoose';
 import { AdminRole } from '../constants';
 import {
   Column,
@@ -11,16 +10,9 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-export type AdminConstructorProps = Pick<
-  Admin,
-  '_id' | 'name' | 'email' | 'password' | 'role' | 'created_at' | 'updated_at'
->;
-
 @Entity()
 @Schema({ timestamps: true })
-export class Admin {
-  _id?: any;
-
+export default class Admin {
   @PrimaryGeneratedColumn('uuid', {
     primaryKeyConstraintName: 'PK_admin',
   })
@@ -61,16 +53,4 @@ export class Admin {
 
   @DeleteDateColumn()
   deleted_at?: Date;
-
-  constructor(props?: AdminConstructorProps) {
-    const { _id, name, email, password, role } = props ?? {};
-    this._id = _id ?? null;
-    this.name = name ?? null;
-    this.email = email ?? null;
-    this.password = password ?? null;
-    this.role = role ?? null;
-  }
 }
-
-export type AdminDocument = Admin & Document;
-export const AdminSchema = SchemaFactory.createForClass(Admin);

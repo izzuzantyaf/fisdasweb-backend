@@ -7,7 +7,7 @@ export class RequestLoggingMiddleware implements NestMiddleware {
 
   use(req: Request, res: Response, next: NextFunction) {
     this.logger.verbose(
-      `${req.method} ${req.path} ${JSON.stringify({
+      `Request ${req.method} ${req.path} ${JSON.stringify({
         'user-agent': req.headers['user-agent'],
         ip: req.ip,
       })}`,

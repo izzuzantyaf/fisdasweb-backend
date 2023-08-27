@@ -20,6 +20,7 @@ import { UnsplashModule } from './common/unsplash/unsplash.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmModuleOptions } from './common/database/typeorm/data-source-config';
+import { AwsSesModule } from './common/aws-ses/aws-ses.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { typeOrmModuleOptions } from './common/database/typeorm/data-source-conf
     ArticleModule,
     OpenAIModule,
     UnsplashModule,
+    AwsSesModule,
   ],
 })
 export class AppModule implements NestModule {

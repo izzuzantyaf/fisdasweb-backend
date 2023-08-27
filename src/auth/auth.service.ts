@@ -4,7 +4,6 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AdminService } from '../admin/admin.service';
 import { JwtService } from '@nestjs/jwt';
 import { CreateAdminDto } from '../admin/dto/create-admin.dto';
 import RegisterAdminValidationHelper from './helpers/register-admin-validation.helper';
@@ -18,7 +17,6 @@ export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
   constructor(
-    private adminService: AdminService,
     private jwtService: JwtService,
     private adminRepository: AdminPostgresRepository,
   ) {}
@@ -85,11 +83,7 @@ export class AuthService {
 
       return storedAdmin;
     } catch (error) {
-      this.logger.debug(
-        `Admin register error: ${JSON.stringify({
-          email: createAdminDto.email,
-        })}`,
-      );
+      this.logger.debug(`Admin register error: ${JSON.stringify(error)}`);
       throw error;
     }
   }

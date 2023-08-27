@@ -29,6 +29,7 @@
     "typeorm:migration:run": "typeorm-ts-node-esm migration:run -d src/common/database/typeorm/data-source-config.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-sesv2": "^3.398.0",
     "@faker-js/faker": "^8.0.2",
     "@nestjs/common": "^10.2.1",
     "@nestjs/config": "^3.0.0",

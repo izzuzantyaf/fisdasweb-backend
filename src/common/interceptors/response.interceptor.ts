@@ -20,7 +20,7 @@ export class ResponseInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((responseData) => {
         this.logger.verbose(
-          `${request.method} ${request.url} ${response.statusCode}`,
+          `Response ${request.method} ${request.url} ${response.statusCode}`,
         );
         return responseData;
       }),

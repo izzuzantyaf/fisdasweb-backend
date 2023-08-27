@@ -8,4 +8,5 @@ export default interface IAdminRepository {
   getById(id: IAdmin['id']): Promise<IAdmin>;
   getByEmail(email: IAdmin['email']): Promise<IAdmin>;
   checkIsExistByEmail(email: IAdmin['email']): Promise<boolean>;
+  deleteById(id: IAdmin['id']): Promise<any>;
 }

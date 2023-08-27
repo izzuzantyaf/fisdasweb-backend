@@ -16,6 +16,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { AdminJwtAuthGuard } from 'src/auth/guards/admin-jwt-auth.guard';
 import { AdminLocalAuthGuard } from 'src/auth/guards/admin-local-auth-guard';
 import { CreateAdminDto } from '../admin/dto/create-admin.dto';
+import ApiKeyGuard from 'src/auth/guards/api-key.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -25,6 +26,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('admin/register')
+  @UseGuards(ApiKeyGuard)
   async registerAdmin(@Body() createAdminDto: CreateAdminDto) {
     const storedAdmin = await this.authService.registerAdmin(createAdminDto);
     // Omit the password from the response even though it's already hashed, just for security reason

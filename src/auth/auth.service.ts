@@ -154,4 +154,14 @@ export class AuthService {
       throw error;
     }
   }
+
+  validateApiKey(apiKey: string) {
+    const isApiKeyValid = apiKey === process.env.API_KEY;
+    this.logger.debug(
+      `API key validation: ${JSON.stringify({
+        is_api_key_valid: isApiKeyValid,
+      })}`,
+    );
+    return isApiKeyValid;
+  }
 }

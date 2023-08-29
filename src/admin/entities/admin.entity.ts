@@ -1,4 +1,3 @@
-import { Prop, Schema } from '@nestjs/mongoose';
 import { AdminRole } from '../constants';
 import {
   Column,
@@ -11,7 +10,6 @@ import {
 } from 'typeorm';
 
 @Entity()
-@Schema({ timestamps: true })
 export default class Admin {
   @PrimaryGeneratedColumn('uuid', {
     primaryKeyConstraintName: 'PK_admin',
@@ -19,7 +17,6 @@ export default class Admin {
   id: string;
 
   @Column({ type: 'varchar', length: 200, nullable: false })
-  @Prop({ required: true })
   name: string;
 
   @Column({
@@ -28,11 +25,9 @@ export default class Admin {
     nullable: false,
   })
   @Unique('UQ_admin_email', ['email'])
-  @Prop({ required: true, unique: true })
   email: string;
 
   @Column({ type: 'varchar', length: 100, nullable: false })
-  @Prop({ required: true })
   password: string;
 
   @Column({
@@ -40,15 +35,12 @@ export default class Admin {
     enum: AdminRole,
     enumName: 'admin_role_enum',
   })
-  @Prop({ required: true, type: String, enum: AdminRole })
   role: AdminRole;
 
   @CreateDateColumn()
-  @Prop({ type: Date })
   created_at: Date;
 
   @UpdateDateColumn()
-  @Prop({ type: Date })
   updated_at: Date;
 
   @DeleteDateColumn()

@@ -8,10 +8,6 @@ import {
   CodeOfConductSchema,
 } from 'src/code-of-conduct/entities/code-of-conduct.entity';
 import {
-  Organigram,
-  OrganigramSchema,
-} from 'src/organigram/entities/organigram.entity';
-import {
   Schedule,
   ScheduleSchema,
 } from 'src/schedule/entities/schedule.entity';
@@ -34,7 +30,6 @@ import {
     MongooseModule.forFeature([
       { name: Handout.name, schema: HandoutSchema },
       { name: CodeOfConduct.name, schema: CodeOfConductSchema },
-      { name: Organigram.name, schema: OrganigramSchema },
       { name: Schedule.name, schema: ScheduleSchema },
       { name: Assistant.name, schema: AssistantSchema },
       { name: PracticumModule.name, schema: PracticumModuleSchema },

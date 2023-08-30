@@ -1,43 +1,26 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { isNotEmpty, isNotEmptyObject, isObject, isURL } from 'class-validator';
-import { Document } from 'mongoose';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
-export type OrganigramDocument = Organigram & Document;
-
-export type OrganigramConstructorProps = Pick<Organigram, '_id' | 'url'>;
-
-@Schema({ timestamps: true })
+@Entity()
 export class Organigram {
-  _id?: any;
-  @Prop()
-  url: string;
-  previewUrl: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
-  constructor(initialProps?: OrganigramConstructorProps) {
-    const { _id, url } = initialProps;
-    this._id = _id;
-    this.url = url;
-    this.previewUrl = this.setPreviewUrl();
-  }
+  @Column({ length: 2000, nullable: true })
+  url?: string;
 
-  protected setPreviewUrl() {
-    return this.url ? this.url.replace('view', 'preview') : null;
-  }
+  @CreateDateColumn()
+  created_at: Date;
 
-  protected validateUrl() {
-    if (isNotEmpty(this.url))
-      if (!isURL(this.url)) return { url: 'Link tidak valid' };
-    return true;
-  }
+  @UpdateDateColumn()
+  updated_at: Date;
 
-  validateProps() {
-    const validationResults = [this.validateUrl()];
-    const errors = validationResults.reduce(
-      (error, result) => (isObject(result) ? { ...error, ...result } : error),
-      {},
-    );
-    return isNotEmptyObject(errors) ? errors : null;
-  }
+  @DeleteDateColumn()
+  deleted_at?: Date;
 }
-
-export const OrganigramSchema = SchemaFactory.createForClass(Organigram);

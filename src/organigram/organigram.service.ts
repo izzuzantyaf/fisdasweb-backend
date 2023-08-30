@@ -1,67 +1,92 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { isEmpty, isNotEmpty } from 'class-validator';
-import { MongoService } from 'src/common/database/mongodb/mongo.service';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  OnModuleInit,
+} from '@nestjs/common';
+import { isNotEmpty, isURL } from 'class-validator';
 import { ErrorResponseDto } from 'src/common/dto/response.dto';
-import { OrganigramFactoryService } from './organigram-factory.service';
-import { UpdateOrganigramDto } from 'src/organigram/dto/organigram.dto';
+import isGoogleDriveLink from 'src/common/utils/is-google-drive-link.util';
+import CreateOrganigramDto from 'src/organigram/dto/create-organigram.dto';
+import UpdateOrganigramDto from 'src/organigram/dto/update-organigram.dto';
+import { Organigram } from 'src/organigram/entities/organigram.entity';
+import OrganigramPostgresRepository from 'src/organigram/repo/organigram-postgres.repo';
+import organigramSeed from 'src/organigram/seed/organigram.seed';
 
 @Injectable()
-export class OrganigramService {
+export class OrganigramService implements OnModuleInit {
   private readonly logger = new Logger(OrganigramService.name);
 
-  constructor(
-    private dataService: MongoService,
-    private organigramFactory: OrganigramFactoryService,
-  ) {}
+  constructor(private organigramRepository: OrganigramPostgresRepository) {}
 
-  async getOne() {
-    const organigram = this.organigramFactory.create(
-      await this.dataService.organigrams.getFirst(),
+  onModuleInit() {
+    this.seed(organigramSeed[0]);
+    return;
+    throw new Error('Method not implemented.');
+  }
+
+  private async seed(organigramSeed: CreateOrganigramDto) {
+    const organigram = await this.organigramRepository.get();
+    if (organigram.length) return;
+    await this.create(organigramSeed);
+    this.logger.log(`Organigram seeded successfully`);
+    return;
+  }
+
+  async create(createOrganigramDto: CreateOrganigramDto) {
+    this.logger.debug(
+      `createOrganigramDto: ${JSON.stringify(createOrganigramDto)}`,
     );
+
+    if (isNotEmpty(createOrganigramDto.url)) {
+      if (!isURL(createOrganigramDto.url))
+        throw new BadRequestException(new ErrorResponseDto('URL tidak valid'));
+      if (isGoogleDriveLink(createOrganigramDto.url)) {
+        createOrganigramDto.url = createOrganigramDto.url.replace(
+          'view',
+          'preview',
+        );
+      }
+    }
+    const storedOrganigram =
+      await this.organigramRepository.store(createOrganigramDto);
+    this.logger.log(
+      `Organigram stored ${JSON.stringify({
+        id: storedOrganigram.id,
+      })}`,
+    );
+    return storedOrganigram;
+  }
+
+  async get() {
+    const organigram = await this.organigramRepository.get();
     return organigram;
   }
 
-  async update(updateOrganigramDto: UpdateOrganigramDto) {
+  async update(id: Organigram['id'], updateOrganigramDto: UpdateOrganigramDto) {
     this.logger.debug(
-      `updateOrganigramDto ${JSON.stringify(
-        updateOrganigramDto,
-        undefined,
-        2,
-      )}`,
+      `updateOrganigramDto: ${JSON.stringify(updateOrganigramDto)}`,
     );
-    const newOrganigram = this.organigramFactory.create(updateOrganigramDto);
-    const validationError = newOrganigram.validateProps();
-    if (isNotEmpty(validationError)) {
-      this.logger.log(
-        `Organigram data is not valid ${JSON.stringify(validationError)}`,
-      );
-      throw new BadRequestException(
-        new ErrorResponseDto('Data tidak valid', { validationError }),
-      );
+    if (isNotEmpty(updateOrganigramDto.url)) {
+      if (!isURL(updateOrganigramDto.url))
+        throw new BadRequestException(new ErrorResponseDto('URL tidak valid'));
+      if (isGoogleDriveLink(updateOrganigramDto.url)) {
+        updateOrganigramDto.url = updateOrganigramDto.url.replace(
+          'view',
+          'preview',
+        );
+      }
     }
-    const updateResult = await this.dataService.organigrams.updateById(
-      newOrganigram._id,
-      newOrganigram,
-    );
-    if (isEmpty(updateResult)) {
-      this.logger.log(
-        `Organigram update failed ${JSON.stringify({
-          organigramId: updateOrganigramDto._id,
-        })}`,
-      );
-      throw new BadRequestException(
-        new ErrorResponseDto('Organigram gagal diupdate'),
-      );
-    }
-    this.logger.debug(
-      `Updated organigram ${JSON.stringify(updateResult, undefined, 2)}`,
+
+    const updatedOrganigram = await this.organigramRepository.updateById(
+      id,
+      updateOrganigramDto,
     );
     this.logger.log(
       `Organigram update success ${JSON.stringify({
-        organigramId: updateResult._id,
+        id: updatedOrganigram.id,
       })}`,
     );
-    const updatedOrganigram = this.organigramFactory.create(updateResult);
     return updatedOrganigram;
   }
 }

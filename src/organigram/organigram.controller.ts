@@ -1,24 +1,40 @@
-import { Body, Controller, Get, Put } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { UpdateOrganigramDto } from 'src/organigram/dto/organigram.dto';
-import { SuccessfulResponseDto } from 'src/common/dto/response.dto';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+} from '@nestjs/common';
+import UpdateOrganigramDto from 'src/organigram/dto/create-organigram.dto';
+import {
+  ErrorResponseDto,
+  SuccessfulResponseDto,
+} from 'src/common/dto/response.dto';
 import { OrganigramService } from 'src/organigram/organigram.service';
+import { isNumberString } from 'class-validator';
 
-@ApiTags('organigram')
 @Controller('organigram')
 export class OrganigramController {
   constructor(private organigramService: OrganigramService) {}
 
   @Get()
-  async getAll() {
-    const organigram = await this.organigramService.getOne();
+  async get() {
+    const organigram = await this.organigramService.get();
     return new SuccessfulResponseDto('Sukses', organigram);
   }
 
-  @Put()
-  async update(@Body() updateOrganigramDto: UpdateOrganigramDto) {
-    const updatedOrganigram =
-      await this.organigramService.update(updateOrganigramDto);
+  @Patch(':organigramId')
+  async update(
+    @Param('organigramId') organigramId: string,
+    @Body() updateOrganigramDto: UpdateOrganigramDto,
+  ) {
+    if (!isNumberString(organigramId))
+      throw new BadRequestException(new ErrorResponseDto('ID tidak valid'));
+    const updatedOrganigram = await this.organigramService.update(
+      parseInt(organigramId),
+      updateOrganigramDto,
+    );
     return new SuccessfulResponseDto(
       'Organigram berhasil diupdate',
       updatedOrganigram,

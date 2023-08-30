@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
 import { OrganigramController } from './organigram.controller';
 import { MongoModule } from 'src/common/database/mongodb/mongo.module';
-import { OrganigramFactoryService } from './organigram-factory.service';
 import { OrganigramService } from './organigram.service';
+import { Organigram } from 'src/organigram/entities/organigram.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import OrganigramPostgresRepository from 'src/organigram/repo/organigram-postgres.repo';
 
 @Module({
-  imports: [MongoModule],
-  providers: [OrganigramService, OrganigramFactoryService],
+  imports: [MongoModule, TypeOrmModule.forFeature([Organigram])],
+  providers: [OrganigramService, OrganigramPostgresRepository],
   controllers: [OrganigramController],
-  exports: [OrganigramService, OrganigramFactoryService],
+  exports: [OrganigramService, OrganigramPostgresRepository],
 })
 export class OrganigramModule {}

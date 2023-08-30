@@ -11,10 +11,6 @@ import {
 } from 'src/code-of-conduct/entities/code-of-conduct.entity';
 import { Handout, HandoutDocument } from 'src/handout/entities/handout.entity';
 import {
-  Organigram,
-  OrganigramDocument,
-} from 'src/organigram/entities/organigram.entity';
-import {
   PracticumModule,
   PracticumModuleDocument,
 } from 'src/practicum-module/entities/practicum-module.entity';
@@ -25,13 +21,11 @@ import {
 import { assistantSeeder } from 'src/assistant/seed/assistant.seed';
 import { codeOfConductSeeder } from 'src/code-of-conduct/seed/code-of-conduct.seed';
 import { handoutSeeder } from 'src/handout/seed/handout.seed';
-import { organigramSeeder } from 'src/organigram/seed/organigram.seed';
 import { practicumModuleSeeder } from 'src/practicum-module/seed/practicum-module.seed';
 import { scheduleSeeder } from 'src/schedule/seed/schedule.seed';
 import { AssistantMongoRepository } from 'src/assistant/repo/assistant-mongo.repo';
 import { CodeOfConductMongoRepository } from 'src/code-of-conduct/repo/code-of-conduct-mongo.repo';
 import { HandoutMongoRepository } from 'src/handout/repo/handout-mongo.repo';
-import { OrganigramMongoRepository } from 'src/organigram/repo/organigram-mongo.repo';
 import { PracticumModuleMongoRepository } from 'src/practicum-module/repo/practicum-module-mongo.repo';
 import { ScheduleMongoRepository } from 'src/schedule/repo/schedule-mongo.repo';
 import { SocialMediaMongoRepository } from 'src/social-media/repo/social-media-mongo.repo';
@@ -45,7 +39,6 @@ import { socialMediaSeeder } from 'src/social-media/seed/social-media.seed';
 export class MongoService {
   handouts: HandoutMongoRepository;
   codeOfConducts: CodeOfConductMongoRepository;
-  organigrams: OrganigramMongoRepository;
   schedules: ScheduleMongoRepository;
   assistants: AssistantMongoRepository;
   practicumModules: PracticumModuleMongoRepository;
@@ -55,8 +48,6 @@ export class MongoService {
     @InjectModel(Handout.name) private handoutModel: Model<HandoutDocument>,
     @InjectModel(CodeOfConduct.name)
     private codeOfConductModel: Model<CodeOfConductDocument>,
-    @InjectModel(Organigram.name)
-    private organigramModel: Model<OrganigramDocument>,
     @InjectModel(Schedule.name)
     private scheduleModel: Model<ScheduleDocument>,
     @InjectModel(Assistant.name)
@@ -70,7 +61,6 @@ export class MongoService {
     this.codeOfConducts = new CodeOfConductMongoRepository(
       this.codeOfConductModel,
     );
-    this.organigrams = new OrganigramMongoRepository(this.organigramModel);
     this.schedules = new ScheduleMongoRepository(this.scheduleModel);
     this.assistants = new AssistantMongoRepository(this.assistantModel);
     this.practicumModules = new PracticumModuleMongoRepository(
@@ -79,7 +69,6 @@ export class MongoService {
     this.socialMedias = new SocialMediaMongoRepository(this.socialMediaModel);
     this.seedHandout();
     this.seedCodeOfConduct();
-    this.seedOrganigram();
     this.seedSchedule();
     this.seedAssistant();
     this.seedPracticumModule();
@@ -96,11 +85,6 @@ export class MongoService {
   protected seedCodeOfConduct() {
     const codeOfConduct = new CodeOfConduct(codeOfConductSeeder);
     this.codeOfConducts.seed(codeOfConduct);
-  }
-
-  protected seedOrganigram() {
-    const organigram = new Organigram(organigramSeeder);
-    this.organigrams.seed(organigram);
   }
 
   protected seedSchedule() {

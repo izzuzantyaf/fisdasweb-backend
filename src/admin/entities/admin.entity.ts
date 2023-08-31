@@ -11,10 +11,10 @@ import {
 
 @Entity()
 export default class Admin {
-  @PrimaryGeneratedColumn('uuid', {
+  @PrimaryGeneratedColumn('increment', {
     primaryKeyConstraintName: 'PK_admin',
   })
-  id: string;
+  id: number;
 
   @Column({ type: 'varchar', length: 200, nullable: false })
   name: string;

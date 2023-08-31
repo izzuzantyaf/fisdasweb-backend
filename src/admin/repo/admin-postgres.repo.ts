@@ -11,7 +11,7 @@ export default class AdminPostgresRepository implements IAdminRepository {
     @InjectRepository(Admin) private adminRepository: Repository<Admin>,
   ) {}
 
-  async deleteById(id: string): Promise<any> {
+  async deleteById(id: Admin['id']): Promise<any> {
     const deleteResult = await this.adminRepository.delete({ id });
     this.logger.debug(`Admin delete result: ${JSON.stringify(deleteResult)}`);
     return deleteResult;
@@ -44,7 +44,7 @@ export default class AdminPostgresRepository implements IAdminRepository {
     throw new Error('Method not implemented.');
   }
 
-  async getById(id: string): Promise<Admin> {
+  async getById(id: Admin['id']): Promise<Admin> {
     return await this.adminRepository.findOneBy({ id });
     throw new Error('Method not implemented.');
   }

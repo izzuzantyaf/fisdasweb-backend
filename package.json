@@ -27,6 +27,7 @@
     "typeorm": "typeorm-ts-node-esm",
     "typeorm:migration:generate": "typeorm-ts-node-esm migration:generate src/common/database/postgres/migration/$npm_config_name -d src/common/database/typeorm/data-source-config.ts",
     "typeorm:migration:run": "typeorm-ts-node-esm migration:run -d src/common/database/typeorm/data-source-config.ts",
+    "typeorm:migration:revert": "typeorm-ts-node-esm migration:revert -d src/common/database/typeorm/data-source-config.ts",
     "typeorm:schema:drop": "typeorm-ts-node-esm schema:drop -d src/common/database/typeorm/data-source-config.ts"
   },
   "dependencies": {

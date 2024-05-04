@@ -30,11 +30,7 @@ jobs:
         working-directory: ${{ env.working-directory }}
         env:
           NODE_ENV: ${{ vars.NODE_ENV }}
-          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
-          POSTGRES_USER: ${{ vars.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_PORT: ${{ vars.POSTGRES_PORT }}
-          POSTGRES_DB: ${{ vars.POSTGRES_DB }}
+          POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
   deploy-to-railway:
     needs: db-migration
     uses: ./.github/workflows/railway-deploy.yml

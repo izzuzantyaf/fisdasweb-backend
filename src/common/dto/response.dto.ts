@@ -1,32 +1,21 @@
-enum AppResponseStatus {
-  SUCCESS = 'success',
-  ERROR = 'error',
-}
-
-interface AppResponseDtoInterface {
-  status: AppResponseStatus;
+export class SuccessfulResponseDto {
+  status = true;
   message: string;
-  data: any;
-}
+  data = null;
 
-export class SuccessfulResponseDto implements AppResponseDtoInterface {
-  status = AppResponseStatus.SUCCESS;
-  message: string;
-  data: any;
-
-  constructor(message = 'Sukses', data?: any) {
+  constructor(message?: string, data?: any) {
     this.message = message;
     this.data = data;
   }
 }
 
-export class ErrorResponseDto implements AppResponseDtoInterface {
-  status = AppResponseStatus.ERROR;
+export class ErrorResponseDto {
+  status = false;
   message: string;
-  data: null;
+  error = null;
 
-  constructor(message = 'Gagal', data?: any) {
+  constructor(message?: string, error?: any) {
     this.message = message;
-    this.data = data;
+    this.error = error;
   }
 }

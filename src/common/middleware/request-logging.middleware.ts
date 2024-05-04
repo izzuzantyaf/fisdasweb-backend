@@ -5,12 +5,14 @@ import { Request, Response, NextFunction } from 'express';
 export class RequestLoggingMiddleware implements NestMiddleware {
   private readonly logger = new Logger(RequestLoggingMiddleware.name);
 
-  use(req: Request, res: Response, next: NextFunction) {
-    this.logger.verbose(
-      `Request ${req.method} ${req.path} ${JSON.stringify({
-        'user-agent': req.headers['user-agent'],
-        ip: req.ip,
-      })}`,
+  use(req: Request & { info?: any }, res: Response, next: NextFunction) {
+    req.info = {
+      id: Date.now().toString(),
+      ip: req.ip,
+      'user-agent': req.headers['user-agent'],
+    };
+    this.logger.log(
+      `Request ${req.method} ${req.path} ${JSON.stringify(req.info)}`,
     );
     next();
   }

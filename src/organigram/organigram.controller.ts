@@ -1,43 +1,29 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Get,
-  Param,
-  Patch,
-} from '@nestjs/common';
-import UpdateOrganigramDto from 'src/organigram/dto/create-organigram.dto';
-import {
-  ErrorResponseDto,
-  SuccessfulResponseDto,
-} from 'src/common/dto/response.dto';
+import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import { UpdateOrganigramDto } from 'src/organigram/dto';
+import { SuccessfulResponseDto } from 'src/common/dto/response.dto';
 import { OrganigramService } from 'src/organigram/organigram.service';
-import { isNumberString } from 'class-validator';
+import { AdminJwtAuthGuard } from 'src/auth/guards/admin-jwt-auth.guard';
+import ApiKeyGuard from 'src/auth/guards/api-key.guard';
 
 @Controller('organigram')
 export class OrganigramController {
   constructor(private organigramService: OrganigramService) {}
 
   @Get()
+  @UseGuards(ApiKeyGuard)
   async get() {
     const organigram = await this.organigramService.get();
-    return new SuccessfulResponseDto('Sukses', organigram);
+    return new SuccessfulResponseDto('success', organigram);
   }
 
-  @Patch(':organigramId')
-  async update(
-    @Param('organigramId') organigramId: string,
-    @Body() updateOrganigramDto: UpdateOrganigramDto,
-  ) {
-    if (!isNumberString(organigramId))
-      throw new BadRequestException(new ErrorResponseDto('ID tidak valid'));
+  @Patch(':id')
+  @UseGuards(AdminJwtAuthGuard)
+  async update(@Param('id') id: string, @Body() dto: UpdateOrganigramDto) {
     const updatedOrganigram = await this.organigramService.update(
-      parseInt(organigramId),
-      updateOrganigramDto,
+      parseInt(id),
+      dto,
     );
-    return new SuccessfulResponseDto(
-      'Organigram berhasil diupdate',
-      updatedOrganigram,
-    );
+
+    return new SuccessfulResponseDto('updated successfully', updatedOrganigram);
   }
 }

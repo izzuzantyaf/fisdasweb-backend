@@ -12,7 +12,7 @@ export class Organigram {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column({ length: 2000, nullable: true })
+  @Column({ type: 'text', nullable: true })
   url?: string;
 
   @CreateDateColumn()

@@ -1,14 +1,10 @@
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import CreateOrganigramDto from 'src/organigram/dto/create-organigram.dto';
-import UpdateOrganigramDto from 'src/organigram/dto/update-organigram.dto';
+import { CreateOrganigramDto, UpdateOrganigramDto } from 'src/organigram/dto';
 import { Organigram } from 'src/organigram/entities/organigram.entity';
-import IOrganigramRepository from 'src/organigram/repo/organigram.repo';
 import { Repository } from 'typeorm';
 
-export default class OrganigramPostgresRepository
-  implements IOrganigramRepository
-{
+export class OrganigramPostgresRepository {
   private logger = new Logger(OrganigramPostgresRepository.name);
 
   constructor(
@@ -16,36 +12,37 @@ export default class OrganigramPostgresRepository
     private organigramRepository: Repository<Organigram>,
   ) {}
 
-  async store(organigram: CreateOrganigramDto): Promise<Organigram> {
+  async store(data: CreateOrganigramDto) {
     const insertResult = await this.organigramRepository
       .createQueryBuilder()
       .insert()
       .into(Organigram)
-      .values(organigram)
+      .values(data)
       .returning('*')
       .execute();
     const storedOrganigram = this.organigramRepository.create(
       insertResult.raw[0] as Organigram,
     );
-    this.logger.debug(`Stored organigram: ${JSON.stringify(storedOrganigram)}`);
+    this.logger.debug(
+      `Organigram created: ${JSON.stringify(storedOrganigram)}`,
+    );
     return storedOrganigram;
     throw new Error('Method not implemented.');
   }
 
-  async get(): Promise<Organigram[]> {
+  async find() {
     const organigram = await this.organigramRepository.find();
     return organigram;
     throw new Error('Method not implemented.');
   }
 
-  async updateById(
-    id: Organigram['id'],
-    organigram: UpdateOrganigramDto,
-  ): Promise<Organigram> {
+  async update(id: Organigram['id'], data: UpdateOrganigramDto) {
     const updateResult = await this.organigramRepository
       .createQueryBuilder()
       .update()
-      .set(organigram)
+      .set({
+        url: data.url,
+      })
       .where(`id = :id`, { id })
       .returning('*')
       .execute();
@@ -53,7 +50,7 @@ export default class OrganigramPostgresRepository
       updateResult.raw[0] as Organigram,
     );
     this.logger.debug(
-      `Updated organigram: ${JSON.stringify(updatedOrganigram)}`,
+      `Organigram updated: ${JSON.stringify(updatedOrganigram)}`,
     );
     return updatedOrganigram;
     throw new Error('Method not implemented.');

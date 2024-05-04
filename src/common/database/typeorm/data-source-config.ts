@@ -5,11 +5,7 @@ config();
 
 export const typeOrmDataSourceOptions: DataSourceOptions = {
   type: 'postgres',
-  host: process.env.POSTGRES_HOST,
-  port: parseInt(process.env.POSTGRES_PORT),
-  username: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD,
-  database: process.env.POSTGRES_DB,
+  url: process.env.POSTGRES_URL,
   synchronize: false,
   dropSchema: false,
   logging: process.env.NODE_ENV === 'production' ? false : true,

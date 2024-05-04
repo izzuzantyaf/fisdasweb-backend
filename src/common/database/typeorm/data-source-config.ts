@@ -18,7 +18,7 @@ export const typeOrmModuleOptions = {
 
 const typeOrmDataSource = new DataSource({
   ...typeOrmDataSourceOptions,
-  entities: ['src/**/admin.entity.ts', 'src/**/organigram.entity.ts'],
-  migrations: ['src/common/database/postgres/migration/*.ts'],
+  entities: ['dist/**/admin.entity.js', 'dist/**/organigram.entity.js'],
+  migrations: ['dist/common/database/postgres/migration/*.js'],
 });
 export default typeOrmDataSource;

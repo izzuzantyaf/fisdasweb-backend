@@ -16,18 +16,17 @@ export default class Admin {
   })
   id: number;
 
-  @Column({ type: 'varchar', length: 200, nullable: false })
+  @Column({ type: 'text', nullable: false })
   name: string;
 
   @Column({
-    type: 'varchar',
-    length: 200,
+    type: 'text',
     nullable: false,
   })
   @Unique('UQ_admin_email', ['email'])
   email: string;
 
-  @Column({ type: 'varchar', length: 100, nullable: false })
+  @Column({ type: 'text', nullable: false })
   password: string;
 
   @Column({

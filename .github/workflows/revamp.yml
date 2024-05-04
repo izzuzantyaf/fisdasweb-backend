@@ -31,10 +31,10 @@ jobs:
         env:
           NODE_ENV: ${{ vars.NODE_ENV }}
           POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
-  deploy-to-railway:
-    needs: db-migration
-    uses: ./.github/workflows/railway-deploy.yml
-    with:
-      environment: revamp
-      working-directory: .
-    secrets: inherit
+  # deploy-to-railway:
+  #   needs: db-migration
+  #   uses: ./.github/workflows/railway-deploy.yml
+  #   with:
+  #     environment: revamp
+  #     working-directory: .
+  #   secrets: inherit

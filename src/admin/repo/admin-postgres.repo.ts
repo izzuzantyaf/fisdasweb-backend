@@ -1,10 +1,9 @@
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Admin from 'src/admin/entities/admin.entity';
-import IAdminRepository from 'src/admin/repo/admin.repo';
 import { Repository } from 'typeorm';
 
-export default class AdminPostgresRepository implements IAdminRepository {
+export default class AdminPostgresRepository {
   private logger = new Logger(AdminPostgresRepository.name);
 
   constructor(

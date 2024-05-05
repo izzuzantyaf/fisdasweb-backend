@@ -32,7 +32,6 @@ export default class Admin {
   @Column({
     type: 'enum',
     enum: AdminRole,
-    enumName: 'admin_role_enum',
   })
   role: AdminRole;
 

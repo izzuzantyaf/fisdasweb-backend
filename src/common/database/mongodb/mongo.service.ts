@@ -5,10 +5,6 @@ import {
   Assistant,
   AssistantDocument,
 } from 'src/assistant/entities/assistant.entity';
-import {
-  CodeOfConduct,
-  CodeOfConductDocument,
-} from 'src/code-of-conduct/entities/code-of-conduct.entity';
 import { Handout, HandoutDocument } from 'src/handout/entities/handout.entity';
 import {
   PracticumModule,
@@ -19,12 +15,10 @@ import {
   ScheduleDocument,
 } from 'src/schedule/entities/schedule.entity';
 import { assistantSeeder } from 'src/assistant/seed/assistant.seed';
-import { codeOfConductSeeder } from 'src/code-of-conduct/seed/code-of-conduct.seed';
 import { handoutSeeder } from 'src/handout/seed/handout.seed';
 import { practicumModuleSeeder } from 'src/practicum-module/seed/practicum-module.seed';
 import { scheduleSeeder } from 'src/schedule/seed/schedule.seed';
 import { AssistantMongoRepository } from 'src/assistant/repo/assistant-mongo.repo';
-import { CodeOfConductMongoRepository } from 'src/code-of-conduct/repo/code-of-conduct-mongo.repo';
 import { HandoutMongoRepository } from 'src/handout/repo/handout-mongo.repo';
 import { PracticumModuleMongoRepository } from 'src/practicum-module/repo/practicum-module-mongo.repo';
 import { ScheduleMongoRepository } from 'src/schedule/repo/schedule-mongo.repo';
@@ -38,7 +32,6 @@ import { socialMediaSeeder } from 'src/social-media/seed/social-media.seed';
 @Injectable()
 export class MongoService {
   handouts: HandoutMongoRepository;
-  codeOfConducts: CodeOfConductMongoRepository;
   schedules: ScheduleMongoRepository;
   assistants: AssistantMongoRepository;
   practicumModules: PracticumModuleMongoRepository;
@@ -46,8 +39,6 @@ export class MongoService {
 
   constructor(
     @InjectModel(Handout.name) private handoutModel: Model<HandoutDocument>,
-    @InjectModel(CodeOfConduct.name)
-    private codeOfConductModel: Model<CodeOfConductDocument>,
     @InjectModel(Schedule.name)
     private scheduleModel: Model<ScheduleDocument>,
     @InjectModel(Assistant.name)
@@ -58,9 +49,6 @@ export class MongoService {
     private socialMediaModel: Model<SocialMediaDocument>,
   ) {
     this.handouts = new HandoutMongoRepository(this.handoutModel);
-    this.codeOfConducts = new CodeOfConductMongoRepository(
-      this.codeOfConductModel,
-    );
     this.schedules = new ScheduleMongoRepository(this.scheduleModel);
     this.assistants = new AssistantMongoRepository(this.assistantModel);
     this.practicumModules = new PracticumModuleMongoRepository(
@@ -68,7 +56,6 @@ export class MongoService {
     );
     this.socialMedias = new SocialMediaMongoRepository(this.socialMediaModel);
     this.seedHandout();
-    this.seedCodeOfConduct();
     this.seedSchedule();
     this.seedAssistant();
     this.seedPracticumModule();
@@ -80,11 +67,6 @@ export class MongoService {
       (handoutSeed) => new Handout(handoutSeed),
     );
     this.handouts.seed(handouts);
-  }
-
-  protected seedCodeOfConduct() {
-    const codeOfConduct = new CodeOfConduct(codeOfConductSeeder);
-    this.codeOfConducts.seed(codeOfConduct);
   }
 
   protected seedSchedule() {

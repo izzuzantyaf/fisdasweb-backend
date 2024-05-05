@@ -1,72 +1,74 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { isEmpty, isNotEmpty } from 'class-validator';
-import { MongoService } from 'src/common/database/mongodb/mongo.service';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  OnModuleInit,
+} from '@nestjs/common';
+import { isURL } from 'class-validator';
+import {
+  CreateCodeOfConductDto,
+  UpdateCodeOfConductDto,
+} from 'src/code-of-conduct/dto';
+import { CodeOfConduct } from 'src/code-of-conduct/entity';
+import { CodeOfConductRepository } from 'src/code-of-conduct/repo';
+import { codeOfConductSeed } from 'src/code-of-conduct/seed';
 import { ErrorResponseDto } from 'src/common/dto/response.dto';
-import { CodeOfConductFactoryService } from './code-of-conduct-factory.service';
-import { UpdateCodeOfConductDto } from 'src/code-of-conduct/dto/code-of-conduct.dto';
 
 @Injectable()
-export class CodeOfConductService {
+export class CodeOfConductService implements OnModuleInit {
   private readonly logger = new Logger(CodeOfConductService.name);
-  constructor(
-    private dataService: MongoService,
-    private codeOfConductFactory: CodeOfConductFactoryService,
-  ) {}
 
-  async getOne() {
-    const codeOfConduct = this.codeOfConductFactory.create(
-      await this.dataService.codeOfConducts.getFirst(),
-    );
-    return codeOfConduct;
+  constructor(private codeOfConductRepository: CodeOfConductRepository) {}
+
+  onModuleInit() {
+    this.seed();
+    return;
+    throw new Error('Method not implemented.');
   }
 
-  async update(updateCodeOfConductDto: UpdateCodeOfConductDto) {
-    this.logger.debug(
-      `updateCodeOfConductDto ${JSON.stringify(
-        updateCodeOfConductDto,
-        undefined,
-        2,
-      )}`,
-    );
-    const newCodeOfConduct = this.codeOfConductFactory.create(
-      updateCodeOfConductDto,
-    );
-    const errors = newCodeOfConduct.validateProps();
-    if (isNotEmpty(errors)) {
-      this.logger.log(
-        `Code of conduct data is not valid ${JSON.stringify(errors)}`,
-      );
+  private async seed() {
+    const codeofconduct = await this.codeOfConductRepository.find();
+    if (codeofconduct.length) return;
+    await this.create(codeOfConductSeed[0]);
+    this.logger.log(`CodeOfConduct seeded successfully`);
+    return;
+  }
+
+  async create(data: CreateCodeOfConductDto) {
+    this.logger.debug(`createCodeOfConductDto: ${JSON.stringify(data)}`);
+
+    if (data.url && !isURL(data.url))
       throw new BadRequestException(
-        new ErrorResponseDto('Tata tertib gagal diupdate', { errors }),
+        new ErrorResponseDto('create code of conduct failed', {
+          url: 'url is invalid',
+        }),
       );
-    }
-    const updateResult = await this.dataService.codeOfConducts.updateById(
-      newCodeOfConduct._id,
-      newCodeOfConduct,
-    );
-    if (isEmpty(updateResult)) {
-      this.logger.log(
-        `Code of conduct update failed ${JSON.stringify({
-          codeOfConductId: newCodeOfConduct._id,
-        })}`,
-      );
+
+    const storedCodeOfConduct = await this.codeOfConductRepository.store(data);
+
+    return storedCodeOfConduct;
+  }
+
+  async get() {
+    const codeofconduct = await this.codeOfConductRepository.find();
+    return codeofconduct;
+  }
+
+  async update(id: CodeOfConduct['id'], data: UpdateCodeOfConductDto) {
+    this.logger.debug(`updateCodeOfConductDto: ${JSON.stringify(data)}`);
+
+    if (data.url && !isURL(data.url))
       throw new BadRequestException(
-        new ErrorResponseDto('Tata tertib gagal diupdate'),
+        new ErrorResponseDto('update code of conduct failed', {
+          url: 'url is invalid',
+        }),
       );
-    }
-    const updatedCodeOfConduct = this.codeOfConductFactory.create(updateResult);
-    this.logger.debug(
-      `Updated code of conduct ${JSON.stringify(
-        updatedCodeOfConduct,
-        undefined,
-        2,
-      )}`,
+
+    const updatedCodeOfConduct = await this.codeOfConductRepository.update(
+      id,
+      data,
     );
-    this.logger.log(
-      `Code of conduct update success ${JSON.stringify({
-        codeOfConductId: updatedCodeOfConduct._id,
-      })}`,
-    );
+
     return updatedCodeOfConduct;
   }
 }

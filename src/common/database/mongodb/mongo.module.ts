@@ -4,10 +4,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MongoService } from './mongo.service';
 import { Handout, HandoutSchema } from 'src/handout/entities/handout.entity';
 import {
-  CodeOfConduct,
-  CodeOfConductSchema,
-} from 'src/code-of-conduct/entities/code-of-conduct.entity';
-import {
   Schedule,
   ScheduleSchema,
 } from 'src/schedule/entities/schedule.entity';
@@ -29,7 +25,6 @@ import {
     ConfigModule.forRoot(),
     MongooseModule.forFeature([
       { name: Handout.name, schema: HandoutSchema },
-      { name: CodeOfConduct.name, schema: CodeOfConductSchema },
       { name: Schedule.name, schema: ScheduleSchema },
       { name: Assistant.name, schema: AssistantSchema },
       { name: PracticumModule.name, schema: PracticumModuleSchema },

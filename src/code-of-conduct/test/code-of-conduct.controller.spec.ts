@@ -1,11 +1,11 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SuccessfulResponseDto } from 'src/common/dto/response.dto';
-import { CodeOfConduct } from 'src/code-of-conduct/entities/code-of-conduct.entity';
 import { CodeOfConductController } from '../code-of-conduct.controller';
 import { CodeOfConductModule } from '../code-of-conduct.module';
+import { CodeOfConduct } from 'src/code-of-conduct/entity';
 
-describe('CodeOfConductController', () => {
+describe('OrganigramController', () => {
   let controller: CodeOfConductController;
 
   beforeAll(async () => {
@@ -20,32 +20,34 @@ describe('CodeOfConductController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('getAll()', () => {
+  describe('getOne()', () => {
     it(`harus return object bertipe ${SuccessfulResponseDto.name} berisi data ${CodeOfConduct.name}`, async () => {
-      const response = await controller.getAll();
-      const codeOfConduct = response.data;
+      const response = await controller.get();
+      const organigram = response.data;
       expect(response).toBeInstanceOf(SuccessfulResponseDto);
-      expect(codeOfConduct).toBeInstanceOf(CodeOfConduct);
+      expect(organigram).toBeInstanceOf(CodeOfConduct);
     });
   });
 
   describe('update()', () => {
-    let codeOfConduct: CodeOfConduct;
+    let organigram: CodeOfConduct;
     beforeAll(async () => {
-      codeOfConduct = (await controller.getAll()).data;
+      organigram = (await controller.get()).data;
     });
-    it(`harus berhasil update dan return object bertipe ${CodeOfConduct.name}`, async () => {
+    it(`harus berhasil update dan return object bertipe ${SuccessfulResponseDto.name} berisi organigram yang telah diupdate`, async () => {
       const response = await controller.update({
-        _id: codeOfConduct._id,
+        _id: organigram._id,
         url: faker.internet.url(),
       });
+      const updatedOrganigram = response.data;
       expect(response).toBeInstanceOf(SuccessfulResponseDto);
+      expect(updatedOrganigram).toBeInstanceOf(CodeOfConduct);
     });
-    it('harus gagal karena format link tidak valid', async () => {
+    it('harus gagal update karena URL tidak valid', async () => {
       await expect(
         controller.update({
-          _id: codeOfConduct._id,
-          url: 'not a valid URL',
+          _id: organigram._id,
+          url: 'Link tidak valid',
         }),
       ).rejects.toThrow();
     });

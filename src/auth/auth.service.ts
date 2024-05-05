@@ -111,7 +111,7 @@ export class AuthService {
 
       return admin;
     } catch (error) {
-      this.logger.log(`Admin login failed: ${JSON.stringify({ email })}`);
+      this.logger.debug(`Admin login failed: ${JSON.stringify({ email })}`);
       throw error;
     }
   }

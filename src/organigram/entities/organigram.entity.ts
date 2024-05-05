@@ -9,7 +9,9 @@ import {
 
 @Entity()
 export class Organigram {
-  @PrimaryGeneratedColumn('increment')
+  @PrimaryGeneratedColumn('increment', {
+    primaryKeyConstraintName: 'PK_organigram',
+  })
   id: number;
 
   @Column({ type: 'text', nullable: true })

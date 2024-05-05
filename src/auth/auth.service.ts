@@ -50,7 +50,7 @@ export class AuthService {
           }
         }
         throw new BadRequestException(
-          new ErrorResponseDto('Registrasi gagal', {
+          new ErrorResponseDto('admin register failed', {
             errors,
           }),
         );
@@ -61,9 +61,9 @@ export class AuthService {
       );
       if (isEmailRegistered) {
         throw new BadRequestException(
-          new ErrorResponseDto('Registrasi gagal', {
+          new ErrorResponseDto('admin register failed', {
             errors: {
-              email: 'Email sudah terdaftar',
+              email: 'email is already registered',
             },
           }),
         );
@@ -77,9 +77,6 @@ export class AuthService {
 
       createAdminDto.password = hashedPassword;
       const storedAdmin = await this.adminRepository.store(createAdminDto);
-      this.logger.log(
-        `New admin registered: ${JSON.stringify({ id: storedAdmin.id })}`,
-      );
 
       return storedAdmin;
     } catch (error) {
@@ -104,12 +101,12 @@ export class AuthService {
     try {
       const admin = await this.adminRepository.getByEmail(email);
       if (!admin) {
-        throw new UnauthorizedException(new ErrorResponseDto('Login gagal'));
+        throw new UnauthorizedException(new ErrorResponseDto('login failed'));
       }
 
       const isPasswordMatch = bcrypt.compareSync(password, admin.password);
       if (!isPasswordMatch) {
-        throw new UnauthorizedException(new ErrorResponseDto('Login gagal'));
+        throw new UnauthorizedException(new ErrorResponseDto('login failed'));
       }
 
       return admin;
@@ -139,10 +136,11 @@ export class AuthService {
         secret: process.env.JWT_SECRET,
         expiresIn: '7d',
       });
-      this.logger.log(
+      this.logger.debug(
         `Admin access token generated: ${JSON.stringify({
           admin_id: admin.id,
           strategy: 'jwt',
+          access_token,
         })}`,
       );
 
@@ -157,11 +155,6 @@ export class AuthService {
 
   validateApiKey(apiKey: string) {
     const isApiKeyValid = apiKey === process.env.API_KEY;
-    this.logger.debug(
-      `API key validation: ${JSON.stringify({
-        is_api_key_valid: isApiKeyValid,
-      })}`,
-    );
     return isApiKeyValid;
   }
 }

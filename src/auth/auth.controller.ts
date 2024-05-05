@@ -31,22 +31,22 @@ export class AuthController {
     const storedAdmin = await this.authService.registerAdmin(createAdminDto);
     // Omit the password from the response even though it's already hashed, just for security reason
     delete storedAdmin.password;
-    return new SuccessfulResponseDto('Registrasi berhasil', storedAdmin);
+    return new SuccessfulResponseDto('admin registered', storedAdmin);
   }
 
-  @UseGuards(AdminLocalAuthGuard)
   @Post('admin/login')
+  @UseGuards(AdminLocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   async signin(@Request() req) {
     this.logger.debug(`Request.body: ${JSON.stringify(req.body)}`);
     this.logger.debug(`Request.user: ${JSON.stringify(req.user)}`);
     const result = await this.authService.generateAdminJwt(req.user);
-    return new SuccessfulResponseDto('Login berhasil', result);
+    return new SuccessfulResponseDto('login successfully', result);
   }
 
   @UseGuards(AdminJwtAuthGuard)
   @Get('admin/me')
   async profile(@Req() req: any) {
-    return new SuccessfulResponseDto('Sukses', req.user);
+    return new SuccessfulResponseDto('success', req.user);
   }
 }

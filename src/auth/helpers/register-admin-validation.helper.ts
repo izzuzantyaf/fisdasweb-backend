@@ -21,7 +21,7 @@ export default class RegisterAdminValidationHelper {
       role: this.validateRole(createAdminDto.role),
     };
     const isSafe = Object.values(result).every((error) => error === true);
-    this.logger.debug(`Validation result: ${JSON.stringify(result)}`);
+    this.logger.debug(`create admin dto validation: ${JSON.stringify(result)}`);
     return {
       isSafe,
       result: result,
@@ -30,31 +30,31 @@ export default class RegisterAdminValidationHelper {
 
   protected validateName(name: CreateAdminDto['name']) {
     const maxNameLength = 100;
-    if (isEmpty(name)) return 'Nama tidak boleh kosong';
-    if (!isString(name)) return 'Nama tidak valid';
+    if (isEmpty(name)) return 'name cannot be empty';
+    if (!isString(name)) return 'name is invalid';
     if (!maxLength(name, maxNameLength))
-      return `Nama maksimal ${maxNameLength} karakter`;
+      return `name length max ${maxNameLength} characters`;
     return true;
   }
 
   protected validateEmail(email: CreateAdminDto['email']) {
-    if (isEmpty(email)) return 'Email tidak boleh kosong';
-    if (!isEmail(email)) return 'Email tidak valid';
+    if (isEmpty(email)) return 'email cannot be empty';
+    if (!isEmail(email)) return 'email is invalid';
     return true;
   }
 
   protected validatePassword(password: CreateAdminDto['password']) {
     const minPasswordLength = 6;
-    if (isEmpty(password)) return 'Password tidak boleh kosong';
-    if (!isString(password)) return 'Password tidak valid';
+    if (isEmpty(password)) return 'password cannot be empty';
+    if (!isString(password)) return 'password is invalid';
     if (!minLength(password, minPasswordLength))
-      return `Password minimal ${minPasswordLength} karakter`;
+      return `password length min ${minPasswordLength} characters`;
     return true;
   }
 
   protected validateRole(role: CreateAdminDto['role']) {
-    if (isEmpty(role)) return 'Role tidak boleh kosong';
-    if (!isEnum(role, AdminRole)) return 'Role tidak valid';
+    if (isEmpty(role)) return 'role cannot be empty';
+    if (!isEnum(role, AdminRole)) return 'role is invalid';
     return true;
   }
 }

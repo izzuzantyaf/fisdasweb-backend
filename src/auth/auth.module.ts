@@ -10,14 +10,7 @@ import { AwsSesModule } from 'src/common/aws-ses/aws-ses.module';
 import ApiKeyStrategy from 'src/auth/strategies/api-key.strategy';
 
 @Module({
-  imports: [
-    AdminModule,
-    PassportModule,
-    JwtModule.register({
-      signOptions: { expiresIn: '7d' },
-    }),
-    AwsSesModule,
-  ],
+  imports: [AdminModule, PassportModule, JwtModule.register({}), AwsSesModule],
   controllers: [AuthController],
   providers: [
     AuthService,

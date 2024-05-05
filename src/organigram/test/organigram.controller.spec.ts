@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SuccessfulResponseDto } from 'src/common/dto/response.dto';
-import { Organigram } from 'src/organigram/entities/organigram.entity';
+import { Organigram } from 'src/organigram/entity';
 import { OrganigramController } from '../organigram.controller';
 import { OrganigramModule } from '../organigram.module';
 

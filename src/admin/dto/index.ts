@@ -1,5 +1,5 @@
-import { AdminRole } from 'src/admin/constants';
-import Admin from '../entities/admin.entity';
+import { AdminRole } from 'src/admin/constant';
+import Admin from '../entity';
 
 export class CreateAdminDto
   implements Omit<Admin, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>

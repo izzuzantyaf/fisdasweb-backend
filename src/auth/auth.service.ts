@@ -5,12 +5,12 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { CreateAdminDto } from '../admin/dto/create-admin.dto';
-import RegisterAdminValidationHelper from './helpers/register-admin-validation.helper';
-import AdminPostgresRepository from '../admin/repo/admin-postgres.repo';
+import { CreateAdminDto } from '../admin/dto';
+import RegisterAdminValidationHelper from './helper/register-admin-validation.helper';
+import AdminPostgresRepository from '../admin/repo';
 import { ErrorResponseDto } from '../common/dto/response.dto';
 import * as bcrypt from 'bcrypt';
-import Admin from '../admin/entities/admin.entity';
+import Admin from '../admin/entity';
 
 @Injectable()
 export class AuthService {

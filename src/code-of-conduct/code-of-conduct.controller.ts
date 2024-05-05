@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
 import { SuccessfulResponseDto } from 'src/common/dto/response.dto';
-import { AdminJwtAuthGuard } from 'src/auth/guards/admin-jwt-auth.guard';
-import ApiKeyGuard from 'src/auth/guards/api-key.guard';
+import { AdminJwtAuthGuard } from 'src/auth/guard/admin-jwt-auth.guard';
+import ApiKeyGuard from 'src/auth/guard/api-key.guard';
 import { CodeOfConductService } from 'src/code-of-conduct/code-of-conduct.service';
 import { UpdateCodeOfConductDto } from 'src/code-of-conduct/dto';
 

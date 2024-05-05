@@ -13,10 +13,10 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { SuccessfulResponseDto } from 'src/common/dto/response.dto';
 import { AuthService } from 'src/auth/auth.service';
-import { AdminJwtAuthGuard } from 'src/auth/guards/admin-jwt-auth.guard';
-import { AdminLocalAuthGuard } from 'src/auth/guards/admin-local-auth-guard';
-import { CreateAdminDto } from '../admin/dto/create-admin.dto';
-import ApiKeyGuard from 'src/auth/guards/api-key.guard';
+import { AdminJwtAuthGuard } from 'src/auth/guard/admin-jwt-auth.guard';
+import { AdminLocalAuthGuard } from 'src/auth/guard/admin-local-auth-guard';
+import { CreateAdminDto } from '../admin/dto';
+import ApiKeyGuard from 'src/auth/guard/api-key.guard';
 
 @ApiTags('auth')
 @Controller('auth')

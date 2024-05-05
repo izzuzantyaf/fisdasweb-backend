@@ -6,7 +6,7 @@ import { AdminController } from 'src/admin/admin.controller';
 import { AdminModule } from 'src/admin/admin.module';
 import { AuthController } from '../auth.controller';
 import { AuthModule } from '../auth.module';
-import { AdminRole } from 'src/admin/constants';
+import { AdminRole } from 'src/admin/constant';
 
 describe('AuthController', () => {
   let authController: AuthController;

@@ -1,9 +1,9 @@
 export class SuccessfulResponseDto {
   status = true;
-  message: string;
+  message: string = null;
   data = null;
 
-  constructor(message?: string, data?: any) {
+  constructor(message: string = 'success', data?: any) {
     this.message = message;
     this.data = data;
   }
@@ -11,10 +11,10 @@ export class SuccessfulResponseDto {
 
 export class ErrorResponseDto {
   status = false;
-  message: string;
+  message: string = null;
   error = null;
 
-  constructor(message?: string, error?: any) {
+  constructor(message: string = 'failed', error?: any) {
     this.message = message;
     this.error = error;
   }

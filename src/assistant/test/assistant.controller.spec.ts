@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SuccessfulResponseDto } from 'src/common/dto/response.dto';
-import { Assistant } from 'src/assistant/entities/assistant.entity';
+import { Assistant } from 'src/assistant/entities';
 import { AssistantController } from '../assistant.controller';
 import { AssistantModule } from '../assistant.module';
 import { AssistantLevel } from 'src/assistant/constants';

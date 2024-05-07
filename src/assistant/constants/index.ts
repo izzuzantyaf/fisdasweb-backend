@@ -1,1 +1,4 @@
-export * from './assistant-level.constant';
+export enum AssistantLevel {
+  JUNIOR = 'junior',
+  SENIOR = 'senior',
+}

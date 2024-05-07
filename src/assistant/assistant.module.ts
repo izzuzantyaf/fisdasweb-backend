@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { AssistantController } from './assistant.controller';
-import { MongoModule } from 'src/common/database/mongodb/mongo.module';
-import { AssistantFactoryService } from './assistant-factory.service';
 import { AssistantService } from './assistant.service';
+import { AssistantRepository } from 'src/assistant/repo';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Assistant } from 'src/assistant/entities';
 
 @Module({
-  imports: [MongoModule],
-  providers: [AssistantService, AssistantFactoryService],
+  imports: [TypeOrmModule.forFeature([Assistant])],
+  providers: [AssistantService, AssistantRepository],
   controllers: [AssistantController],
-  exports: [AssistantService, AssistantFactoryService],
+  exports: [AssistantService, AssistantRepository],
 })
 export class AssistantModule {}

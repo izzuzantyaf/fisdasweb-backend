@@ -8,10 +8,6 @@ import {
   ScheduleSchema,
 } from 'src/schedule/entities/schedule.entity';
 import {
-  Assistant,
-  AssistantSchema,
-} from 'src/assistant/entities/assistant.entity';
-import {
   PracticumModule,
   PracticumModuleSchema,
 } from 'src/practicum-module/entities/practicum-module.entity';
@@ -26,7 +22,6 @@ import {
     MongooseModule.forFeature([
       { name: Handout.name, schema: HandoutSchema },
       { name: Schedule.name, schema: ScheduleSchema },
-      { name: Assistant.name, schema: AssistantSchema },
       { name: PracticumModule.name, schema: PracticumModuleSchema },
       { name: SocialMedia.name, schema: SocialMediaSchema },
     ]),

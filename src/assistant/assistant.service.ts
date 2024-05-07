@@ -1,137 +1,73 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { isEmpty, isMongoId, isNotEmpty } from 'class-validator';
-import { MongoService } from 'src/common/database/mongodb/mongo.service';
-import { Assistant } from 'src/assistant/entities/assistant.entity';
+import { isNotEmpty } from 'class-validator';
 import { ErrorResponseDto } from 'src/common/dto/response.dto';
-import { AssistantFactoryService } from './assistant-factory.service';
-import {
-  CreateAssistantDto,
-  UpdateAssistantDto,
-} from 'src/assistant/dto/assistant.dto';
+import { CreateAssistantDto, UpdateAssistantDto } from 'src/assistant/dto';
 import { Logger } from '@nestjs/common/services';
+import { CreateAssistantValidationHelper } from 'src/assistant/helpers';
+import { AssistantRepository } from 'src/assistant/repo';
+import { Assistant } from 'src/assistant/entities';
 
 @Injectable()
 export class AssistantService {
   private readonly logger = new Logger(AssistantService.name);
 
-  constructor(
-    private dataService: MongoService,
-    private assistantFactory: AssistantFactoryService,
-  ) {}
+  constructor(private assistantRepository: AssistantRepository) {}
 
-  async create(createAssistantDto: CreateAssistantDto) {
-    this.logger.debug(
-      `createAssistantDto ${JSON.stringify(createAssistantDto, undefined, 2)}`,
-    );
-    const newAssistant = this.assistantFactory.create(createAssistantDto);
-    const validationErrors = newAssistant.validateProps();
+  async create(dto: CreateAssistantDto) {
+    this.logger.debug(`createAssistantDto ${JSON.stringify(dto)}`);
+
+    const validationErrors = new CreateAssistantValidationHelper(
+      dto,
+    ).validateProps();
+
     if (isNotEmpty(validationErrors)) {
-      this.logger.log(
+      this.logger.debug(
         `Assistant data is not valid ${JSON.stringify(validationErrors)}`,
       );
       throw new BadRequestException(
-        new ErrorResponseDto('Data tidak valid', { errors: validationErrors }),
+        new ErrorResponseDto('Data tidak valid', validationErrors),
       );
     }
-    const storedAssistant = this.assistantFactory.create(
-      await this.dataService.assistants.create(newAssistant),
-    );
-    this.logger.debug(
-      `Stored assistant ${JSON.stringify(storedAssistant, undefined, 2)}`,
-    );
-    this.logger.log(
-      `New assistant created ${JSON.stringify({
-        assistantId: storedAssistant._id,
-      })}`,
-    );
+
+    const storedAssistant = await this.assistantRepository.store(dto);
+
     return storedAssistant;
   }
 
   async getAll() {
-    const assistants = this.assistantFactory.createMany(
-      await this.dataService.assistants.getAll(),
-    );
+    const assistants = await this.assistantRepository.getAll();
     return assistants;
   }
 
   async search(keyword: string) {
     keyword = keyword.trim();
-    const searchResult = this.assistantFactory.createMany(
-      await this.dataService.assistants.search(keyword),
-    );
+    const searchResult = await this.assistantRepository.search(keyword);
     return searchResult;
   }
 
-  async update(updateAssistantDto: UpdateAssistantDto) {
-    this.logger.debug(
-      `updateAssistantDto ${JSON.stringify(updateAssistantDto, undefined, 2)}`,
-    );
-    const newAssistant = this.assistantFactory.create(updateAssistantDto);
-    const validationErrors = newAssistant.validateProps();
+  async update(id: Assistant['id'], dto: UpdateAssistantDto) {
+    this.logger.debug(`updateAssistantDto ${JSON.stringify(dto)}`);
+
+    const validationErrors = new CreateAssistantValidationHelper(
+      dto,
+    ).validateProps();
+
     if (isNotEmpty(validationErrors)) {
-      this.logger.log(
+      this.logger.debug(
         `Assistant data is not valid ${JSON.stringify(validationErrors)}`,
       );
       throw new BadRequestException(
         new ErrorResponseDto('Data tidak valid', { errors: validationErrors }),
       );
     }
-    const updateResult = await this.dataService.assistants.updateById(
-      newAssistant._id,
-      newAssistant,
-    );
-    if (isEmpty(updateResult)) {
-      this.logger.log(
-        `Assistant update failed ${JSON.stringify({
-          assistantId: newAssistant._id,
-        })}`,
-      );
-      throw new BadRequestException(
-        new ErrorResponseDto('Asisten gagal diupdate'),
-      );
-    }
-    const updatedAssistant = this.assistantFactory.create(updateResult);
-    this.logger.debug(
-      `Updated assistant ${JSON.stringify(updateAssistantDto, undefined, 2)}`,
-    );
-    this.logger.log(
-      `Assistant update success ${JSON.stringify({
-        assistantId: updatedAssistant._id,
-      })}`,
-    );
+
+    const updatedAssistant = await this.assistantRepository.update(id, dto);
+
     return updatedAssistant;
   }
 
-  async delete(id: string) {
-    const deleteResult = await this.dataService.assistants.deleteById(id);
-    if (isEmpty(deleteResult)) {
-      this.logger.log(
-        `Assistant delete failed ${JSON.stringify({ assistantId: id })}`,
-      );
-      throw new BadRequestException(
-        new ErrorResponseDto('Asisten gagal dihapus'),
-      );
-    }
-    const deletedAssistant = this.assistantFactory.create(deleteResult);
-    this.logger.debug(
-      `Deleted assistant ${JSON.stringify(deletedAssistant, undefined, 2)}`,
-    );
-    this.logger.log(
-      `Assistant delete success ${JSON.stringify({
-        assistantId: deletedAssistant._id,
-      })}`,
-    );
+  async delete(id: Assistant['id']) {
+    const deletedAssistant = await this.assistantRepository.deleteById(id);
     return deletedAssistant;
-  }
-
-  async deleteMany(ids: string[]) {
-    console.log('Incoming data :', ids);
-    const deletedAdmins: Assistant[] = [];
-    for (const id of ids) {
-      if (!isMongoId(id)) continue;
-      const deletedAdmin = await this.delete(id);
-      deletedAdmins.push(deletedAdmin);
-    }
-    return deletedAdmins;
   }
 }

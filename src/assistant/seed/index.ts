@@ -7,10 +7,10 @@ export const assistantSeeder = Array(50)
   .map(() => ({
     name: faker.person.fullName(),
     code: faker.string.alpha(3).toUpperCase(),
-    phoneNumber: faker.phone.number('08##########'),
-    lineId: faker.internet.userName(),
+    phone: faker.phone.number('08##########'),
+    line_id: faker.internet.userName(),
     gender: Math.random() > 0.5 ? Gender.MALE : Gender.FEMALE,
     level: Math.random() > 0.5 ? AssistantLevel.SENIOR : AssistantLevel.JUNIOR,
-    feedbackUrl: faker.internet.url(),
-    profilePictureUrl: faker.image.avatar(),
+    feedback_url: faker.internet.url(),
+    image_url: faker.image.avatar(),
   }));

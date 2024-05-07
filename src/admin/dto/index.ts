@@ -1,4 +1,4 @@
-import { AdminRole } from 'src/admin/constant';
+import { AdminRole } from 'src/admin/constants';
 import Admin from '../entities';
 
 export class CreateAdminDto

@@ -5,7 +5,7 @@ import { AdminModule } from 'src/admin/admin.module';
 import Admin from 'src/admin/entities/admin.entity';
 import { faker } from '@faker-js/faker';
 import { BadRequestException, ConflictException } from '@nestjs/common';
-import { AdminRole } from 'src/admin/constant';
+import { AdminRole } from 'src/admin/constants';
 
 const createFakeAdmin = () => ({
   name: faker.person.fullName(),

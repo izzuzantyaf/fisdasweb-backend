@@ -1,4 +1,4 @@
-import { AdminRole } from '../constant';
+import { AdminRole } from '../constants';
 import {
   Column,
   CreateDateColumn,

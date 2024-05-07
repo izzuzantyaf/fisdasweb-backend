@@ -1,6 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import Admin from 'src/admin/entity';
+import Admin from 'src/admin/entities';
 import { Repository } from 'typeorm';
 
 export default class AdminPostgresRepository {

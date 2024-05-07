@@ -1,4 +1,4 @@
-import { Organigram } from 'src/organigram/entity';
+import { Organigram } from 'src/organigram/entities';
 
 export class CreateOrganigramDto {
   url?: Organigram['url'];

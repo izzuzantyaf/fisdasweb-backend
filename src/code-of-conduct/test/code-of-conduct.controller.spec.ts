@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SuccessfulResponseDto } from 'src/common/dto/response.dto';
 import { CodeOfConductController } from '../code-of-conduct.controller';
 import { CodeOfConductModule } from '../code-of-conduct.module';
-import { CodeOfConduct } from 'src/code-of-conduct/entity';
+import { CodeOfConduct } from 'src/code-of-conduct/entities';
 
 describe('OrganigramController', () => {
   let controller: CodeOfConductController;

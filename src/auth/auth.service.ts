@@ -10,7 +10,7 @@ import RegisterAdminValidationHelper from './helper/register-admin-validation.he
 import AdminPostgresRepository from '../admin/repo';
 import { ErrorResponseDto } from '../common/dto/response.dto';
 import * as bcrypt from 'bcrypt';
-import Admin from '../admin/entity';
+import Admin from '../admin/entities';
 
 @Injectable()
 export class AuthService {

@@ -1,7 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateOrganigramDto, UpdateOrganigramDto } from 'src/organigram/dto';
-import { Organigram } from 'src/organigram/entity';
+import { Organigram } from 'src/organigram/entities';
 import { Repository } from 'typeorm';
 
 export class OrganigramPostgresRepository {

@@ -1,4 +1,4 @@
-import { CodeOfConduct } from 'src/code-of-conduct/entity';
+import { CodeOfConduct } from 'src/code-of-conduct/entities';
 
 export class CreateCodeOfConductDto {
   url?: CodeOfConduct['url'];

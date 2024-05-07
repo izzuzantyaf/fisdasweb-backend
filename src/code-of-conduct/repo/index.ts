@@ -1,6 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CodeOfConduct } from 'src/code-of-conduct/entity';
+import { CodeOfConduct } from 'src/code-of-conduct/entities';
 import { Repository } from 'typeorm';
 
 export class CodeOfConductRepository {

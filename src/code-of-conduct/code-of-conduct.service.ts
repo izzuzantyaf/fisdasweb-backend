@@ -9,7 +9,7 @@ import {
   CreateCodeOfConductDto,
   UpdateCodeOfConductDto,
 } from 'src/code-of-conduct/dto';
-import { CodeOfConduct } from 'src/code-of-conduct/entity';
+import { CodeOfConduct } from 'src/code-of-conduct/entities';
 import { CodeOfConductRepository } from 'src/code-of-conduct/repo';
 import { codeOfConductSeed } from 'src/code-of-conduct/seed';
 import { ErrorResponseDto } from 'src/common/dto/response.dto';

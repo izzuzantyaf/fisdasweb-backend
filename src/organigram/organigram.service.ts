@@ -7,7 +7,7 @@ import {
 import { isURL } from 'class-validator';
 import { ErrorResponseDto } from 'src/common/dto/response.dto';
 import { CreateOrganigramDto, UpdateOrganigramDto } from 'src/organigram/dto';
-import { Organigram } from 'src/organigram/entity';
+import { Organigram } from 'src/organigram/entities';
 import { OrganigramPostgresRepository } from 'src/organigram/repo';
 import { organigramSeed } from 'src/organigram/seed';
 

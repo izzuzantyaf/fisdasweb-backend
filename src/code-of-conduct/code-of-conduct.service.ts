@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  OnModuleInit,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { isURL } from 'class-validator';
 import {
   CreateCodeOfConductDto,
@@ -11,28 +6,13 @@ import {
 } from 'src/code-of-conduct/dto';
 import { CodeOfConduct } from 'src/code-of-conduct/entities';
 import { CodeOfConductRepository } from 'src/code-of-conduct/repo';
-import { codeOfConductSeed } from 'src/code-of-conduct/seed';
 import { ErrorResponseDto } from 'src/common/dto/response.dto';
 
 @Injectable()
-export class CodeOfConductService implements OnModuleInit {
+export class CodeOfConductService {
   private readonly logger = new Logger(CodeOfConductService.name);
 
   constructor(private codeOfConductRepository: CodeOfConductRepository) {}
-
-  onModuleInit() {
-    this.seed();
-    return;
-    throw new Error('Method not implemented.');
-  }
-
-  private async seed() {
-    const codeofconduct = await this.codeOfConductRepository.find();
-    if (codeofconduct.length) return;
-    await this.create(codeOfConductSeed[0]);
-    this.logger.log(`CodeOfConduct seeded successfully`);
-    return;
-  }
 
   async create(data: CreateCodeOfConductDto) {
     this.logger.debug(`createCodeOfConductDto: ${JSON.stringify(data)}`);

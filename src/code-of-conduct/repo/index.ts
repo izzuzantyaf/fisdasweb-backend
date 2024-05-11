@@ -1,15 +1,31 @@
-import { Logger } from '@nestjs/common';
+import { Logger, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CodeOfConduct } from 'src/code-of-conduct/entities';
+import { codeOfConductSeed } from 'src/code-of-conduct/seed';
 import { Repository } from 'typeorm';
 
-export class CodeOfConductRepository {
+export class CodeOfConductRepository implements OnModuleInit {
   private logger = new Logger(CodeOfConductRepository.name);
 
   constructor(
     @InjectRepository(CodeOfConduct)
     private codeOfConductRepository: Repository<CodeOfConduct>,
   ) {}
+
+  onModuleInit() {
+    this.seed();
+  }
+
+  private async seed() {
+    const count = await this.codeOfConductRepository
+      .createQueryBuilder()
+      .getCount();
+
+    if (count === 0) {
+      await this.store(codeOfConductSeed[0]);
+      this.logger.log(`CodeOfConduct seeded successfully`);
+    }
+  }
 
   async store(data: Pick<CodeOfConduct, 'url'>) {
     const insertResult = await this.codeOfConductRepository

@@ -1,35 +1,15 @@
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  OnModuleInit,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { isURL } from 'class-validator';
 import { ErrorResponseDto } from 'src/common/dto/response.dto';
 import { CreateOrganigramDto, UpdateOrganigramDto } from 'src/organigram/dto';
 import { Organigram } from 'src/organigram/entities';
 import { OrganigramPostgresRepository } from 'src/organigram/repo';
-import { organigramSeed } from 'src/organigram/seed';
 
 @Injectable()
-export class OrganigramService implements OnModuleInit {
+export class OrganigramService {
   private readonly logger = new Logger(OrganigramService.name);
 
   constructor(private organigramRepository: OrganigramPostgresRepository) {}
-
-  onModuleInit() {
-    this.seed();
-    return;
-    throw new Error('Method not implemented.');
-  }
-
-  private async seed() {
-    const organigram = await this.organigramRepository.find();
-    if (organigram.length) return;
-    await this.create(organigramSeed[0]);
-    this.logger.log(`Organigram seeded successfully`);
-    return;
-  }
 
   async create(data: CreateOrganigramDto) {
     this.logger.debug(`createOrganigramDto: ${JSON.stringify(data)}`);

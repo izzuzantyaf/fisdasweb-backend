@@ -3,19 +3,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Handout, HandoutDocument } from 'src/handout/entities/handout.entity';
 import {
-  PracticumModule,
-  PracticumModuleDocument,
-} from 'src/practicum-module/entities/practicum-module.entity';
-import {
   Schedule,
   ScheduleDocument,
 } from 'src/schedule/entities/schedule.entity';
 import { handoutSeeder } from 'src/handout/seed/handout.seed';
-import { practicumModuleSeeder } from 'src/practicum-module/seed/practicum-module.seed';
 import { scheduleSeeder } from 'src/schedule/seed/schedule.seed';
 import { AssistantRepository } from 'src/assistant/repo';
 import { HandoutMongoRepository } from 'src/handout/repo/handout-mongo.repo';
-import { PracticumModuleMongoRepository } from 'src/practicum-module/repo/practicum-module-mongo.repo';
 import { ScheduleMongoRepository } from 'src/schedule/repo/schedule-mongo.repo';
 import { SocialMediaMongoRepository } from 'src/social-media/repo/social-media-mongo.repo';
 import {
@@ -29,27 +23,20 @@ export class MongoService {
   handouts: HandoutMongoRepository;
   schedules: ScheduleMongoRepository;
   assistants: AssistantRepository;
-  practicumModules: PracticumModuleMongoRepository;
   socialMedias: SocialMediaMongoRepository;
 
   constructor(
     @InjectModel(Handout.name) private handoutModel: Model<HandoutDocument>,
     @InjectModel(Schedule.name)
     private scheduleModel: Model<ScheduleDocument>,
-    @InjectModel(PracticumModule.name)
-    private practicumModuleModel: Model<PracticumModuleDocument>,
     @InjectModel(SocialMedia.name)
     private socialMediaModel: Model<SocialMediaDocument>,
   ) {
     this.handouts = new HandoutMongoRepository(this.handoutModel);
     this.schedules = new ScheduleMongoRepository(this.scheduleModel);
-    this.practicumModules = new PracticumModuleMongoRepository(
-      this.practicumModuleModel,
-    );
     this.socialMedias = new SocialMediaMongoRepository(this.socialMediaModel);
     this.seedHandout();
     this.seedSchedule();
-    this.seedPracticumModule();
     this.seedSocialMedia();
   }
 
@@ -63,14 +50,6 @@ export class MongoService {
   protected seedSchedule() {
     const schedules = scheduleSeeder.map((schedule) => new Schedule(schedule));
     this.schedules.seed(schedules);
-  }
-
-  protected seedPracticumModule(): void {
-    const practicumModules = practicumModuleSeeder.map(
-      (practicumModule) =>
-        new PracticumModule(practicumModule as PracticumModule),
-    );
-    this.practicumModules.seed(practicumModules);
   }
 
   protected seedSocialMedia(): void {

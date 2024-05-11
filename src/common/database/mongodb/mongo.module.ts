@@ -8,10 +8,6 @@ import {
   ScheduleSchema,
 } from 'src/schedule/entities/schedule.entity';
 import {
-  PracticumModule,
-  PracticumModuleSchema,
-} from 'src/practicum-module/entities/practicum-module.entity';
-import {
   SocialMedia,
   SocialMediaSchema,
 } from 'src/social-media/entities/social-media.entity';
@@ -22,7 +18,6 @@ import {
     MongooseModule.forFeature([
       { name: Handout.name, schema: HandoutSchema },
       { name: Schedule.name, schema: ScheduleSchema },
-      { name: PracticumModule.name, schema: PracticumModuleSchema },
       { name: SocialMedia.name, schema: SocialMediaSchema },
     ]),
     MongooseModule.forRoot(process.env.MONGO_URI),

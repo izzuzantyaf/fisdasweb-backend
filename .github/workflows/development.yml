@@ -29,7 +29,7 @@ jobs:
         run: pnpm test
         working-directory: ${{ env.working-directory }}
         env:
-          NODE_ENV: ${{ vars.NODE_ENV }}
+          APP_ENV: ${{ vars.APP_ENV }}
           MONGO_URI: ${{ secrets.MONGO_URI }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
   deploy-to-railway:

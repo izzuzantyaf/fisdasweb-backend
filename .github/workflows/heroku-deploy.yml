@@ -31,6 +31,6 @@ jobs:
           branch: ${{ github.ref_name }}
           appdir: ${{ inputs.working-directory }}
         env:
-          HD_NODE_ENV: ${{ secrets.NODE_ENV }}
+          HD_APP_ENV: ${{ secrets.APP_ENV }}
           HD_MONGO_URI: ${{ secrets.MONGO_URI }}
           HD_JWT_SECRET: ${{ secrets.JWT_SECRET }}

@@ -8,7 +8,7 @@ export const typeOrmDataSourceOptions: DataSourceOptions = {
   url: process.env.POSTGRES_URL,
   synchronize: false,
   dropSchema: false,
-  logging: process.env.NODE_ENV === 'production' ? false : true,
+  logging: process.env.APP_ENV === 'production' ? false : true,
 };
 
 export const typeOrmModuleOptions = {

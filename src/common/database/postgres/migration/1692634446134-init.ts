@@ -4,6 +4,7 @@ export class Init1692634446134 implements MigrationInterface {
   name = 'Init1692634446134';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
     await queryRunner.query(
       `CREATE TYPE "public"."admin_role_enum" AS ENUM('owner', 'admin')`,
     );
@@ -15,5 +16,6 @@ export class Init1692634446134 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`DROP TABLE "admin"`);
     await queryRunner.query(`DROP TYPE "public"."admin_role_enum"`);
+    await queryRunner.query(`DROP EXTENSION IF EXISTS "uuid-ossp"`);
   }
 }

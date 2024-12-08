@@ -14,7 +14,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new LoggerInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
-  app.setGlobalPrefix('api');
 
   const logger = new Logger('NestApplication');
   await app

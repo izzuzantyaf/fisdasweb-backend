@@ -7,7 +7,6 @@ import { OrganigramModule } from 'src/organigram/organigram.module';
 import { ScheduleModule } from 'src/schedule/schedule.module';
 import { AssistantModule } from 'src/assistant/assistant.module';
 import { LabModuleModule } from 'src/lab-module/lab-module.module';
-import { SocialMediaModule } from 'src/social-media/social-media.module';
 import { ArticleModule } from 'src/article/article.module';
 import { OpenAIModule } from './common/openai/openai.module';
 import { UnsplashModule } from './common/unsplash/unsplash.module';
@@ -30,7 +29,6 @@ import { AwsSesModule } from './common/aws-ses/aws-ses.module';
     ScheduleModule,
     AssistantModule,
     LabModuleModule,
-    SocialMediaModule,
     ArticleModule,
     OpenAIModule,
     UnsplashModule,

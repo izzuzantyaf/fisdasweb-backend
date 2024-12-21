@@ -1,5 +1,6 @@
 export const organigramSeed = [
   {
-    url: null,
+    link: null,
+    is_published: false,
   },
 ];

@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SuccessfulResponseDto } from 'src/common/dto/response.dto';
-import { Organigram } from 'src/organigram/entities';
 import { OrganigramController } from '../organigram.controller';
 import { OrganigramModule } from '../organigram.module';
+import { Organigram } from 'src/organigram/entities';
 
 describe('OrganigramController', () => {
   let controller: OrganigramController;
@@ -22,7 +22,7 @@ describe('OrganigramController', () => {
 
   describe('getOne()', () => {
     it(`harus return object bertipe ${SuccessfulResponseDto.name} berisi data ${Organigram.name}`, async () => {
-      const response = await controller.getAll();
+      const response = await controller.get();
       const organigram = response.data;
       expect(response).toBeInstanceOf(SuccessfulResponseDto);
       expect(organigram).toBeInstanceOf(Organigram);
@@ -32,7 +32,7 @@ describe('OrganigramController', () => {
   describe('update()', () => {
     let organigram: Organigram;
     beforeAll(async () => {
-      organigram = (await controller.getAll()).data;
+      organigram = (await controller.get()).data;
     });
     it(`harus berhasil update dan return object bertipe ${SuccessfulResponseDto.name} berisi organigram yang telah diupdate`, async () => {
       const response = await controller.update({

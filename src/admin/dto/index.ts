@@ -1,4 +1,3 @@
-import { AdminRole } from 'src/admin/constants';
 import Admin from '../entities';
 
 export class CreateAdminDto
@@ -7,5 +6,4 @@ export class CreateAdminDto
   name: Admin['name'];
   email: Admin['email'];
   password: Admin['password'];
-  role: AdminRole;
 }

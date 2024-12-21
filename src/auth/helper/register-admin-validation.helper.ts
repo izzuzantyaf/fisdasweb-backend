@@ -2,11 +2,9 @@ import {
   maxLength,
   isEmail,
   minLength,
-  isEnum,
   isEmpty,
   isString,
 } from 'class-validator';
-import { AdminRole } from '../../admin/constants';
 import { CreateAdminDto } from '../../admin/dto';
 import { Logger } from '@nestjs/common';
 
@@ -18,7 +16,6 @@ export default class RegisterAdminValidationHelper {
       name: this.validateName(createAdminDto.name),
       email: this.validateEmail(createAdminDto.email),
       password: this.validatePassword(createAdminDto.password),
-      role: this.validateRole(createAdminDto.role),
     };
     const isSafe = Object.values(result).every((error) => error === true);
     this.logger.debug(`create admin dto validation: ${JSON.stringify(result)}`);
@@ -49,12 +46,6 @@ export default class RegisterAdminValidationHelper {
     if (!isString(password)) return 'password is invalid';
     if (!minLength(password, minPasswordLength))
       return `password length min ${minPasswordLength} characters`;
-    return true;
-  }
-
-  protected validateRole(role: CreateAdminDto['role']) {
-    if (isEmpty(role)) return 'role cannot be empty';
-    if (!isEnum(role, AdminRole)) return 'role is invalid';
     return true;
   }
 }

@@ -1,4 +1,3 @@
-import { AdminRole } from '../constants';
 import {
   Column,
   CreateDateColumn,
@@ -28,12 +27,6 @@ export default class Admin {
 
   @Column({ type: 'text', nullable: false })
   password: string;
-
-  @Column({
-    type: 'enum',
-    enum: AdminRole,
-  })
-  role: AdminRole;
 
   @CreateDateColumn()
   created_at: Date;

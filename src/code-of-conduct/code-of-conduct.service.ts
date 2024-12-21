@@ -10,8 +10,17 @@ export class CodeOfConductService {
   constructor(private codeOfConductRepository: CodeOfConductRepository) {}
 
   async get() {
-    const codeofconduct = await this.codeOfConductRepository.find();
-    return codeofconduct;
+    const codeofconducts = await this.codeOfConductRepository.find();
+
+    return codeofconducts[0] || null;
+  }
+
+  async getPublished() {
+    const codeofconducts = await this.codeOfConductRepository.find({
+      where: { is_published: true },
+    });
+
+    return codeofconducts[0] || null;
   }
 
   async update(id: CodeOfConduct['id'], data: UpdateCodeOfConductDto) {

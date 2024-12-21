@@ -22,9 +22,18 @@ export class CodeOfConductController {
   constructor(private codeOfConductService: CodeOfConductService) {}
 
   @Get()
-  @UseGuards(ApiKeyGuard)
+  @UseGuards(AdminJwtAuthGuard)
   async get() {
     const codeOfConduct = await this.codeOfConductService.get();
+
+    return new SuccessfulResponseDto(codeOfConduct);
+  }
+
+  @Get('/published')
+  @UseGuards(ApiKeyGuard)
+  async getPublished() {
+    const codeOfConduct = await this.codeOfConductService.getPublished();
+
     return new SuccessfulResponseDto(codeOfConduct);
   }
 

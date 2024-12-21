@@ -2,7 +2,7 @@ import { Logger, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CodeOfConduct } from 'src/code-of-conduct/entities';
 import { codeOfConductSeed } from 'src/code-of-conduct/seed';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 
 export class CodeOfConductRepository implements OnModuleInit {
   private logger = new Logger(CodeOfConductRepository.name);
@@ -46,8 +46,8 @@ export class CodeOfConductRepository implements OnModuleInit {
     return storedCodeOfConduct;
   }
 
-  async find() {
-    const codeOfConduct = await this.codeOfConductRepository.find();
+  async find(options: FindManyOptions<CodeOfConduct> = {}) {
+    const codeOfConduct = await this.codeOfConductRepository.find(options);
     return codeOfConduct;
   }
 

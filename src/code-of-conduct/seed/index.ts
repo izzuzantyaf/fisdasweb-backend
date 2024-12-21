@@ -1,5 +1,6 @@
 export const codeOfConductSeed = [
   {
-    url: null,
+    link: null,
+    is_published: false,
   },
 ];

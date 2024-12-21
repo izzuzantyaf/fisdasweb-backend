@@ -15,7 +15,10 @@ export class CodeOfConduct {
   id: number;
 
   @Column({ type: 'text', nullable: true })
-  url?: string;
+  link: string | null;
+
+  @Column({ type: 'boolean', default: false })
+  is_published: boolean;
 
   @CreateDateColumn()
   created_at: Date;

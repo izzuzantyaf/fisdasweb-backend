@@ -1,9 +1,6 @@
 import { CodeOfConduct } from 'src/code-of-conduct/entities';
 
-export class CreateCodeOfConductDto {
-  url?: CodeOfConduct['url'];
-}
-
 export class UpdateCodeOfConductDto {
-  url?: CodeOfConduct['url'];
+  link?: CodeOfConduct['link'] | null;
+  is_published?: CodeOfConduct['is_published'];
 }

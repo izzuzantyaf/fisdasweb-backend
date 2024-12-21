@@ -27,49 +27,56 @@ export class CodeOfConductRepository implements OnModuleInit {
     }
   }
 
-  async store(data: Pick<CodeOfConduct, 'url'>) {
+  async store(data: Pick<CodeOfConduct, 'link' | 'is_published'>) {
     const insertResult = await this.codeOfConductRepository
       .createQueryBuilder()
       .insert()
       .into(CodeOfConduct)
       .values({
-        url: data.url,
+        link: data.link,
+        is_published: data.is_published,
       })
       .returning('*')
       .execute();
+
     const storedCodeOfConduct = this.codeOfConductRepository.create(
       insertResult.raw[0] as CodeOfConduct,
     );
-    this.logger.debug(
-      `CodeOfConduct created: ${JSON.stringify(storedCodeOfConduct)}`,
-    );
+
     return storedCodeOfConduct;
-    throw new Error('Method not implemented.');
   }
 
   async find() {
     const codeOfConduct = await this.codeOfConductRepository.find();
     return codeOfConduct;
-    throw new Error('Method not implemented.');
   }
 
-  async update(id: CodeOfConduct['id'], data: Pick<CodeOfConduct, 'url'>) {
+  async update(
+    id: CodeOfConduct['id'],
+    data: Partial<Pick<CodeOfConduct, 'link' | 'is_published'>>,
+    options: {
+      returning?: (keyof CodeOfConduct)[];
+    } = {},
+  ) {
     const updateResult = await this.codeOfConductRepository
       .createQueryBuilder()
       .update()
       .set({
-        url: data.url,
+        link: data.link,
+        is_published: data.is_published,
       })
       .where(`id = :id`, { id })
-      .returning('*')
+      .returning(options?.returning?.join(', ') || '*')
       .execute();
+
+    if (updateResult.affected === 0) {
+      return null;
+    }
+
     const updatedCodeOfConduct = this.codeOfConductRepository.create(
       updateResult.raw[0] as CodeOfConduct,
     );
-    this.logger.debug(
-      `CodeOfConduct updated: ${JSON.stringify(updatedCodeOfConduct)}`,
-    );
+
     return updatedCodeOfConduct;
-    throw new Error('Method not implemented.');
   }
 }

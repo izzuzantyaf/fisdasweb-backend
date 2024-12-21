@@ -23,13 +23,13 @@ export class LoggerInterceptor implements NestInterceptor {
       id: Date.now().toString(),
       ip: request.ip,
       'user-agent': request.headers['user-agent'],
-      body: request.body,
+      // body: request.body,
     };
     this.logger.log(
       `Request ${request.method} ${request.path} ${JSON.stringify(request.info)}`,
     );
 
-    delete request.info.body;
+    // delete request.info.body;
     return next.handle().pipe(
       map((responseData) => {
         this.logger.log(

@@ -17,8 +17,8 @@ export default class AdminPostgresRepository {
     throw new Error('Method not implemented.');
   }
 
-  async checkIsExistByEmail(email: string): Promise<boolean> {
-    return await this.adminRepository.exist({ where: { email } });
+  async checkIsExistByUsername(username: string): Promise<boolean> {
+    return await this.adminRepository.exists({ where: { username } });
     throw new Error('Method not implemented.');
   }
 
@@ -48,8 +48,8 @@ export default class AdminPostgresRepository {
     throw new Error('Method not implemented.');
   }
 
-  async getByEmail(email: string): Promise<Admin> {
-    return await this.adminRepository.findOneBy({ email });
+  async getByUsername(username: string): Promise<Admin> {
+    return await this.adminRepository.findOneBy({ username });
     throw new Error('Method not implemented.');
   }
 }

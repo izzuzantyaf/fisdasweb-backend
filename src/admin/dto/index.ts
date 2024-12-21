@@ -1,9 +1,7 @@
 import Admin from '../entities';
 
-export class CreateAdminDto
-  implements Omit<Admin, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>
-{
+export class CreateAdminDto {
   name: Admin['name'];
-  email: Admin['email'];
+  username: Admin['username'];
   password: Admin['password'];
 }

@@ -21,18 +21,6 @@ export class AuthService {
     private adminRepository: AdminPostgresRepository,
   ) {}
 
-  /**
-   * ## Register new admin
-   *
-   * ### Steps:
-   * 1. Validate admin data
-   * 2. Check if admin email already exists
-   * 3. Hash admin password
-   * 4. Store admin data
-   *
-   * @param createAdminDto Admin data
-   * @returns
-   */
   async registerAdmin(createAdminDto: CreateAdminDto) {
     try {
       this.logger.debug(`createAdminDto: ${JSON.stringify(createAdminDto)}`);
@@ -56,14 +44,15 @@ export class AuthService {
         );
       }
 
-      const isEmailRegistered = await this.adminRepository.checkIsExistByEmail(
-        createAdminDto.email,
-      );
-      if (isEmailRegistered) {
+      const isUsernameRegistered =
+        await this.adminRepository.checkIsExistByUsername(
+          createAdminDto.username,
+        );
+      if (isUsernameRegistered) {
         throw new BadRequestException(
           new ErrorResponseDto('admin register failed', {
             errors: {
-              email: 'email is already registered',
+              username: 'username is already registered',
             },
           }),
         );
@@ -89,17 +78,17 @@ export class AuthService {
    * ## Login admin using local strategy
    *
    * ### Steps:
-   * 1. Get admin by email
+   * 1. Get admin by username
    * 2. Compare password
    * 3. Return admin data
    *
-   * @param email Admin's email
+   * @param username Admin's username
    * @param password Admin's plain password
    * @returns
    */
-  async loginAdminUsingLocalStrategy(email: string, password: string) {
+  async loginAdminUsingLocalStrategy(username: string, password: string) {
     try {
-      const admin = await this.adminRepository.getByEmail(email);
+      const admin = await this.adminRepository.getByUsername(username);
       if (!admin) {
         throw new UnauthorizedException(new ErrorResponseDto('login failed'));
       }
@@ -111,7 +100,7 @@ export class AuthService {
 
       return admin;
     } catch (error) {
-      this.logger.debug(`Admin login failed: ${JSON.stringify({ email })}`);
+      this.logger.debug(`Admin login failed: ${JSON.stringify({ username })}`);
       throw error;
     }
   }

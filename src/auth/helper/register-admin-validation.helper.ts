@@ -1,10 +1,4 @@
-import {
-  maxLength,
-  isEmail,
-  minLength,
-  isEmpty,
-  isString,
-} from 'class-validator';
+import { maxLength, minLength, isEmpty, isString } from 'class-validator';
 import { CreateAdminDto } from '../../admin/dto';
 import { Logger } from '@nestjs/common';
 
@@ -14,7 +8,7 @@ export default class RegisterAdminValidationHelper {
   validateCreateAdminDto(createAdminDto: CreateAdminDto) {
     const result: Partial<Record<keyof CreateAdminDto, boolean | string>> = {
       name: this.validateName(createAdminDto.name),
-      email: this.validateEmail(createAdminDto.email),
+      username: this.validateUsername(createAdminDto.username),
       password: this.validatePassword(createAdminDto.password),
     };
     const isSafe = Object.values(result).every((error) => error === true);
@@ -34,9 +28,8 @@ export default class RegisterAdminValidationHelper {
     return true;
   }
 
-  protected validateEmail(email: CreateAdminDto['email']) {
-    if (isEmpty(email)) return 'email cannot be empty';
-    if (!isEmail(email)) return 'email is invalid';
+  protected validateUsername(username: CreateAdminDto['username']) {
+    if (isEmpty(username)) return 'username cannot be empty';
     return true;
   }
 

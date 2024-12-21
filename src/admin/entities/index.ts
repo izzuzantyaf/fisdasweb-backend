@@ -22,8 +22,8 @@ export default class Admin {
     type: 'text',
     nullable: false,
   })
-  @Unique('UQ_admin_email', ['email'])
-  email: string;
+  @Unique('UQ_admin_username', ['username'])
+  username: string;
 
   @Column({ type: 'text', nullable: false })
   password: string;

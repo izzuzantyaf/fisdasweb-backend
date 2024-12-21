@@ -26,7 +26,7 @@ import {
 } from 'src/auth/constant';
 import { AdminService } from 'src/admin/admin.service';
 
-@Controller('auth')
+@Controller('/auth')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
 
@@ -35,7 +35,7 @@ export class AuthController {
     private adminService: AdminService,
   ) {}
 
-  @Post('admin/register')
+  @Post('/admin/register')
   @UseGuards(ApiKeyGuard)
   async registerAdmin(@Body() dto: CreateAdminDto) {
     if (typeof dto.name !== 'string') {
@@ -55,7 +55,7 @@ export class AuthController {
     return new SuccessfulResponseDto();
   }
 
-  @Post('admin/login')
+  @Post('/admin/login')
   @UseGuards(AdminLocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   async signin(@Request() req, @Response() res) {
@@ -80,13 +80,13 @@ export class AuthController {
     return res.send(new SuccessfulResponseDto());
   }
 
-  @Get('admin/check-access-token')
+  @Get('/admin/check-access-token')
   @UseGuards(AdminJwtAuthGuard)
   async checkAccessToken(@Req() req: any) {
     return new SuccessfulResponseDto(req.user);
   }
 
-  @Post('admin/logout')
+  @Post('/admin/logout')
   @HttpCode(HttpStatus.OK)
   async signout(@Response() res) {
     res.clearCookie(ACCESS_TOKEN_NAME);
@@ -95,7 +95,7 @@ export class AuthController {
   }
 
   @UseGuards(AdminJwtAuthGuard)
-  @Get('admin/me')
+  @Get('/admin/me')
   async profile(@Req() req: any) {
     const admin = await this.adminService.getProfile(req.user.id);
 

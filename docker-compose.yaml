@@ -3,25 +3,25 @@ version: '3'
 services:
   mongodb:
     image: mongo
-    container_name: fdcms-mongo
+    container_name: fdweb-mongo
     ports:
       - 27018:27017
     networks:
-      - fdcms
-  fdcms-server:
+      - fdweb
+  fdweb-server:
     build: .
-    container_name: fdcms-server
+    container_name: fdweb-server
     ports:
       - 8080:8080
     environment:
       APP_ENV: development
-      MONGO_URI: mongodb://fdcms-mongo:27017/fisdascms-dev
+      MONGO_URI: mongodb://fdweb-mongo:27017/fisdascms-dev
       JWT_SECRET: supersecretkey
     depends_on:
       - mongodb
     networks:
-      - fdcms
+      - fdweb
 
 networks:
-  fdcms:
-    name: fdcms
+  fdweb:
+    name: fdweb

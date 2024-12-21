@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { LoggerInterceptor } from './common/interceptors/logger.interceptor';
 import { HttpExceptionFilter } from 'src/common/filter/http-exception.filter';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -14,6 +15,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new LoggerInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
+  app.use(cookieParser());
 
   const logger = new Logger('NestApplication');
   await app

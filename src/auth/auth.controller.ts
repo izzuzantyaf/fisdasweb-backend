@@ -8,6 +8,7 @@ import {
   Post,
   Req,
   Request,
+  Response,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -19,6 +20,10 @@ import { AdminJwtAuthGuard } from 'src/auth/guard/admin-jwt-auth.guard';
 import { AdminLocalAuthGuard } from 'src/auth/guard/admin-local-auth-guard';
 import { CreateAdminDto } from '../admin/dto';
 import ApiKeyGuard from 'src/auth/guard/api-key.guard';
+import {
+  ACCESS_TOKEN_NAME,
+  ACCESS_TOKEN_LIFETIME_IN_MILLISECONDS,
+} from 'src/auth/constant';
 
 @Controller('auth')
 export class AuthController {
@@ -49,9 +54,16 @@ export class AuthController {
   @Post('admin/login')
   @UseGuards(AdminLocalAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async signin(@Request() req) {
-    await this.authService.generateAdminJwt(req.user);
-    return new SuccessfulResponseDto();
+  async signin(@Request() req, @Response() res) {
+    const token = await this.authService.generateAdminJwt(req.user);
+
+    res.cookie(ACCESS_TOKEN_NAME, token, {
+      httpOnly: true,
+      secure: true,
+      maxAge: ACCESS_TOKEN_LIFETIME_IN_MILLISECONDS,
+    });
+
+    return res.send(new SuccessfulResponseDto());
   }
 
   @UseGuards(AdminJwtAuthGuard)

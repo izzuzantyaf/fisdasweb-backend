@@ -24,12 +24,16 @@ import {
   ACCESS_TOKEN_NAME,
   ACCESS_TOKEN_LIFETIME_IN_MILLISECONDS,
 } from 'src/auth/constant';
+import { AdminService } from 'src/admin/admin.service';
 
 @Controller('auth')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private adminService: AdminService,
+  ) {}
 
   @Post('admin/register')
   @UseGuards(ApiKeyGuard)
@@ -55,13 +59,23 @@ export class AuthController {
   @UseGuards(AdminLocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   async signin(@Request() req, @Response() res) {
-    const token = await this.authService.generateAdminJwt(req.user);
+    const result = await this.authService.generateAdminJwt(req.user);
 
-    res.cookie(ACCESS_TOKEN_NAME, token, {
+    res.cookie(ACCESS_TOKEN_NAME, result.access_token, {
       httpOnly: true,
       secure: true,
       maxAge: ACCESS_TOKEN_LIFETIME_IN_MILLISECONDS,
     });
+
+    this.logger.log(
+      JSON.stringify({
+        event: 'Admin login',
+        timestamp: new Date().toISOString(),
+        data: {
+          id: result.admin.id,
+        },
+      }),
+    );
 
     return res.send(new SuccessfulResponseDto());
   }
@@ -69,6 +83,8 @@ export class AuthController {
   @UseGuards(AdminJwtAuthGuard)
   @Get('admin/me')
   async profile(@Req() req: any) {
-    return new SuccessfulResponseDto(req.user);
+    const admin = await this.adminService.getProfile(req.user.id);
+
+    return new SuccessfulResponseDto(admin);
   }
 }

@@ -119,17 +119,28 @@ export class AuthService {
     try {
       const admin = await this.adminRepository.getByUsername(username);
       if (!admin) {
-        throw new UnauthorizedException(new ErrorResponseDto('login failed'));
+        throw new UnauthorizedException(
+          new ErrorResponseDto('Username or password is incorrect'),
+        );
       }
 
       const isPasswordMatch = bcrypt.compareSync(password, admin.password);
       if (!isPasswordMatch) {
-        throw new UnauthorizedException(new ErrorResponseDto('login failed'));
+        throw new UnauthorizedException(
+          new ErrorResponseDto('Username or password is incorrect'),
+        );
       }
 
       return admin;
     } catch (error) {
-      this.logger.debug(`Admin login failed: ${JSON.stringify({ username })}`);
+      this.logger.debug(
+        JSON.stringify({
+          event: 'Admin login failed',
+          timestamp: new Date().toISOString(),
+          error: error,
+        }),
+      );
+
       throw error;
     }
   }
@@ -138,21 +149,23 @@ export class AuthService {
     try {
       delete admin.password;
 
-      const payload = { ...admin };
+      const payload = {
+        id: admin.id,
+      };
 
       const access_token = this.jwtService.sign(payload, {
         secret: process.env.JWT_SECRET,
         expiresIn: ACCESS_TOKEN_LIFETIME_IN_MILLISECONDS / 1000,
       });
 
-      return access_token;
+      return { admin, access_token };
     } catch (error) {
       throw error;
     }
   }
 
   validateApiKey(apiKey: string) {
-    const isApiKeyValid = apiKey === process.env.API_KEY;
-    return isApiKeyValid;
+    const isValid = apiKey === process.env.API_KEY;
+    return isValid;
   }
 }

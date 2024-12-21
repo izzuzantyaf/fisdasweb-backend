@@ -8,15 +8,15 @@ services:
       - 27018:27017
     networks:
       - fdweb
-  fdweb-server:
+  fdweb:
     build: .
-    container_name: fdweb-server
+    container_name: fdweb
     ports:
-      - 8080:8080
+      - 8000:${PORT:-8000}
+    env_file:
+      - .env
     environment:
-      APP_ENV: development
       MONGO_URI: mongodb://fdweb-mongo:27017/fisdascms-dev
-      JWT_SECRET: supersecretkey
     depends_on:
       - mongodb
     networks:

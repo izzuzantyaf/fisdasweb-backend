@@ -4,8 +4,10 @@ import {
   ArgumentsHost,
   HttpException,
   Logger,
+  HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { ACCESS_TOKEN_NAME } from 'src/auth/constant';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -20,6 +22,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
     this.logger.log(
       `Response ${status} ${request.method} ${request.url} ${JSON.stringify(request.info)}`,
     );
+
+    if (status === HttpStatus.UNAUTHORIZED) {
+      return response.clearCookie(ACCESS_TOKEN_NAME).status(status).json({
+        message: 'Unauthorized',
+        data: null,
+      });
+    }
 
     response.status(status).json(exception.getResponse());
   }

@@ -80,6 +80,12 @@ export class AuthController {
     return res.send(new SuccessfulResponseDto());
   }
 
+  @Get('admin/check-access-token')
+  @UseGuards(AdminJwtAuthGuard)
+  async checkAccessToken(@Req() req: any) {
+    return new SuccessfulResponseDto(req.user);
+  }
+
   @Post('admin/logout')
   @HttpCode(HttpStatus.OK)
   async signout(@Response() res) {

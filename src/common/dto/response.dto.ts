@@ -8,12 +8,11 @@ export class SuccessfulResponseDto {
 }
 
 export class ErrorResponseDto {
-  status = false;
-  message: string = null;
-  error = null;
+  message = 'Failed';
+  data = null;
 
-  constructor(message: string = 'failed', error?: any) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  constructor(message: string = 'Failed', error?: any) {
     this.message = message;
-    this.error = error;
   }
 }

@@ -6,37 +6,36 @@ import { Repository } from 'typeorm';
 export default class AdminPostgresRepository {
   private logger = new Logger(AdminPostgresRepository.name);
 
-  constructor(
-    @InjectRepository(Admin) private adminRepository: Repository<Admin>,
-  ) {}
+  constructor(@InjectRepository(Admin) private repository: Repository<Admin>) {}
 
   async deleteById(id: Admin['id']): Promise<any> {
-    const deleteResult = await this.adminRepository.delete({ id });
+    const deleteResult = await this.repository.delete({ id });
     this.logger.debug(`Admin delete result: ${JSON.stringify(deleteResult)}`);
     return deleteResult;
-    throw new Error('Method not implemented.');
   }
 
   async checkIsExistByUsername(username: string): Promise<boolean> {
-    return await this.adminRepository.exists({ where: { username } });
-    throw new Error('Method not implemented.');
+    return await this.repository.exists({ where: { username } });
   }
 
   async store(
-    admin: Omit<Admin, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>,
+    data: Pick<Admin, 'name' | 'username' | 'password'>,
   ): Promise<Admin> {
-    const insertResult = await this.adminRepository
+    const insertResult = await this.repository
       .createQueryBuilder()
       .insert()
       .into(Admin)
-      .values(admin)
+      .values({
+        name: data.name,
+        username: data.username,
+        password: data.password,
+      })
       .returning('*')
       .execute();
-    const storedAdmin = this.adminRepository.create(
-      insertResult.raw[0] as Admin,
-    );
-    this.logger.debug(`Stored admin: ${JSON.stringify(storedAdmin)}`);
-    return storedAdmin;
+
+    const storedData = this.repository.create(insertResult.raw[0] as Admin);
+
+    return storedData;
   }
 
   get(): Promise<Admin[]> {
@@ -44,12 +43,10 @@ export default class AdminPostgresRepository {
   }
 
   async getById(id: Admin['id']): Promise<Admin> {
-    return await this.adminRepository.findOneBy({ id });
-    throw new Error('Method not implemented.');
+    return await this.repository.findOneBy({ id });
   }
 
   async getByUsername(username: string): Promise<Admin> {
-    return await this.adminRepository.findOneBy({ username });
-    throw new Error('Method not implemented.');
+    return await this.repository.findOneBy({ username });
   }
 }

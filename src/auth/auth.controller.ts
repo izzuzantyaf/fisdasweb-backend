@@ -10,7 +10,10 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { SuccessfulResponseDto } from 'src/common/dto/response.dto';
+import {
+  ErrorResponseDto,
+  SuccessfulResponseDto,
+} from 'src/common/dto/response.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { AdminJwtAuthGuard } from 'src/auth/guard/admin-jwt-auth.guard';
 import { AdminLocalAuthGuard } from 'src/auth/guard/admin-local-auth-guard';
@@ -26,7 +29,20 @@ export class AuthController {
   @Post('admin/register')
   @UseGuards(ApiKeyGuard)
   async registerAdmin(@Body() dto: CreateAdminDto) {
+    if (typeof dto.name !== 'string') {
+      return new ErrorResponseDto('name must be string');
+    }
+
+    if (typeof dto.username !== 'string') {
+      return new ErrorResponseDto('username must be string');
+    }
+
+    if (typeof dto.password !== 'string') {
+      return new ErrorResponseDto('password must be string');
+    }
+
     await this.authService.registerAdmin(dto);
+
     return new SuccessfulResponseDto();
   }
 
@@ -34,10 +50,8 @@ export class AuthController {
   @UseGuards(AdminLocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   async signin(@Request() req) {
-    this.logger.debug(`Request.body: ${JSON.stringify(req.body)}`);
-    this.logger.debug(`Request.user: ${JSON.stringify(req.user)}`);
-    const result = await this.authService.generateAdminJwt(req.user);
-    return new SuccessfulResponseDto(result);
+    await this.authService.generateAdminJwt(req.user);
+    return new SuccessfulResponseDto();
   }
 
   @UseGuards(AdminJwtAuthGuard)

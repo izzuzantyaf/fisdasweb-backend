@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateAdminDto } from '../admin/dto';
-import RegisterAdminValidationHelper from './helper/register-admin-validation.helper';
 import AdminPostgresRepository from '../admin/repo';
 import { ErrorResponseDto } from '../common/dto/response.dto';
 import * as bcrypt from 'bcrypt';
@@ -21,55 +20,96 @@ export class AuthService {
     private adminRepository: AdminPostgresRepository,
   ) {}
 
-  async registerAdmin(createAdminDto: CreateAdminDto) {
+  async registerAdmin(data: CreateAdminDto) {
     try {
-      this.logger.debug(`createAdminDto: ${JSON.stringify(createAdminDto)}`);
+      const NAME_MIN_LENGTH = 1;
+      const NAME_MAX_LENGTH = 255;
 
-      const registerAdminValidationHelper = new RegisterAdminValidationHelper();
-      const validationResult =
-        registerAdminValidationHelper.validateCreateAdminDto(createAdminDto);
-
-      if (!validationResult.isSafe) {
-        const errors = {};
-        for (const key in validationResult.result) {
-          const element = validationResult.result[key];
-          if (element !== true) {
-            errors[key] = element;
-          }
-        }
+      if (
+        data.name.length < NAME_MIN_LENGTH ||
+        data.name.length > NAME_MAX_LENGTH
+      ) {
         throw new BadRequestException(
-          new ErrorResponseDto('admin register failed', {
-            errors,
-          }),
+          new ErrorResponseDto(
+            `Name must be between ${NAME_MIN_LENGTH} and ${NAME_MAX_LENGTH} characters`,
+          ),
         );
       }
 
-      const isUsernameRegistered =
-        await this.adminRepository.checkIsExistByUsername(
-          createAdminDto.username,
-        );
-      if (isUsernameRegistered) {
+      const USERNAME_MIN_LENGTH = 1;
+      const USERNAME_MAX_LENGTH = 32;
+
+      if (
+        data.username.length < USERNAME_MIN_LENGTH ||
+        data.username.length > USERNAME_MAX_LENGTH
+      ) {
         throw new BadRequestException(
-          new ErrorResponseDto('admin register failed', {
-            errors: {
-              username: 'username is already registered',
-            },
-          }),
+          new ErrorResponseDto(
+            `Username must be between ${USERNAME_MIN_LENGTH} and ${USERNAME_MAX_LENGTH} characters`,
+          ),
         );
       }
 
-      const saltRounds = 10;
-      const hashedPassword = bcrypt.hashSync(
-        createAdminDto.password,
-        saltRounds,
+      const ALPHANUMERIC_UNDERSCORE_DOT_HYPEN_REGEX = /^[a-zA-Z0-9_.-]+$/;
+
+      if (!ALPHANUMERIC_UNDERSCORE_DOT_HYPEN_REGEX.test(data.username)) {
+        throw new BadRequestException(
+          new ErrorResponseDto(
+            'Username can only contain letters, numbers, underscores, dots, and hyphens',
+          ),
+        );
+      }
+
+      const PASSWORD_MIN_LENGTH = 8;
+      const PASSWORD_MAX_LENGTH = 16;
+
+      if (
+        data.password.length < PASSWORD_MIN_LENGTH ||
+        data.password.length > PASSWORD_MAX_LENGTH
+      ) {
+        throw new BadRequestException(
+          new ErrorResponseDto(
+            `Password must be between ${PASSWORD_MIN_LENGTH} and ${PASSWORD_MAX_LENGTH} characters`,
+          ),
+        );
+      }
+
+      const isUsernameUsed = await this.adminRepository.checkIsExistByUsername(
+        data.username,
       );
 
-      createAdminDto.password = hashedPassword;
-      const storedAdmin = await this.adminRepository.store(createAdminDto);
+      if (isUsernameUsed) {
+        throw new BadRequestException(
+          new ErrorResponseDto('Username is already used'),
+        );
+      }
+
+      const SALT_ROUNDS = 10;
+      const hashedPassword = bcrypt.hashSync(data.password, SALT_ROUNDS);
+
+      data.password = hashedPassword;
+      const storedAdmin = await this.adminRepository.store(data);
+
+      this.logger.log(
+        JSON.stringify({
+          event: 'Admin registered',
+          timestamp: new Date().toISOString(),
+          data: {
+            id: storedAdmin.id,
+          },
+        }),
+      );
 
       return storedAdmin;
     } catch (error) {
-      this.logger.debug(`Admin register error: ${JSON.stringify(error)}`);
+      this.logger.debug(
+        JSON.stringify({
+          event: 'Admin registration failed',
+          timestamp: new Date().toISOString(),
+          error: error,
+        }),
+      );
+
       throw error;
     }
   }

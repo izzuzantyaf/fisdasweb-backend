@@ -80,6 +80,14 @@ export class AuthController {
     return res.send(new SuccessfulResponseDto());
   }
 
+  @Post('admin/logout')
+  @HttpCode(HttpStatus.OK)
+  async signout(@Response() res) {
+    res.clearCookie(ACCESS_TOKEN_NAME);
+
+    return res.send(new SuccessfulResponseDto());
+  }
+
   @UseGuards(AdminJwtAuthGuard)
   @Get('admin/me')
   async profile(@Req() req: any) {

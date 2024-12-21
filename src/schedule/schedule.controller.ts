@@ -17,16 +17,13 @@ export class ScheduleController {
   @Get()
   async getAll(@Query() filter?: ScheduleQuery) {
     const schedules = await this.scheduleService.getAll(filter);
-    return new SuccessfulResponseDto('Sukses', schedules);
+    return new SuccessfulResponseDto(schedules);
   }
 
   @Put()
   async update(@Body() updateScheduleDto: UpdateScheduleDto) {
     const updatedSchedule =
       await this.scheduleService.update(updateScheduleDto);
-    return new SuccessfulResponseDto(
-      'Jadwal berhasil diupdate',
-      updatedSchedule,
-    );
+    return new SuccessfulResponseDto(updatedSchedule);
   }
 }

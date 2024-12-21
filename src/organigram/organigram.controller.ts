@@ -13,7 +13,7 @@ export class OrganigramController {
   @UseGuards(ApiKeyGuard)
   async get() {
     const organigram = await this.organigramService.get();
-    return new SuccessfulResponseDto('success', organigram);
+    return new SuccessfulResponseDto(organigram);
   }
 
   @Patch(':id')
@@ -24,6 +24,6 @@ export class OrganigramController {
       dto,
     );
 
-    return new SuccessfulResponseDto('updated successfully', updatedOrganigram);
+    return new SuccessfulResponseDto(updatedOrganigram);
   }
 }

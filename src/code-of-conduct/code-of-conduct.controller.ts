@@ -13,7 +13,7 @@ export class CodeOfConductController {
   @UseGuards(ApiKeyGuard)
   async get() {
     const codeOfConduct = await this.codeOfConductService.get();
-    return new SuccessfulResponseDto('success', codeOfConduct);
+    return new SuccessfulResponseDto(codeOfConduct);
   }
 
   @Patch(':id')
@@ -24,9 +24,6 @@ export class CodeOfConductController {
       dto,
     );
 
-    return new SuccessfulResponseDto(
-      'updated successfully',
-      updatedCodeOfCondcut,
-    );
+    return new SuccessfulResponseDto(updatedCodeOfCondcut);
   }
 }

@@ -1,10 +1,8 @@
 export class SuccessfulResponseDto {
-  status = true;
-  message: string = null;
+  message = 'Success';
   data = null;
 
-  constructor(message: string = 'success', data?: any) {
-    this.message = message;
+  constructor(data: any = null) {
     this.data = data;
   }
 }

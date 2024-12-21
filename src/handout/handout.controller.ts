@@ -14,12 +14,12 @@ export class HandoutController {
   @Get()
   async getAll(@Query() filter?: HandoutQuery) {
     const handouts = await this.handoutService.getAll(filter);
-    return new SuccessfulResponseDto('Sukses', handouts);
+    return new SuccessfulResponseDto(handouts);
   }
 
   @Put()
   async update(@Body() updateHandoutDto: UpdateHandoutDto) {
     const updatedHandout = await this.handoutService.update(updateHandoutDto);
-    return new SuccessfulResponseDto('Modul berhasil diupdate', updatedHandout);
+    return new SuccessfulResponseDto(updatedHandout);
   }
 }

@@ -14,10 +14,7 @@ export class ArticleController {
   @Get()
   async findAll() {
     const articles = await this.articleService.findMany();
-    return new SuccessfulResponseDto(
-      'Berhasil mengambil data artikel',
-      articles,
-    );
+    return new SuccessfulResponseDto(articles);
   }
 
   // @Get(':id')

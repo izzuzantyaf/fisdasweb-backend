@@ -13,35 +13,35 @@ export class LabModuleController {
   @UseGuards(AdminJwtAuthGuard)
   async getAll() {
     const labModules = await this.labModuleService.getAll();
-    return new SuccessfulResponseDto('Sukses', labModules);
+    return new SuccessfulResponseDto(labModules);
   }
 
   @Get('/pretasks')
   @UseGuards(ApiKeyGuard)
   async getPreTasks() {
     const preTasks = await this.labModuleService.getPreTasks();
-    return new SuccessfulResponseDto('Sukses', preTasks);
+    return new SuccessfulResponseDto(preTasks);
   }
 
   @Get('/videos')
   @UseGuards(ApiKeyGuard)
   async getVideos() {
     const preTasks = await this.labModuleService.getVideos();
-    return new SuccessfulResponseDto('Sukses', preTasks);
+    return new SuccessfulResponseDto(preTasks);
   }
 
   @Get('/simulators')
   @UseGuards(ApiKeyGuard)
   async getSimulators() {
     const preTasks = await this.labModuleService.getSimulators();
-    return new SuccessfulResponseDto('Sukses', preTasks);
+    return new SuccessfulResponseDto(preTasks);
   }
 
   @Get('/journal-covers')
   @UseGuards(ApiKeyGuard)
   async getJournalCovers() {
     const preTasks = await this.labModuleService.getJournalCovers();
-    return new SuccessfulResponseDto('Sukses', preTasks);
+    return new SuccessfulResponseDto(preTasks);
   }
 
   @Patch(':id')
@@ -51,9 +51,6 @@ export class LabModuleController {
       Number(id),
       dto,
     );
-    return new SuccessfulResponseDto(
-      'Konten praktikum berhasil diupdate',
-      updatedLabModule,
-    );
+    return new SuccessfulResponseDto(updatedLabModule);
   }
 }

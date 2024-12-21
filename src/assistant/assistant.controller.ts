@@ -27,7 +27,7 @@ export class AssistantController {
   async create(@Body() createAssistantDto: CreateAssistantDto) {
     const storedAssistant =
       await this.assistantService.create(createAssistantDto);
-    return new SuccessfulResponseDto('success', storedAssistant);
+    return new SuccessfulResponseDto(storedAssistant);
   }
 
   @Get()
@@ -36,7 +36,7 @@ export class AssistantController {
     const assistants = isNotEmpty(keyword)
       ? await this.assistantService.search(keyword)
       : await this.assistantService.getAll();
-    return new SuccessfulResponseDto('success', assistants);
+    return new SuccessfulResponseDto(assistants);
   }
 
   @Put(':id')
@@ -49,13 +49,13 @@ export class AssistantController {
       Number(id),
       updateAssistantDto,
     );
-    return new SuccessfulResponseDto('success', updatedAssistant);
+    return new SuccessfulResponseDto(updatedAssistant);
   }
 
   @Delete(':id')
   @UseGuards(AdminJwtAuthGuard)
   async delete(@Param('id') id: string) {
     const deletedAssistant = await this.assistantService.delete(Number(id));
-    return new SuccessfulResponseDto('success', deletedAssistant);
+    return new SuccessfulResponseDto(deletedAssistant);
   }
 }

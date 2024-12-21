@@ -7,10 +7,6 @@ import {
   Schedule,
   ScheduleSchema,
 } from 'src/schedule/entities/schedule.entity';
-import {
-  SocialMedia,
-  SocialMediaSchema,
-} from 'src/social-media/entities/social-media.entity';
 
 @Module({
   imports: [
@@ -18,7 +14,6 @@ import {
     MongooseModule.forFeature([
       { name: Handout.name, schema: HandoutSchema },
       { name: Schedule.name, schema: ScheduleSchema },
-      { name: SocialMedia.name, schema: SocialMediaSchema },
     ]),
     MongooseModule.forRoot(process.env.MONGO_URI),
   ],

@@ -8,6 +8,6 @@ RUN apk update && npm install
 
 COPY . .
 
-RUN npm run build && npm run typeorm:migration:run && npm prune && rm -rf src
+RUN npm run build && npm prune && rm -rf src
 
-CMD npm start
+CMD npm run typeorm:migration:run && npm start

@@ -9,8 +9,8 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: fdweb_db
     networks:
-      - fdweb
-  fdweb:
+      - fdweb-network
+  fdweb-api:
     build: .
     image: fdweb-api
     container_name: fdweb-api
@@ -19,12 +19,12 @@ services:
     env_file:
       - .env
     environment:
-      - POSTGRES_URL=postgresql://postgres:root@fdweb-postgres:5432/fdweb_db
+      POSTGRES_URL: postgresql://postgres:root@fdweb-postgres:5432/fdweb_db
     networks:
-      - fdweb
+      - fdweb-network
     depends_on:
       - postgres
 
 networks:
-  fdweb:
-    name: fdweb
+  fdweb-network:
+    driver: bridge

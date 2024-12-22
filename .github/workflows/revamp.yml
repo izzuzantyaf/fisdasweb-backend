@@ -9,28 +9,45 @@ env:
   working-directory: .
 
 jobs:
-  db-migration:
-    name: Database migration
+  deploy:
+    name: Deploy to Zuserver
     runs-on: ubuntu-latest
     environment: revamp
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - name: Setup pnpm
-        run: npm install -g pnpm@^8.0.0
-      - name: Install dependencies
-        run: pnpm install
-        working-directory: ${{ env.working-directory }}
-      - name: Run migration
-        run: pnpm typeorm:migration:run
-        working-directory: ${{ env.working-directory }}
+      - name: Deploy
         env:
-          APP_ENV: ${{ vars.APP_ENV }}
-          POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+          ZUSERVER_IP: ${{ secrets.ZUSERVER_IP }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          ssh-keyscan -H $ZUSERVER_IP >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+          ssh root@$ZUSERVER_IP "~/Services/fisdasweb_backend_dev_deploy.sh"
+
+  # db-migration:
+  #   name: Database migration
+  #   runs-on: ubuntu-latest
+  #   environment: revamp
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18
+  #     - name: Setup pnpm
+  #       run: npm install -g pnpm@^8.0.0
+  #     - name: Install dependencies
+  #       run: pnpm install
+  #       working-directory: ${{ env.working-directory }}
+  #     - name: Run migration
+  #       run: pnpm typeorm:migration:run
+  #       working-directory: ${{ env.working-directory }}
+  #       env:
+  #         APP_ENV: ${{ vars.APP_ENV }}
+  #         POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
   # deploy-to-railway:
   #   needs: db-migration
   #   uses: ./.github/workflows/railway-deploy.yml

@@ -13,7 +13,7 @@ export class CodeOfConductRepository implements OnModuleInit {
   ) {}
 
   onModuleInit() {
-    this.seed();
+    // this.seed();
   }
 
   private async seed() {

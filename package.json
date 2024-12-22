@@ -27,7 +27,8 @@
     "typeorm:migration:generate": "npm run build && typeorm-ts-node-esm migration:generate src/common/database/postgres/migration/$npm_config_name -d dist/common/database/typeorm/data-source-config.js",
     "typeorm:migration:run": "npm run build && typeorm-ts-node-esm migration:run -d dist/common/database/typeorm/data-source-config.js",
     "typeorm:migration:revert": "npm run build && typeorm-ts-node-esm migration:revert -d dist/common/database/typeorm/data-source-config.js",
-    "typeorm:schema:drop": "npm run build && typeorm-ts-node-esm schema:drop -d dist/common/database/typeorm/data-source-config.js"
+    "typeorm:schema:drop": "npm run build && typeorm-ts-node-esm schema:drop -d dist/common/database/typeorm/data-source-config.js",
+    "seed:run": "typeorm-extension seed:run -d dist/common/database/typeorm/data-source-config --name=$npm_config_name"
   },
   "dependencies": {
     "@aws-sdk/client-sesv2": "^3.569.0",
@@ -59,6 +60,7 @@
     "rimraf": "^5.0.5",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.20",
+    "typeorm-extension": "^3.6.3",
     "unsplash-js": "^7.0.19"
   },
   "devDependencies": {

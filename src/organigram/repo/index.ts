@@ -13,7 +13,7 @@ export class OrganigramRepository implements OnModuleInit {
   ) {}
 
   onModuleInit() {
-    this.seed();
+    // this.seed();
   }
 
   private async seed() {

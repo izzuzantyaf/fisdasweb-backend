@@ -1,26 +1,29 @@
-version: '3'
-
 services:
-  mongodb:
-    image: mongo
-    container_name: fdweb-mongo
+  postgres:
+    image: postgres:17
+    container_name: fdweb-postgres
     ports:
-      - 27018:27017
+      - 2000:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: fdweb_db
     networks:
       - fdweb
   fdweb:
     build: .
-    container_name: fdweb
+    image: fdweb-api
+    container_name: fdweb-api
     ports:
-      - 8000:${PORT:-8000}
+      - 8000:${PORT}
     env_file:
       - .env
     environment:
-      MONGO_URI: mongodb://fdweb-mongo:27017/fisdascms-dev
-    depends_on:
-      - mongodb
+      - POSTGRES_URL=postgresql://postgres:root@fdweb-postgres:5432/fdweb_db
     networks:
       - fdweb
+    depends_on:
+      - postgres
 
 networks:
   fdweb:

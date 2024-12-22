@@ -10,7 +10,7 @@ export const typeOrmDataSourceOptions: DataSourceOptions & SeederOptions = {
   synchronize: false,
   dropSchema: false,
   logging: process.env.APP_ENV === 'production' ? false : true,
-  seeds: ['dist/common/database/seeds/**/*{.ts,.js}'],
+  seeds: ['dist/common/database/seeders/**/*{.ts,.js}'],
 };
 
 export const typeOrmModuleOptions = {
@@ -20,8 +20,8 @@ export const typeOrmModuleOptions = {
 
 const typeOrmDataSource = new DataSource({
   ...typeOrmDataSourceOptions,
-  entities: ['dist/**/entities/index.js'],
-  migrations: ['dist/common/database/postgres/migration/*.js'],
+  entities: ['dist/**/entities/index{.ts,.js}'],
+  migrations: ['dist/common/database/postgres/migration/*{.ts,.js}'],
 });
 
 export default typeOrmDataSource;

@@ -19,10 +19,11 @@ jobs:
       - name: Deploy
         env:
           ZUSERVER_IP: ${{ secrets.ZUSERVER_IP }}
+          ZUSERVER_PASSWORD: ${{ secrets.ZUSERVER_PASSWORD }}
         run: |
           apt-get update
           apt-get install sshpass
-          sshpass -p ${{ secrets.ZUSERVER_PASSWORD }} ssh root@$ZUSERVER_IP "~/Services/fisdasweb_backend_dev_deploy.sh"
+          sshpass -p $ZUSERVER_PASSWORD ssh root@$ZUSERVER_IP "~/Services/fisdasweb_backend_dev_deploy.sh"
         # run: |
         #   mkdir -p ~/.ssh
         #   chmod 700 ~/.ssh

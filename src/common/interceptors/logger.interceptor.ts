@@ -25,7 +25,7 @@ export class LoggerInterceptor implements NestInterceptor {
       'user-agent': request.headers['user-agent'],
       // body: request.body,
     };
-    this.logger.log(
+    this.logger.verbose(
       `Request ${request.method} ${request.path} ${JSON.stringify(request.info)}`,
     );
 

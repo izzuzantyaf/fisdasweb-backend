@@ -32,7 +32,7 @@ export class LoggerInterceptor implements NestInterceptor {
     // delete request.info.body;
     return next.handle().pipe(
       map((responseData) => {
-        this.logger.log(
+        this.logger.verbose(
           `Response ${response.statusCode} ${request.method} ${
             request.url
           } ${JSON.stringify(request.info)}`,

@@ -10,4 +10,4 @@ COPY . .
 
 RUN npm run build && npm prune && rm -rf src
 
-CMD npm run typeorm:migration:run && npm start
+CMD npm run migration:run && npm start

@@ -48,7 +48,7 @@ jobs:
   #       run: pnpm install
   #       working-directory: ${{ env.working-directory }}
   #     - name: Run migration
-  #       run: pnpm typeorm:migration:run
+  #       run: pnpm migration:run
   #       working-directory: ${{ env.working-directory }}
   #       env:
   #         APP_ENV: ${{ vars.APP_ENV }}

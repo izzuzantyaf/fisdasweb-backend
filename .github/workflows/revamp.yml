@@ -26,6 +26,7 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H $SERVER_HOST >> ~/.ssh/known_hosts
           echo "$SERVER_SSH_PRIVATE_KEY" > ~/.ssh/id_private_key
+          chmod 600 ~/.ssh/id_private_key
           ssh -i ~/.ssh/id_private_key root@$SERVER_HOST "$SCRIPT"
           # sudo apt-get update
           # sudo apt-get install sshpass

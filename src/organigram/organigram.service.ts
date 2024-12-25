@@ -23,7 +23,7 @@ export class OrganigramService {
 
   async getPublished() {
     const organigrams = await this.organigramRepository.find({
-      select: ['id', 'link', 'is_published'],
+      select: ['id', 'link'],
       where: { is_published: true },
       take: 1,
       order: {

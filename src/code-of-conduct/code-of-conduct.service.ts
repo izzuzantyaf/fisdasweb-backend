@@ -23,7 +23,7 @@ export class CodeOfConductService {
 
   async getPublished() {
     const codeofconducts = await this.codeOfConductRepository.find({
-      select: ['id', 'link', 'is_published'],
+      select: ['id', 'link'],
       where: { is_published: true },
       take: 1,
       order: {

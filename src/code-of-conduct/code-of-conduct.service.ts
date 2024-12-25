@@ -12,6 +12,10 @@ export class CodeOfConductService {
   async get() {
     const codeofconducts = await this.codeOfConductRepository.find({
       select: ['id', 'link', 'is_published'],
+      take: 1,
+      order: {
+        id: 'asc',
+      },
     });
 
     return codeofconducts[0] || null;
@@ -20,6 +24,10 @@ export class CodeOfConductService {
   async getPublished() {
     const codeofconducts = await this.codeOfConductRepository.find({
       where: { is_published: true },
+      take: 1,
+      order: {
+        id: 'asc',
+      },
     });
 
     return codeofconducts[0] || null;

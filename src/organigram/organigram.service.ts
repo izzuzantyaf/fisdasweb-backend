@@ -12,6 +12,10 @@ export class OrganigramService {
   async get() {
     const organigrams = await this.organigramRepository.find({
       select: ['id', 'link', 'is_published'],
+      take: 1,
+      order: {
+        id: 'asc',
+      },
     });
 
     return organigrams[0] || null;
@@ -20,6 +24,10 @@ export class OrganigramService {
   async getPublished() {
     const organigrams = await this.organigramRepository.find({
       where: { is_published: true },
+      take: 1,
+      order: {
+        id: 'asc',
+      },
     });
 
     return organigrams[0] || null;

@@ -10,7 +10,9 @@ export class CodeOfConductService {
   constructor(private codeOfConductRepository: CodeOfConductRepository) {}
 
   async get() {
-    const codeofconducts = await this.codeOfConductRepository.find();
+    const codeofconducts = await this.codeOfConductRepository.find({
+      select: ['id', 'link', 'is_published'],
+    });
 
     return codeofconducts[0] || null;
   }

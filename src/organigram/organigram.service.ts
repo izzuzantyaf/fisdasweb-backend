@@ -10,7 +10,9 @@ export class OrganigramService {
   constructor(private organigramRepository: OrganigramRepository) {}
 
   async get() {
-    const organigrams = await this.organigramRepository.find();
+    const organigrams = await this.organigramRepository.find({
+      select: ['id', 'link', 'is_published'],
+    });
 
     return organigrams[0] || null;
   }

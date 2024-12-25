@@ -19,7 +19,6 @@ jobs:
       - name: Deploy
         env:
           SERVER_HOST: ${{ secrets.ZUSERVER_HOST }}
-          SERVER_PASSWORD: ${{ secrets.ZUSERVER_PASSWORD }}
           SERVER_SSH_PRIVATE_KEY: ${{ secrets.ZUSERVER_SSH_PRIVATE_KEY }}
           SCRIPT: ${{ vars.ZUSERVER_DEPLOY_COMMAND }}
         run: |
@@ -28,6 +27,3 @@ jobs:
           echo "$SERVER_SSH_PRIVATE_KEY" > ~/.ssh/id_private_key
           chmod 600 ~/.ssh/id_private_key
           ssh -i ~/.ssh/id_private_key root@$SERVER_HOST "$SCRIPT"
-          # sudo apt-get update
-          # sudo apt-get install sshpass
-          # sshpass -p $SERVER_PASSWORD ssh root@$SERVER_HOST "$SCRIPT"

@@ -18,49 +18,15 @@ jobs:
         uses: actions/checkout@v3
       - name: Deploy
         env:
-          ZUSERVER_IP: ${{ secrets.ZUSERVER_IP }}
-          ZUSERVER_PASSWORD: ${{ secrets.ZUSERVER_PASSWORD }}
+          SERVER_HOST: ${{ secrets.ZUSERVER_HOST }}
+          SERVER_PASSWORD: ${{ secrets.ZUSERVER_PASSWORD }}
+          SERVER_SSH_PRIVATE_KEY: ${{ secrets.ZUSERVER_SSH_PRIVATE_KEY }}
+          SCRIPT: ${{ vars.ZUSERVER_DEPLOY_COMMAND }}
         run: |
           mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          ssh-keyscan -H $ZUSERVER_IP >> ~/.ssh/known_hosts
-          chmod 644 ~/.ssh/known_hosts
-          sudo apt-get update
-          sudo apt-get install sshpass
-          sshpass -p $ZUSERVER_PASSWORD ssh root@$ZUSERVER_IP "~/Services/fisdasweb_backend_dev_deploy.sh"
-        # run: |
-        #   mkdir -p ~/.ssh
-        #   chmod 700 ~/.ssh
-        #   ssh-keyscan -H $ZUSERVER_IP >> ~/.ssh/known_hosts
-        #   chmod 644 ~/.ssh/known_hosts
-        #   ssh root@$ZUSERVER_IP "~/Services/fisdasweb_backend_dev_deploy.sh"
-
-  # db-migration:
-  #   name: Database migration
-  #   runs-on: ubuntu-latest
-  #   environment: revamp
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v3
-  #     - name: Setup Node.js
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 18
-  #     - name: Setup pnpm
-  #       run: npm install -g pnpm@^8.0.0
-  #     - name: Install dependencies
-  #       run: pnpm install
-  #       working-directory: ${{ env.working-directory }}
-  #     - name: Run migration
-  #       run: pnpm migration:run
-  #       working-directory: ${{ env.working-directory }}
-  #       env:
-  #         APP_ENV: ${{ vars.APP_ENV }}
-  #         POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
-  # deploy-to-railway:
-  #   needs: db-migration
-  #   uses: ./.github/workflows/railway-deploy.yml
-  #   with:
-  #     environment: revamp
-  #     working-directory: .
-  #   secrets: inherit
+          ssh-keyscan -H $SERVER_HOST >> ~/.ssh/known_hosts
+          echo "$SERVER_SSH_PRIVATE_KEY" > ~/.ssh/id_private_key
+          ssh -i ~/.ssh/id_private_key root@$SERVER_HOST "$SCRIPT"
+          # sudo apt-get update
+          # sudo apt-get install sshpass
+          # sshpass -p $SERVER_PASSWORD ssh root@$SERVER_HOST "$SCRIPT"

@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateAdminDto } from '../admin/dto';
 import AdminPostgresRepository from '../admin/repo';
@@ -118,15 +113,16 @@ export class AuthService {
   async loginAdminUsingLocalStrategy(username: string, password: string) {
     try {
       const admin = await this.adminRepository.getByUsername(username);
+
       if (!admin) {
-        throw new UnauthorizedException(
+        throw new BadRequestException(
           new ErrorResponseDto('Username or password is incorrect'),
         );
       }
 
       const isPasswordMatch = bcrypt.compareSync(password, admin.password);
       if (!isPasswordMatch) {
-        throw new UnauthorizedException(
+        throw new BadRequestException(
           new ErrorResponseDto('Username or password is incorrect'),
         );
       }

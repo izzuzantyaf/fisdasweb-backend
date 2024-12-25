@@ -7,6 +7,8 @@ export default class OrganigramSeeder implements Seeder {
   public async run(dataSource: DataSource): Promise<any> {
     const repository = dataSource.getRepository(Organigram);
 
-    await repository.insert(organigramSeed);
+    const result = await repository.insert(organigramSeed);
+
+    console.log(`${Organigram.name} insterted: ${result.generatedMaps.length}`);
   }
 }

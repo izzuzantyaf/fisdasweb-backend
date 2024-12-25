@@ -7,6 +7,10 @@ export default class CodeOfConductSeeder implements Seeder {
   public async run(dataSource: DataSource): Promise<any> {
     const repository = dataSource.getRepository(CodeOfConduct);
 
-    await repository.insert(codeOfConductSeed);
+    const result = await repository.insert(codeOfConductSeed);
+
+    console.log(
+      `${CodeOfConduct.name} insterted: ${result.generatedMaps.length}`,
+    );
   }
 }

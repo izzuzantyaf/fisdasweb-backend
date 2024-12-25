@@ -27,7 +27,7 @@
     "migration:generate": "npm run typeorm -- migration:generate src/common/database/postgres/migration/$npm_config_name -d dist/common/database/typeorm/data-source-config.js",
     "migration:run": "npm run typeorm -- migration:run -d dist/common/database/typeorm/data-source-config.js",
     "migration:revert": "npm run typeorm -- migration:revert -d dist/common/database/typeorm/data-source-config.js",
-    "typeorm:schema:drop": "npm run typeorm -- schema:drop -d dist/common/database/typeorm/data-source-config.js",
+    "schema:drop": "npm run typeorm -- schema:drop -d dist/common/database/typeorm/data-source-config.js",
     "seed:run": "typeorm-extension seed:run -d dist/common/database/typeorm/data-source-config --name=$npm_config_name"
   },
   "dependencies": {

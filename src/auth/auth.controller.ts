@@ -25,6 +25,7 @@ import {
   ACCESS_TOKEN_LIFETIME_IN_MILLISECONDS,
 } from 'src/auth/constant';
 import { AdminService } from 'src/admin/admin.service';
+import { Response as ResponseExpress } from 'express';
 
 @Controller('/auth')
 export class AuthController {
@@ -58,13 +59,16 @@ export class AuthController {
   @Post('/admin/login')
   @UseGuards(AdminLocalAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async signin(@Request() req, @Response() res) {
+  async signin(@Request() req, @Response() res: ResponseExpress) {
     const result = await this.authService.generateAdminJwt(req.user);
+
+    const COOKIE_MAX_AGE = ACCESS_TOKEN_LIFETIME_IN_MILLISECONDS;
 
     res.cookie(ACCESS_TOKEN_NAME, result.access_token, {
       httpOnly: true,
       secure: process.env.APP_ENV === 'production' ? true : false,
-      maxAge: ACCESS_TOKEN_LIFETIME_IN_MILLISECONDS,
+      sameSite: 'lax',
+      maxAge: COOKIE_MAX_AGE,
     });
 
     this.logger.log(

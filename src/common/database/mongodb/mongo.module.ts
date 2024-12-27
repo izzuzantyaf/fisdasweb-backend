@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongoService } from './mongo.service';
-import { Handout, HandoutSchema } from 'src/handout/entities/handout.entity';
 import {
   Schedule,
   ScheduleSchema,
@@ -12,7 +11,6 @@ import {
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forFeature([
-      { name: Handout.name, schema: HandoutSchema },
       { name: Schedule.name, schema: ScheduleSchema },
     ]),
     MongooseModule.forRoot(process.env.MONGO_URI),

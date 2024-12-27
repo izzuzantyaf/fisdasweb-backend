@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UpdateHandoutDto } from 'src/handout/dto/handout.dto';
+import { UpdateHandoutDto } from 'src/handout/dto';
 import { SuccessfulResponseDto } from 'src/common/dto/response.dto';
-import { Handout } from 'src/handout/entities/handout.entity';
+import { Handout } from 'src/handout/entities';
 import { HandoutController } from '../handout.controller';
 import { HandoutModule } from '../handout.module';
 

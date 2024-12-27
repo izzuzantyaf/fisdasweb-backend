@@ -2,6 +2,7 @@ import { Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { ACCESS_TOKEN_NAME, ADMIN_JWT_STRATEGY_NAME } from '../constant';
+import { AccessTokenPayload } from 'src/auth/types';
 
 @Injectable()
 export class AdminJwtStrategy extends PassportStrategy(
@@ -16,7 +17,7 @@ export class AdminJwtStrategy extends PassportStrategy(
     });
   }
 
-  async validate(payload: any) {
+  async validate(payload: AccessTokenPayload) {
     return payload;
   }
 }

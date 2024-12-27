@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AdminModule } from './admin/admin.module';
 import { AuthModule } from 'src/auth/auth.module';
-// import { HandoutModule } from 'src/handout/handout.module';
+import { HandoutModule } from 'src/handout/handout.module';
 import { CodeOfConductModule } from 'src/code-of-conduct/code-of-conduct.module';
 import { OrganigramModule } from 'src/organigram/organigram.module';
 // import { ScheduleModule } from 'src/schedule/schedule.module';
@@ -23,7 +23,7 @@ import { typeOrmModuleOptions } from './common/database/typeorm/data-source-conf
     TypeOrmModule.forRoot(typeOrmModuleOptions),
     AdminModule,
     AuthModule,
-    // HandoutModule,
+    HandoutModule,
     CodeOfConductModule,
     OrganigramModule,
     // ScheduleModule,

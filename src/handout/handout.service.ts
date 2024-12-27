@@ -1,64 +1,122 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { isEmpty, isNotEmpty } from 'class-validator';
-import { MongoService } from 'src/common/database/mongodb/mongo.service';
 import { ErrorResponseDto } from 'src/common/dto/response.dto';
-import { HandoutFactoryService } from './handout-factory.service';
-import { HandoutQuery, UpdateHandoutDto } from 'src/handout/dto/handout.dto';
+import { isNotUndefinedOrNull } from 'src/common/utils';
+import { AddHandoutDto, UpdateHandoutDto } from 'src/handout/dto';
+import { Handout } from 'src/handout/entities';
+import { HandoutRepository } from 'src/handout/repo';
 
 @Injectable()
 export class HandoutService {
   private readonly logger = new Logger(HandoutService.name);
 
-  constructor(
-    private dataService: MongoService,
-    private handoutFactory: HandoutFactoryService,
-  ) {}
+  constructor(private repository: HandoutRepository) {}
 
-  async getAll(filter?: HandoutQuery) {
-    this.logger.debug(`Handout filter ${JSON.stringify(filter, undefined, 2)}`);
-    return this.handoutFactory.createMany(
-      await this.dataService.handouts.getAll({
-        filter,
-      }),
-    );
+  private readonly MIN_NAME_LENGTH = 1;
+  private readonly MAX_NAME_LENGTH = 255;
+
+  async add(data: AddHandoutDto) {
+    try {
+      const MIN_NAME_LENGTH = this.MIN_NAME_LENGTH;
+      const MAX_NAME_LENGTH = this.MAX_NAME_LENGTH;
+
+      if (
+        data.name.length < MIN_NAME_LENGTH ||
+        data.name.length > MAX_NAME_LENGTH
+      ) {
+        throw new BadRequestException(
+          new ErrorResponseDto(
+            `Name must be between ${MIN_NAME_LENGTH} and ${MAX_NAME_LENGTH} characters`,
+          ),
+        );
+      }
+
+      const storedData = await this.repository.store(data, {
+        returning: ['id', 'name', 'link', 'is_published'],
+      });
+
+      return storedData;
+    } catch (error) {
+      this.logger.debug(
+        JSON.stringify({
+          event: 'Add handout failed',
+          timestamp: new Date().toISOString(),
+          error: error,
+        }),
+      );
+
+      throw error;
+    }
   }
 
-  async update(updateHandoutDto: UpdateHandoutDto) {
-    this.logger.debug(
-      `updateHandoutDto ${JSON.stringify(updateHandoutDto, undefined, 2)}`,
-    );
-    const newHandout = this.handoutFactory.create(updateHandoutDto);
-    const validationErrors = newHandout.validateProps();
-    if (isNotEmpty(validationErrors)) {
-      this.logger.log(
-        `Handout data is not valid ${JSON.stringify(validationErrors)}`,
+  async get() {
+    const data = await this.repository.find({
+      select: ['id', 'name', 'link', 'is_published'],
+    });
+
+    return data;
+  }
+
+  async getPublished() {
+    const data = await this.repository.find({
+      select: ['id', 'name', 'link'],
+      where: { is_published: true },
+    });
+
+    return data;
+  }
+
+  async update(id: Handout['id'], data: UpdateHandoutDto) {
+    try {
+      const MIN_NAME_LENGTH = this.MIN_NAME_LENGTH;
+      const MAX_NAME_LENGTH = this.MAX_NAME_LENGTH;
+
+      if (
+        isNotUndefinedOrNull(data.name) &&
+        (data.name.length < MIN_NAME_LENGTH ||
+          data.name.length > MAX_NAME_LENGTH)
+      ) {
+        throw new BadRequestException(
+          new ErrorResponseDto(
+            `Name must be between ${MIN_NAME_LENGTH} and ${MAX_NAME_LENGTH} characters`,
+          ),
+        );
+      }
+
+      const updateResult = await this.repository.update(id, data, {
+        returning: ['id', 'name', 'link', 'is_published'],
+      });
+
+      return updateResult;
+    } catch (error) {
+      this.logger.debug(
+        JSON.stringify({
+          event: 'Update handout failed',
+          timestamp: new Date().toISOString(),
+          error: error,
+        }),
       );
-      throw new BadRequestException(
-        new ErrorResponseDto('Data tidak valid', { validationErrors }),
-      );
+
+      throw error;
     }
-    const updatedHandout = await this.dataService.handouts.updateById(
-      newHandout._id,
-      newHandout,
-    );
-    if (isEmpty(updatedHandout)) {
-      this.logger.log(
-        `Handout update failed ${JSON.stringify({
-          handoutId: updateHandoutDto._id,
-        })}`,
+  }
+
+  async delete(id: Handout['id']) {
+    try {
+      const deletedData = await this.repository.softDeleteById(id, {
+        returning: ['id'],
+      });
+
+      return deletedData;
+    } catch (error) {
+      this.logger.debug(
+        JSON.stringify({
+          event: 'Delete handout failed',
+          timestamp: new Date().toISOString(),
+          error: error,
+        }),
       );
-      throw new BadRequestException(
-        new ErrorResponseDto('Handout gagal diupdate'),
-      );
+
+      throw error;
     }
-    this.logger.debug(
-      `Updated handout ${JSON.stringify(updatedHandout, undefined, 2)}`,
-    );
-    this.logger.log(
-      `Handout update success ${JSON.stringify({
-        handoutId: updatedHandout._id,
-      })}`,
-    );
-    return this.handoutFactory.create(updatedHandout);
   }
 }

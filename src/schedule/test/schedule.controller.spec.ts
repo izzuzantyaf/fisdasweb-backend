@@ -1,16 +1,16 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { UpdateScheduleDto } from 'src/schedule/dto';
 import { SuccessfulResponseDto } from 'src/common/dto/response.dto';
-import { Schedule } from 'src/schedule/entities/schedule.entity';
+import { Schedule } from 'src/schedule/entities';
 import { ScheduleController } from '../schedule.controller';
 import { ScheduleModule } from '../schedule.module';
 
 describe('ScheduleController', () => {
-  let module: TestingModule;
   let controller: ScheduleController;
 
   beforeAll(async () => {
-    module = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       imports: [ScheduleModule],
     }).compile();
 
@@ -22,7 +22,7 @@ describe('ScheduleController', () => {
   });
 
   describe('getAll()', () => {
-    it(`harus mengembalikan object bertipe ${SuccessfulResponseDto.name} dan data berupa array ${Schedule.name}`, async () => {
+    it(`harus return array object bertipe ${SuccessfulResponseDto.name} berisi data array ${Schedule.name}`, async () => {
       const response = await controller.getAll();
       const schedules = response.data as Schedule[];
       expect(response).toBeInstanceOf(SuccessfulResponseDto);
@@ -32,10 +32,10 @@ describe('ScheduleController', () => {
     });
 
     it(`harus return data array ${Schedule.name} yang property isActive = true`, async () => {
-      const schedules = (await controller.getAll({ isActive: true }))
+      const activeSchedules = (await controller.getAll({ isActive: true }))
         .data as Schedule[];
       expect(
-        schedules.every((schedule) => schedule.isActive == true),
+        activeSchedules.every((schedule) => schedule.isActive == true),
       ).toBeTruthy();
     });
   });
@@ -45,27 +45,22 @@ describe('ScheduleController', () => {
     beforeAll(async () => {
       schedule = (await controller.getAll()).data[0];
     });
-
-    it(`harus berhasil update dan return object bertipe ${SuccessfulResponseDto.name} berisi data jadwal yang telah diupdate`, async () => {
-      schedule.url = faker.internet.url();
-      schedule.isActive = !schedule.isActive;
+    it(`harus berhasil update dan return object bertipe ${SuccessfulResponseDto.name} berisi data ${Schedule.name} yang telah diupdate`, async () => {
       const response = await controller.update({
-        _id: schedule._id,
-        url: schedule.url,
-        isActive: schedule.isActive,
-      });
-      const updatedSchedule = response.data;
+        ...schedule,
+        url: faker.internet.url(),
+        isActive: !schedule.isActive,
+      } as UpdateScheduleDto);
+      const updatedSchedule = response.data as Schedule;
       expect(response).toBeInstanceOf(SuccessfulResponseDto);
       expect(updatedSchedule).toBeInstanceOf(Schedule);
     });
-    it('harus gagal karena link tidak valid', async () => {
-      schedule.url = 'Link ngasal';
+    it('harus gagal update karena URL tidak valid', async () => {
       await expect(
         controller.update({
-          _id: schedule._id,
-          url: schedule.url,
-          isActive: schedule.isActive,
-        }),
+          ...schedule,
+          url: 'Link tidak valid',
+        } as UpdateScheduleDto),
       ).rejects.toThrow();
     });
   });

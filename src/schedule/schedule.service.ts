@@ -1,107 +1,122 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { isEmpty, isNotEmpty } from 'class-validator';
-import { MongoService } from 'src/common/database/mongodb/mongo.service';
-import {
-  Schedule,
-  ScheduleConstructorProps,
-} from 'src/schedule/entities/schedule.entity';
 import { ErrorResponseDto } from 'src/common/dto/response.dto';
-import { ScheduleFactoryService } from './schedule-factory.service';
-import {
-  ScheduleQuery,
-  UpdateScheduleDto,
-} from 'src/schedule/dto/schedule.dto';
+import { isNotUndefinedOrNull } from 'src/common/utils';
+import { AddScheduleDto, UpdateScheduleDto } from 'src/schedule/dto';
+import { Schedule } from 'src/schedule/entities';
+import { ScheduleRepository } from 'src/schedule/repo';
 
 @Injectable()
 export class ScheduleService {
   private readonly logger = new Logger(ScheduleService.name);
 
-  constructor(
-    private dataService: MongoService,
-    private scheduleFactory: ScheduleFactoryService,
-  ) {}
+  constructor(private repository: ScheduleRepository) {}
 
-  async getAll(filter: ScheduleQuery) {
-    this.logger.debug(
-      `Schedule filter ${JSON.stringify(filter, undefined, 2)}`,
-    );
-    const schedules = this.scheduleFactory.createMany(
-      await this.dataService.schedules.getAll({
-        filter,
-      }),
-    );
-    return schedules;
-  }
+  private readonly MIN_NAME_LENGTH = 1;
+  private readonly MAX_NAME_LENGTH = 255;
 
-  protected getClassSchedule(schedules: Schedule[]) {
-    return schedules.filter((schedule) => isEmpty(schedule.faculty))[0];
-  }
+  async add(data: AddScheduleDto) {
+    try {
+      const MIN_NAME_LENGTH = this.MIN_NAME_LENGTH;
+      const MAX_NAME_LENGTH = this.MAX_NAME_LENGTH;
 
-  protected getFacultySchedules(schedules: Schedule[]) {
-    return schedules.filter((schedule) => !isEmpty(schedule.faculty));
-  }
-
-  async update(updateScheduleDto: UpdateScheduleDto) {
-    this.logger.debug(
-      `updateScheduleDto ${JSON.stringify(updateScheduleDto, undefined, 2)}`,
-    );
-    const newSchedule = this.scheduleFactory.create(
-      updateScheduleDto as ScheduleConstructorProps,
-    );
-    const validationError = newSchedule.validateProps();
-    if (isNotEmpty(validationError)) {
-      this.logger.log(
-        `Schedule data is not valid ${JSON.stringify(validationError)}`,
-      );
-      throw new BadRequestException(
-        new ErrorResponseDto('Data tidak valid', { validationError }),
-      );
-    }
-    const updateResult = await this.dataService.schedules.updateById(
-      newSchedule._id,
-      newSchedule,
-    );
-    if (isEmpty(updateResult)) {
-      this.logger.log(
-        `Schedule update failed ${JSON.stringify({
-          scheduleId: newSchedule._id,
-        })}`,
-      );
-      throw new BadRequestException(
-        new ErrorResponseDto('Jadwal gagal diupdate'),
-      );
-    }
-    this.logger.debug(
-      `Updated schedules ${JSON.stringify(updateResult, undefined, 2)}`,
-    );
-    this.logger.log(
-      `Schedule update success ${JSON.stringify({
-        scheduleId: newSchedule._id,
-      })}`,
-    );
-    const updatedSchedule = this.scheduleFactory.create(updateResult);
-    return updatedSchedule;
-  }
-
-  async updateMany(updateScheduleDtos: UpdateScheduleDto[]) {
-    console.log('Incoming data :', updateScheduleDtos);
-    const newSchedules = this.scheduleFactory.createMany(
-      updateScheduleDtos as ScheduleConstructorProps[],
-    );
-    const updatedSchedules: Schedule[] = [];
-    for (const newSchedule of newSchedules) {
-      updatedSchedules.push(
-        this.scheduleFactory.create(
-          await this.dataService.schedules.updateById(
-            newSchedule._id,
-            newSchedule,
+      if (
+        data.name.length < MIN_NAME_LENGTH ||
+        data.name.length > MAX_NAME_LENGTH
+      ) {
+        throw new BadRequestException(
+          new ErrorResponseDto(
+            `Name must be between ${MIN_NAME_LENGTH} and ${MAX_NAME_LENGTH} characters`,
           ),
-        ),
+        );
+      }
+
+      const storedData = await this.repository.store(data, {
+        returning: ['id', 'name', 'link', 'is_published'],
+      });
+
+      return storedData;
+    } catch (error) {
+      this.logger.debug(
+        JSON.stringify({
+          event: 'Add schedule failed',
+          timestamp: new Date().toISOString(),
+          error: error,
+        }),
       );
+
+      throw error;
     }
-    console.log('Updated schedules :', updatedSchedules);
-    const classSchedule = this.getClassSchedule(updatedSchedules);
-    const facultySchedules = this.getFacultySchedules(updatedSchedules);
-    return { classSchedule, facultySchedules };
+  }
+
+  async get() {
+    const data = await this.repository.find({
+      select: ['id', 'name', 'link', 'is_published'],
+    });
+
+    return data;
+  }
+
+  async getPublished() {
+    const data = await this.repository.find({
+      select: ['id', 'name', 'link'],
+      where: { is_published: true },
+    });
+
+    return data;
+  }
+
+  async update(id: Schedule['id'], data: UpdateScheduleDto) {
+    try {
+      const MIN_NAME_LENGTH = this.MIN_NAME_LENGTH;
+      const MAX_NAME_LENGTH = this.MAX_NAME_LENGTH;
+
+      if (
+        isNotUndefinedOrNull(data.name) &&
+        (data.name.length < MIN_NAME_LENGTH ||
+          data.name.length > MAX_NAME_LENGTH)
+      ) {
+        throw new BadRequestException(
+          new ErrorResponseDto(
+            `Name must be between ${MIN_NAME_LENGTH} and ${MAX_NAME_LENGTH} characters`,
+          ),
+        );
+      }
+
+      const updateResult = await this.repository.update(id, data, {
+        returning: ['id', 'name', 'link', 'is_published'],
+      });
+
+      return updateResult;
+    } catch (error) {
+      this.logger.debug(
+        JSON.stringify({
+          event: 'Update schedule failed',
+          timestamp: new Date().toISOString(),
+          error: error,
+        }),
+      );
+
+      throw error;
+    }
+  }
+
+  async delete(id: Schedule['id']) {
+    try {
+      const deletedData = await this.repository.softDeleteById(id, {
+        returning: ['id'],
+      });
+
+      return deletedData;
+    } catch (error) {
+      this.logger.debug(
+        JSON.stringify({
+          event: 'Delete schedule failed',
+          timestamp: new Date().toISOString(),
+          error: error,
+        }),
+      );
+
+      throw error;
+    }
   }
 }

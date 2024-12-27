@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ScheduleController } from './schedule.controller';
-import { MongoModule } from 'src/common/database/mongodb/mongo.module';
-import { ScheduleFactoryService } from './schedule-factory.service';
 import { ScheduleService } from './schedule.service';
+import { ScheduleRepository } from 'src/schedule/repo';
+import { Schedule } from 'src/schedule/entities';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  providers: [ScheduleService, ScheduleFactoryService],
-  imports: [MongoModule],
+  imports: [TypeOrmModule.forFeature([Schedule])],
   controllers: [ScheduleController],
-  exports: [ScheduleService, ScheduleFactoryService],
+  providers: [ScheduleService, ScheduleRepository],
+  exports: [ScheduleService, ScheduleRepository],
 })
 export class ScheduleModule {}

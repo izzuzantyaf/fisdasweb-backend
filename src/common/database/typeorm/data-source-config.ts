@@ -19,7 +19,7 @@ export const typeOrmModuleOptions: TypeOrmModuleOptions = {
   autoLoadEntities: true,
   applicationName: 'fisdasweb',
   extra: {
-    max: 20,
+    max: 85,
   },
 };
 

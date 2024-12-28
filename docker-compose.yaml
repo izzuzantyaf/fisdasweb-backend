@@ -8,6 +8,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
       POSTGRES_DB: fdweb_db
+    volumes:
+      - fdweb-dev-postgres-data:/var/lib/postgresql/data
     networks:
       - fdweb-network
   fdweb-api:
@@ -28,3 +30,7 @@ services:
 networks:
   fdweb-network:
     driver: bridge
+
+volumes:
+  fdweb-dev-postgres-data:
+    name: fdweb-dev-postgres-data

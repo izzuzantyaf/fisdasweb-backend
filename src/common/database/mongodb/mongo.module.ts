@@ -7,7 +7,7 @@ import { MongoService } from './mongo.service';
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forFeature([]),
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    MongooseModule.forRoot(process.env.MONGO_URI || ''),
   ],
   providers: [MongoService],
   exports: [MongoService],

@@ -36,18 +36,18 @@ describe('AssistantController', () => {
 
   describe('create()', () => {
     it(`harus berhasil menambahkan asisten dan return object bertipe ${SuccessfulResponseDto.name} berisi data asisten yang ditambahkan`, async () => {
-      const response = await controller.create(createFakeAssistant());
+      const response = await controller.add(createFakeAssistant());
       expect(response).toBeInstanceOf(SuccessfulResponseDto);
       expect(response.data).toBeInstanceOf(Assistant);
     });
     it('harus gagal ketika nama kosong', async () => {
       await expect(
-        controller.create({ ...createFakeAssistant(), name: null }),
+        controller.add({ ...createFakeAssistant(), name: null }),
       ).rejects.toThrow(BadRequestException);
     });
     it('harus gagal ketika jumlah karakter kode tidak sesuai', async () => {
       await expect(
-        controller.create({
+        controller.add({
           ...createFakeAssistant(),
           code: 'lebih_dari_3_karakter',
         }),
@@ -55,7 +55,7 @@ describe('AssistantController', () => {
     });
     it('harus gagal ketika gender tidak valid', async () => {
       await expect(
-        controller.create({
+        controller.add({
           ...createFakeAssistant(),
           gender: 'salah' as Gender,
         }),
@@ -63,7 +63,7 @@ describe('AssistantController', () => {
     });
     it('harus gagal ketika level tidak valid', async () => {
       await expect(
-        controller.create({
+        controller.add({
           ...createFakeAssistant(),
           level: 'salah' as AssistantLevel,
         }),
@@ -71,12 +71,12 @@ describe('AssistantController', () => {
     });
     it('harus berhasil ketika nomor hp kosong', async () => {
       await expect(
-        controller.create({ ...createFakeAssistant(), phoneNumber: null }),
+        controller.add({ ...createFakeAssistant(), phoneNumber: null }),
       ).resolves.toBeInstanceOf(SuccessfulResponseDto);
     });
     it('harus gagal ketika nomor hp tidak valid', async () => {
       await expect(
-        controller.create({
+        controller.add({
           ...createFakeAssistant(),
           phoneNumber: '08213738192730192123',
         }),
@@ -84,17 +84,17 @@ describe('AssistantController', () => {
     });
     it('harus berhasil ketika ID Line kosong', async () => {
       await expect(
-        controller.create({ ...createFakeAssistant(), lineId: null }),
+        controller.add({ ...createFakeAssistant(), lineId: null }),
       ).resolves.toBeInstanceOf(SuccessfulResponseDto);
     });
     it('harus berhasil ketika link feedback kosong', async () => {
       await expect(
-        controller.create({ ...createFakeAssistant(), feedbackUrl: null }),
+        controller.add({ ...createFakeAssistant(), feedbackUrl: null }),
       ).resolves.toBeInstanceOf(SuccessfulResponseDto);
     });
     it('harus gagal ketika link feedback bukan URL', async () => {
       await expect(
-        controller.create({
+        controller.add({
           ...createFakeAssistant(),
           feedbackUrl: 'bukan format URL valid',
         }),
@@ -102,7 +102,7 @@ describe('AssistantController', () => {
     });
     it('harus berhasil ketika link foto profil kosong', async () => {
       await expect(
-        controller.create({
+        controller.add({
           ...createFakeAssistant(),
           profilePictureUrl: null,
         }),
@@ -110,7 +110,7 @@ describe('AssistantController', () => {
     });
     it('harus gagal ketika link foto profil bukan URL', async () => {
       await expect(
-        controller.create({
+        controller.add({
           ...createFakeAssistant(),
           profilePictureUrl: 'bukan format URL valid',
         }),
@@ -132,7 +132,7 @@ describe('AssistantController', () => {
   describe('update()', () => {
     let storedAssistant;
     beforeAll(async () => {
-      storedAssistant = (await controller.create(createFakeAssistant()))
+      storedAssistant = (await controller.add(createFakeAssistant()))
         .data as Assistant;
     });
     it(`harus berhasil update dan return object ${SuccessfulResponseDto.name} berisi asisten yang telah diupdate`, async () => {
@@ -219,7 +219,7 @@ describe('AssistantController', () => {
   describe('delete()', () => {
     let assistantId: string;
     beforeAll(async () => {
-      const storedAssistant = (await controller.create(createFakeAssistant()))
+      const storedAssistant = (await controller.add(createFakeAssistant()))
         .data as Assistant;
       assistantId = storedAssistant._id;
     });

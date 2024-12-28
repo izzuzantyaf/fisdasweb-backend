@@ -5,7 +5,7 @@ import { HandoutModule } from 'src/handout/handout.module';
 import { CodeOfConductModule } from 'src/code-of-conduct/code-of-conduct.module';
 import { OrganigramModule } from 'src/organigram/organigram.module';
 import { ScheduleModule } from 'src/schedule/schedule.module';
-// import { AssistantModule } from 'src/assistant/assistant.module';
+import { AssistantModule } from 'src/assistant/assistant.module';
 // import { LabModuleModule } from 'src/lab-module/lab-module.module';
 // import { ArticleModule } from 'src/article/article.module';
 // import { OpenAIModule } from './common/openai/openai.module';
@@ -27,7 +27,7 @@ import { typeOrmModuleOptions } from './common/database/typeorm/data-source-conf
     CodeOfConductModule,
     OrganigramModule,
     ScheduleModule,
-    // AssistantModule,
+    AssistantModule,
     // LabModuleModule,
     // ArticleModule,
     // OpenAIModule,

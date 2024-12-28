@@ -1,89 +1,111 @@
 import { Assistant } from '../entities';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { Logger } from '@nestjs/common';
-import { CreateAssistantDto, UpdateAssistantDto } from 'src/assistant/dto';
+import { UpdateResult } from 'src/common/database/typeorm/types';
 
 export class AssistantRepository {
   private logger = new Logger(AssistantRepository.name);
 
   constructor(
     @InjectRepository(Assistant)
-    private assistantRepository: Repository<Assistant>,
+    private repository: Repository<Assistant>,
   ) {}
 
-  async getAll() {
-    return await this.assistantRepository.find({ order: { name: 'ASC' } });
-  }
-
-  async search(keyword: string) {
-    const searchResult = await this.assistantRepository.find({
-      where: [{ name: ILike(`%${keyword}%`) }, { code: ILike(`%${keyword}%`) }],
+  async find({ order, ...options }: FindManyOptions<Assistant> = {}) {
+    return await this.repository.find({
+      order: { id: 'asc', ...order },
+      ...options,
     });
-    return searchResult;
   }
 
-  async deleteById(id: Assistant['id']) {
-    const deleteResult = await this.assistantRepository.delete({ id });
-    this.logger.debug(
-      `Assistant delete result: ${JSON.stringify(deleteResult)}`,
-    );
-    return deleteResult;
-    throw new Error('Method not implemented.');
-  }
-
-  async store(data: CreateAssistantDto) {
-    const insertResult = await this.assistantRepository
+  async store(
+    data: Pick<Assistant, 'code' | 'name'> &
+      Partial<Pick<Assistant, 'line_id' | 'is_published'>>,
+    options: {
+      returning?: (keyof Assistant)[];
+    } = {},
+  ) {
+    const insertResult = await this.repository
       .createQueryBuilder()
       .insert()
-      .into(Assistant)
       .values({
         name: data.name,
         code: data.code,
-        phone: data.phone,
         line_id: data.line_id,
-        gender: data.gender,
-        level: data.level,
-        feedback_url: data.feedback_url,
-        image_url: data.image_url,
+        is_published: data.is_published,
       })
-      .returning('*')
+      .returning(options?.returning?.join(', ') || '*')
       .execute();
 
-    const storedAssistant = this.assistantRepository.create(
-      insertResult.raw[0] as Assistant,
-    );
+    const storedData = this.repository.create(insertResult.raw[0] as Assistant);
 
-    this.logger.debug(`Stored assistant: ${JSON.stringify(storedAssistant)}`);
-
-    return storedAssistant;
+    return storedData;
   }
 
-  async update(id: Assistant['id'], data: UpdateAssistantDto) {
-    const updateResult = await this.assistantRepository
+  async update(
+    id: Assistant['id'],
+    data: Partial<
+      Pick<Assistant, 'code' | 'name' | 'line_id' | 'is_published'>
+    >,
+    options: {
+      returning?: (keyof Assistant)[];
+    } = {},
+  ) {
+    const updateResult = await this.repository
       .createQueryBuilder()
       .update()
       .set({
         name: data.name,
         code: data.code,
-        phone: data.phone,
         line_id: data.line_id,
-        gender: data.gender,
-        level: data.level,
-        feedback_url: data.feedback_url,
-        image_url: data.image_url,
+        is_published: data.is_published,
       })
-      .where(`id = :id`, { id })
-      .returning('*')
+      .where({ id: id, deleted_at: null })
+      .returning(options?.returning?.join(', ') || '*')
       .execute();
 
-    const updatedAssistant = this.assistantRepository.create(
+    const updatedData = this.repository.create(
       updateResult.raw[0] as Assistant,
     );
 
-    this.logger.debug(`Assistant updated: ${JSON.stringify(updatedAssistant)}`);
+    if (updateResult.affected === 0) {
+      updateResult.affected = 0;
+    }
 
-    return updatedAssistant;
-    throw new Error('Method not implemented.');
+    return {
+      result: updateResult as UpdateResult,
+      updated: updatedData,
+    };
+  }
+
+  async softDeleteById(
+    id: Assistant['id'],
+    options: {
+      returning?: (keyof Assistant)[];
+    } = {},
+  ) {
+    const deleteResult = await this.repository
+      .createQueryBuilder()
+      .softDelete()
+      .where({
+        id: id,
+        deleted_at: null,
+      })
+      .returning(options?.returning?.join(', ') || '*')
+      .execute();
+
+    const deletedData = this.repository.create(
+      deleteResult.raw[0] as Assistant,
+    );
+
+    if (deleteResult.affected === undefined) {
+      deleteResult.affected = 0;
+    }
+
+    return {
+      result: deleteResult as UpdateResult,
+      deleted: deletedData,
+    };
   }
 }

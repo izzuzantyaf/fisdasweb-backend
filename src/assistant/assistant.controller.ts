@@ -1,61 +1,193 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
+  Patch,
   Post,
-  Put,
-  Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { isNotEmpty } from 'class-validator';
-import { CreateAssistantDto, UpdateAssistantDto } from 'src/assistant/dto';
-import { SuccessfulResponseDto } from 'src/common/dto/response.dto';
+import { AddAssistantDto, UpdateAssistantDto } from 'src/assistant/dto';
+import {
+  ErrorResponseDto,
+  SuccessfulResponseDto,
+} from 'src/common/dto/response.dto';
 import { AssistantService } from 'src/assistant/assistant.service';
 import { AdminJwtAuthGuard } from 'src/auth/guard/admin-jwt-auth.guard';
-import ApiKeyGuard from 'src/auth/guard/api-key.guard';
+import { AuthenticatedRequest } from 'src/auth/types';
+import { isIntIdValid } from 'src/common/utils';
 
-@ApiTags('assistant')
-@Controller('assistant')
+@Controller('/assistants')
 export class AssistantController {
+  private readonly logger = new Logger(AssistantController.name);
+
   constructor(private assistantService: AssistantService) {}
 
   @Post()
   @UseGuards(AdminJwtAuthGuard)
-  async create(@Body() createAssistantDto: CreateAssistantDto) {
-    const storedAssistant =
-      await this.assistantService.create(createAssistantDto);
-    return new SuccessfulResponseDto(storedAssistant);
+  async add(@Req() req: AuthenticatedRequest, @Body() dto: AddAssistantDto) {
+    if (typeof dto.name !== 'string') {
+      throw new BadRequestException(
+        new ErrorResponseDto('name must be string'),
+      );
+    }
+
+    if (typeof dto.code !== 'string') {
+      throw new BadRequestException(
+        new ErrorResponseDto('code must be string'),
+      );
+    }
+
+    if (
+      dto.line_id !== undefined &&
+      dto.line_id !== null &&
+      typeof dto.line_id !== 'string'
+    ) {
+      throw new BadRequestException(
+        new ErrorResponseDto('line_id must be string'),
+      );
+    }
+
+    if (
+      dto.is_published !== undefined &&
+      typeof dto.is_published !== 'boolean'
+    ) {
+      throw new BadRequestException(
+        new ErrorResponseDto('is_published must be boolean'),
+      );
+    }
+
+    const storedData = await this.assistantService.add(dto);
+
+    this.logger.debug(
+      JSON.stringify({
+        event: 'Assistant added',
+        timestamp: new Date().toISOString(),
+        data: {
+          id: storedData.id,
+          adminId: req.user?.id,
+        },
+      }),
+    );
+
+    return new SuccessfulResponseDto(storedData);
   }
 
   @Get()
-  @UseGuards(ApiKeyGuard)
-  async getAll(@Query('keyword') keyword?: string) {
-    const assistants = isNotEmpty(keyword)
-      ? await this.assistantService.search(keyword)
-      : await this.assistantService.getAll();
-    return new SuccessfulResponseDto(assistants);
+  @UseGuards(AdminJwtAuthGuard)
+  async get() {
+    const data = await this.assistantService.get();
+
+    return new SuccessfulResponseDto(data);
   }
 
-  @Put(':id')
+  @Get('/published')
+  async getPublished() {
+    const data = await this.assistantService.getPublished();
+
+    return new SuccessfulResponseDto(data);
+  }
+
+  @Patch('/:id')
   @UseGuards(AdminJwtAuthGuard)
   async update(
+    @Req() req: AuthenticatedRequest,
     @Param('id') id: string,
-    @Body() updateAssistantDto: UpdateAssistantDto,
+    @Body() dto: UpdateAssistantDto,
   ) {
-    const updatedAssistant = await this.assistantService.update(
-      Number(id),
-      updateAssistantDto,
+    const parsedId = Number(id);
+
+    if (!isIntIdValid(parsedId)) {
+      throw new BadRequestException(new ErrorResponseDto('id is invalid'));
+    }
+
+    if (dto.name !== undefined && typeof dto.name !== 'string') {
+      throw new BadRequestException(
+        new ErrorResponseDto('name must be string'),
+      );
+    }
+
+    if (dto.code !== undefined && typeof dto.code !== 'string') {
+      throw new BadRequestException(
+        new ErrorResponseDto('code must be string'),
+      );
+    }
+
+    if (
+      dto.line_id !== undefined &&
+      dto.line_id !== null &&
+      typeof dto.line_id !== 'string'
+    ) {
+      throw new BadRequestException(
+        new ErrorResponseDto('line_id must be string'),
+      );
+    }
+
+    if (
+      dto.is_published !== undefined &&
+      typeof dto.is_published !== 'boolean'
+    ) {
+      throw new BadRequestException(
+        new ErrorResponseDto('is_published must be boolean'),
+      );
+    }
+
+    const updateResult = await this.assistantService.update(parsedId, dto);
+
+    if (updateResult.result.affected === 0) {
+      return new SuccessfulResponseDto(
+        null,
+        'Record not found. No changes made',
+      );
+    }
+
+    this.logger.debug(
+      JSON.stringify({
+        event: 'Assistant updated',
+        timestamp: new Date().toISOString(),
+        data: {
+          id: updateResult.updated.id,
+          adminId: req.user?.id,
+        },
+      }),
     );
-    return new SuccessfulResponseDto(updatedAssistant);
+
+    return new SuccessfulResponseDto(updateResult.updated);
   }
 
-  @Delete(':id')
+  @Delete('/:id')
   @UseGuards(AdminJwtAuthGuard)
-  async delete(@Param('id') id: string) {
-    const deletedAssistant = await this.assistantService.delete(Number(id));
-    return new SuccessfulResponseDto(deletedAssistant);
+  async delete(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
+    const parsedId = Number(id);
+
+    if (!isIntIdValid(parsedId)) {
+      throw new BadRequestException(new ErrorResponseDto('id is invalid'));
+    }
+
+    const deleteResult = await this.assistantService.delete(parsedId);
+
+    if (deleteResult.result.affected === 0) {
+      return new SuccessfulResponseDto(
+        null,
+        'Record not found. No changes made',
+      );
+    }
+
+    this.logger.log(
+      JSON.stringify({
+        event: 'Assistant deleted',
+        timestamp: new Date().toISOString(),
+        data: {
+          id: deleteResult.deleted.id,
+          adminId: req.user?.id,
+        },
+      }),
+    );
+
+    return new SuccessfulResponseDto();
   }
 }

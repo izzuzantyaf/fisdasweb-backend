@@ -1,5 +1,3 @@
-import { AssistantLevel } from 'src/assistant/constants';
-import { Gender } from 'src/common/constants';
 import {
   CreateDateColumn,
   UpdateDateColumn,
@@ -19,32 +17,17 @@ export class Assistant {
   @Column({ type: 'text', nullable: false })
   name: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'text' })
   code: string;
 
   @Column({ type: 'text', nullable: true })
-  phone?: string;
-
-  @Column({ type: 'text', nullable: true })
-  line_id?: string;
+  line_id: string | null;
 
   @Column({
-    type: 'enum',
-    enum: Gender,
+    type: 'boolean',
+    default: false,
   })
-  gender: Gender;
-
-  @Column({
-    type: 'enum',
-    enum: AssistantLevel,
-  })
-  level: AssistantLevel;
-
-  @Column({ type: 'text', nullable: true })
-  feedback_url?: string;
-
-  @Column({ type: 'text', nullable: true })
-  image_url?: string;
+  is_published: boolean;
 
   @CreateDateColumn()
   created_at: Date;

@@ -41,7 +41,7 @@ export class CodeOfConductController {
     const parsedId = Number(id);
 
     if (isNaN(parsedId)) {
-      throw new BadRequestException(new ErrorResponseDto('Invalid id'));
+      throw new BadRequestException(new ErrorResponseDto('id is invalid'));
     }
 
     if (

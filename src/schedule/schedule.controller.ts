@@ -99,7 +99,7 @@ export class ScheduleController {
     const parsedId = Number(id);
 
     if (!isIntIdValid(parsedId)) {
-      throw new BadRequestException(new ErrorResponseDto('Invalid id'));
+      throw new BadRequestException(new ErrorResponseDto('id is invalid'));
     }
 
     if (isNotUndefinedOrNull(dto.name) && typeof dto.name !== 'string') {
@@ -158,7 +158,7 @@ export class ScheduleController {
     const parsedId = Number(id);
 
     if (!isIntIdValid(parsedId)) {
-      throw new BadRequestException(new ErrorResponseDto('Invalid id'));
+      throw new BadRequestException(new ErrorResponseDto('id is invalid'));
     }
 
     const deleteResult = await this.service.delete(parsedId);

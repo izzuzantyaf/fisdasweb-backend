@@ -10,7 +10,7 @@ export const typeOrmDataSourceOptions: DataSourceOptions & SeederOptions = {
   url: process.env.POSTGRES_URL,
   synchronize: false,
   dropSchema: false,
-  logging: false,
+  logging: process.env.APP_ENV === 'local' ? true : false,
   seeds: ['dist/common/database/seeders/**/*{.ts,.js}'],
 };
 

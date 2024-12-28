@@ -19,7 +19,7 @@ async function bootstrap() {
 
   const logger = new Logger('NestApplication');
   await app
-    .listen(process.env.PORT)
+    .listen(process.env.PORT || '')
     .then(() => {
       logger.log(`Application started in http://localhost:${process.env.PORT}`);
     })

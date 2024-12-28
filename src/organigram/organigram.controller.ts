@@ -74,11 +74,13 @@ export class OrganigramController {
       dto,
     );
 
-    let message: string;
     if (updatedCodeOfCondcut === null) {
-      message = 'Record not found. No changes made';
+      return new SuccessfulResponseDto(
+        null,
+        'Record not found. No changes made',
+      );
     }
 
-    return new SuccessfulResponseDto(updatedCodeOfCondcut, message);
+    return new SuccessfulResponseDto(updatedCodeOfCondcut);
   }
 }

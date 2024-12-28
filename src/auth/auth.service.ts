@@ -143,8 +143,6 @@ export class AuthService {
 
   async generateAdminJwt(admin: Admin) {
     try {
-      delete admin.password;
-
       const payload = {
         id: admin.id,
       };

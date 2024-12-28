@@ -1,4 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
+import { UpdateResult } from 'src/common/database/typeorm/types';
 import { Handout } from 'src/handout/entities';
 import { FindManyOptions, Repository } from 'typeorm';
 
@@ -89,8 +90,12 @@ export class HandoutRepository {
 
     const deletedData = this.repository.create(deleteResult.raw[0] as Handout);
 
+    if (deleteResult.affected === undefined) {
+      deleteResult.affected = 0;
+    }
+
     return {
-      result: deleteResult,
+      result: deleteResult as UpdateResult,
       deleted: deletedData,
     };
   }

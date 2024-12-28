@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ErrorResponseDto } from 'src/common/dto/response.dto';
-import { isNotUndefinedOrNull } from 'src/common/utils';
 import { AddHandoutDto, UpdateHandoutDto } from 'src/handout/dto';
 import { Handout } from 'src/handout/entities';
 import { HandoutRepository } from 'src/handout/repo';
@@ -71,7 +70,8 @@ export class HandoutService {
       const MAX_NAME_LENGTH = this.MAX_NAME_LENGTH;
 
       if (
-        isNotUndefinedOrNull(data.name) &&
+        data.name !== undefined &&
+        data.name !== null &&
         (data.name.length < MIN_NAME_LENGTH ||
           data.name.length > MAX_NAME_LENGTH)
       ) {

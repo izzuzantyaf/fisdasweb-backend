@@ -9,6 +9,10 @@ export class AdminService {
   async getProfile(id: Admin['id']) {
     const admin = await this.adminRepository.getById(id);
 
+    if (!admin) {
+      return null;
+    }
+
     return {
       id: admin.id,
       name: admin.name,

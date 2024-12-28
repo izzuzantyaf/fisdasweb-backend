@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ErrorResponseDto } from 'src/common/dto/response.dto';
-import { isNotUndefinedOrNull } from 'src/common/utils';
 import { AddScheduleDto, UpdateScheduleDto } from 'src/schedule/dto';
 import { Schedule } from 'src/schedule/entities';
 import { ScheduleRepository } from 'src/schedule/repo';
@@ -71,7 +70,8 @@ export class ScheduleService {
       const MAX_NAME_LENGTH = this.MAX_NAME_LENGTH;
 
       if (
-        isNotUndefinedOrNull(data.name) &&
+        data.name !== undefined &&
+        data.name !== null &&
         (data.name.length < MIN_NAME_LENGTH ||
           data.name.length > MAX_NAME_LENGTH)
       ) {

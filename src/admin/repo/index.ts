@@ -42,11 +42,11 @@ export default class AdminPostgresRepository {
     throw new Error('Method not implemented.');
   }
 
-  async getById(id: Admin['id']): Promise<Admin> {
+  async getById(id: Admin['id']) {
     return await this.repository.findOneBy({ id });
   }
 
-  async getByUsername(username: string): Promise<Admin> {
+  async getByUsername(username: string) {
     return await this.repository.findOneBy({ username });
   }
 }

@@ -69,7 +69,7 @@ export class AssistantRepository {
       updateResult.raw[0] as Assistant,
     );
 
-    if (updateResult.affected === 0) {
+    if (updateResult.affected === undefined) {
       updateResult.affected = 0;
     }
 

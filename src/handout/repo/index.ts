@@ -68,6 +68,10 @@ export class HandoutRepository {
 
     const updatedData = this.repository.create(updateResult.raw[0] as Handout);
 
+    if (updateResult.affected === undefined) {
+      updateResult.affected = 0;
+    }
+
     return {
       result: updateResult,
       updated: updatedData,

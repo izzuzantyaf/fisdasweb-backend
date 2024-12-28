@@ -69,6 +69,7 @@ export class AuthController {
       secure: process.env.APP_ENV === 'production' ? true : false,
       sameSite: 'lax',
       maxAge: COOKIE_MAX_AGE,
+      domain: process.env.FISDASWEB_ADMIN_DOMAIN,
     });
 
     this.logger.log(
@@ -92,8 +93,10 @@ export class AuthController {
 
   @Post('/admin/logout')
   @HttpCode(HttpStatus.OK)
-  async signout(@Response() res) {
-    res.clearCookie(ACCESS_TOKEN_NAME);
+  async signout(@Response() res: ResponseExpress) {
+    res.clearCookie(ACCESS_TOKEN_NAME, {
+      domain: process.env.FISDASWEB_ADMIN_DOMAIN,
+    });
 
     return res.send(new SuccessfulResponseDto());
   }

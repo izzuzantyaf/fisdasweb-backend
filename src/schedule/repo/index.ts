@@ -61,6 +61,7 @@ export class ScheduleRepository {
       })
       .where({
         id: id,
+        deleted_at: null,
       })
       .returning(options?.returning?.join(', ') || '*')
       .execute();
@@ -84,6 +85,7 @@ export class ScheduleRepository {
       .softDelete()
       .where({
         id: id,
+        deleted_at: null,
       })
       .returning(options?.returning?.join(', ') || '*')
       .execute();

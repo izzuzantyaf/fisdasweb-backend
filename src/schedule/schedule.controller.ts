@@ -163,18 +163,23 @@ export class ScheduleController {
 
     const deleteResult = await this.service.delete(parsedId);
 
-    if (deleteResult.result.affected > 0) {
-      this.logger.log(
-        JSON.stringify({
-          event: 'Schedule deleted',
-          timestamp: new Date().toISOString(),
-          data: {
-            id: deleteResult.deleted.id,
-            adminId: req.user?.id,
-          },
-        }),
+    if (deleteResult.result.affected === 0) {
+      return new SuccessfulResponseDto(
+        null,
+        'Record not found. No changes made',
       );
     }
+
+    this.logger.log(
+      JSON.stringify({
+        event: 'Schedule deleted',
+        timestamp: new Date().toISOString(),
+        data: {
+          id: deleteResult.deleted.id,
+          adminId: req.user?.id,
+        },
+      }),
+    );
 
     return new SuccessfulResponseDto();
   }

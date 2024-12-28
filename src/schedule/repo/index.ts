@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateResult } from 'src/common/database/typeorm/types';
 import { Schedule } from 'src/schedule/entities';
-import { FindManyOptions, Repository } from 'typeorm';
+import { FindManyOptions, IsNull, Repository } from 'typeorm';
 
 export class ScheduleRepository {
   constructor(
@@ -61,7 +61,7 @@ export class ScheduleRepository {
       })
       .where({
         id: id,
-        deleted_at: null,
+        deleted_at: IsNull(),
       })
       .returning(options?.returning?.join(', ') || '*')
       .execute();
@@ -85,7 +85,7 @@ export class ScheduleRepository {
       .softDelete()
       .where({
         id: id,
-        deleted_at: null,
+        deleted_at: IsNull(),
       })
       .returning(options?.returning?.join(', ') || '*')
       .execute();

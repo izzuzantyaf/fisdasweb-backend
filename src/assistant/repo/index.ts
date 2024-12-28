@@ -1,6 +1,6 @@
 import { Assistant } from '../entities';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, Repository } from 'typeorm';
+import { FindManyOptions, IsNull, Repository } from 'typeorm';
 import { Logger } from '@nestjs/common';
 import { UpdateResult } from 'src/common/database/typeorm/types';
 
@@ -61,7 +61,7 @@ export class AssistantRepository {
         line_id: data.line_id,
         is_published: data.is_published,
       })
-      .where({ id: id, deleted_at: null })
+      .where({ id: id, deleted_at: IsNull() })
       .returning(options?.returning?.join(', ') || '*')
       .execute();
 
@@ -90,7 +90,7 @@ export class AssistantRepository {
       .softDelete()
       .where({
         id: id,
-        deleted_at: null,
+        deleted_at: IsNull(),
       })
       .returning(options?.returning?.join(', ') || '*')
       .execute();

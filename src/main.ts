@@ -1,33 +1,25 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ResponseInterceptor } from './infrastructure/interceptors/response.interceptor';
+import { LoggerInterceptor } from './common/interceptors/logger.interceptor';
+import { HttpExceptionFilter } from 'src/common/filter/http-exception.filter';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
+    // TODO: don't allow cors in production, only allow the fisdasweb and fisdascms
     cors: true, // jika cors true maka semua origin bisa mengakses API
-    logger: process.env.NODE_ENV === 'production' ? ['log'] : ['debug'],
+    logger: process.env.APP_ENV === 'production' ? ['log'] : ['verbose'],
   });
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      enableDebugMessages: true, // menampilkan pesan pada console jika terjadi error,
-    }),
-  );
-  app.useGlobalInterceptors(new ResponseInterceptor());
-
-  const config = new DocumentBuilder()
-    .setTitle('Fisdas CMS OpenAPI')
-    .setDescription('Dokumentasi API Fisdas CMS')
-    .setVersion('1.0.0')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalInterceptors(new LoggerInterceptor());
+  app.useGlobalFilters(new HttpExceptionFilter());
+  app.use(cookieParser());
 
   const logger = new Logger('NestApplication');
   await app
-    .listen(process.env.PORT)
+    .listen(process.env.PORT || '')
     .then(() => {
       logger.log(`Application started in http://localhost:${process.env.PORT}`);
     })

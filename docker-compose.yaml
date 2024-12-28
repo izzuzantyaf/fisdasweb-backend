@@ -1,0 +1,30 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: fdweb-postgres
+    ports:
+      - 2000:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: fdweb_db
+    networks:
+      - fdweb-network
+  fdweb-api:
+    build: .
+    image: fdweb-api
+    container_name: fdweb-api
+    ports:
+      - 8000:${PORT}
+    env_file:
+      - .env
+    environment:
+      POSTGRES_URL: postgresql://postgres:root@fdweb-postgres:5432/fdweb_db
+    networks:
+      - fdweb-network
+    depends_on:
+      - postgres
+
+networks:
+  fdweb-network:
+    driver: bridge

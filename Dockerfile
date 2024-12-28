@@ -1,26 +1,13 @@
-# Use the official Node.js v18 image as the base image
-FROM node:18-alpine
+FROM node:22-alpine
 
-# Create a new directory for the app
 WORKDIR /app
 
-# Copy all files to the container
+COPY package.json package-lock.json ./
+
+RUN apk update && npm install
+
 COPY . .
 
-# Update the package manager
-RUN apk update
+RUN npm run build && npm prune && rm -rf src
 
-# Install pnpm
-RUN npm install -g pnpm@^8.0.0
-
-# Install the app's dependencies
-RUN pnpm install
-
-# Build the app
-RUN pnpm build
-
-# Remove the dev dependencies
-RUN pnpm prune
-
-# Start the app using the built code
-CMD pnpm start
+CMD npm run migration:run && npm start

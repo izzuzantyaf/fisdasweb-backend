@@ -1,25 +1,26 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
-import { AdminModule } from './domains/admin/admin.module';
-import { AuthModule } from './domains/auth/auth.module';
-import { HandoutModule } from './domains/handout/handout.module';
-import { CodeOfConductModule } from './domains/code-of-conduct/code-of-conduct.module';
-import { OrganigramModule } from './domains/organigram/organigram.module';
-import { ScheduleModule } from './domains/schedule/schedule.module';
-import { AssistantModule } from './domains/assistant/assistant.module';
-import { PracticumModuleModule } from './domains/practicum-module/practicum-module.module';
-import { RequestLoggingMiddleware } from './infrastructure/middleware/request-logging.middleware';
-import { SocialMediaModule } from './domains/social-media/social-media.module';
-import { ArticleModule } from './domains/article/article.module';
-import { OpenAIModule } from './infrastructure/openai/openai.module';
-import { UnsplashModule } from './infrastructure/unsplash/unsplash.module';
+import { Module } from '@nestjs/common';
+import { AdminModule } from './admin/admin.module';
+import { AuthModule } from 'src/auth/auth.module';
+import { HandoutModule } from 'src/handout/handout.module';
+import { CodeOfConductModule } from 'src/code-of-conduct/code-of-conduct.module';
+import { OrganigramModule } from 'src/organigram/organigram.module';
+import { ScheduleModule } from 'src/schedule/schedule.module';
+import { AssistantModule } from 'src/assistant/assistant.module';
+import { LabModuleModule } from 'src/lab-module/lab-module.module';
+// import { ArticleModule } from 'src/article/article.module';
+// import { OpenAIModule } from './common/openai/openai.module';
+// import { UnsplashModule } from './common/unsplash/unsplash.module';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { typeOrmModuleOptions } from './common/database/typeorm/data-source-config';
+// import { AwsSesModule } from './common/aws-ses/aws-ses.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRoot(typeOrmModuleOptions),
     AdminModule,
     AuthModule,
     HandoutModule,
@@ -27,18 +28,11 @@ import { UnsplashModule } from './infrastructure/unsplash/unsplash.module';
     OrganigramModule,
     ScheduleModule,
     AssistantModule,
-    PracticumModuleModule,
-    SocialMediaModule,
-    ArticleModule,
-    OpenAIModule,
-    UnsplashModule,
+    LabModuleModule,
+    // ArticleModule,
+    // OpenAIModule,
+    // UnsplashModule,
+    // AwsSesModule,
   ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(RequestLoggingMiddleware).forRoutes({
-      path: '*',
-      method: RequestMethod.ALL,
-    });
-  }
-}
+export class AppModule {}

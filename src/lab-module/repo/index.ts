@@ -1,196 +1,155 @@
-import { Logger, OnModuleInit } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UpdateResult } from 'src/common/database/typeorm/types';
 import { LabModule } from 'src/lab-module/entities';
-import { labModuleSeed } from 'src/lab-module/seed';
-import { AddLabModuleParam, UpdateLabModuleParam } from 'src/lab-module/types';
-import { Repository } from 'typeorm';
+import { FindManyOptions, IsNull, Repository } from 'typeorm';
 
-export class LabModuleRepository implements OnModuleInit {
+export class LabModuleRepository {
   private logger = new Logger(LabModuleRepository.name);
 
   constructor(
     @InjectRepository(LabModule)
-    private labModuleRepository: Repository<LabModule>,
+    private repository: Repository<LabModule>,
   ) {}
 
-  onModuleInit() {
-    this.seed();
-  }
-
-  private async seed() {
-    const count = await this.labModuleRepository
-      .createQueryBuilder()
-      .getCount();
-
-    if (count === 0) {
-      await this.storeMany(labModuleSeed);
-      this.logger.log('Lab module seeded successfully');
-    }
-  }
-
-  private createAddLabModuleParam(
-    data: Record<string, any>,
-  ): AddLabModuleParam {
-    return {
-      name: data.name,
-      code: data.code,
-      language: data.language,
-      pretask_url: data.pretask_url,
-      is_pretask_visible: data.is_pretask_visible,
-      video_url: data.video_url,
-      is_video_visible: data.is_video_visible,
-      simulator_url: data.simulator_url,
-      is_simulator_visible: data.is_simulator_visible,
-      journal_cover_url: data.journal_cover_url,
-      is_journal_cover_visible: data.is_journal_cover_visible,
-    };
-  }
-
-  async store(data: AddLabModuleParam) {
-    const insertResult = await this.labModuleRepository
+  async store(
+    data: Pick<LabModule, 'name' | 'code'> &
+      Partial<
+        Pick<
+          LabModule,
+          | 'pretask_link'
+          | 'pretask_is_published'
+          | 'video_link'
+          | 'video_is_published'
+          | 'simulator_link'
+          | 'simulator_is_published'
+          | 'journal_cover_link'
+          | 'journal_cover_is_published'
+        >
+      >,
+    options: {
+      returning?: (keyof LabModule)[];
+    } = {},
+  ) {
+    const insertResult = await this.repository
       .createQueryBuilder()
       .insert()
-      .into(LabModule)
-      .values(this.createAddLabModuleParam(data))
-      .returning('*')
+      .values({
+        name: data.name,
+        code: data.code,
+        pretask_link: data.pretask_link,
+        pretask_is_published: data.pretask_is_published,
+        video_link: data.video_link,
+        video_is_published: data.video_is_published,
+        simulator_link: data.simulator_link,
+        simulator_is_published: data.simulator_is_published,
+        journal_cover_link: data.journal_cover_link,
+        journal_cover_is_published: data.journal_cover_is_published,
+      })
+      .returning(options?.returning?.join(', ') || '*')
       .execute();
 
-    const storedLabModule = this.labModuleRepository.create(
-      insertResult.raw[0] as LabModule,
-    );
+    const storedData = this.repository.create(insertResult.raw[0] as LabModule);
 
-    this.logger.debug(`Stored lab module: ${JSON.stringify(storedLabModule)}`);
-
-    return storedLabModule;
+    return storedData;
   }
 
-  async storeMany(data: AddLabModuleParam[]) {
-    const insertResult = await this.labModuleRepository
-      .createQueryBuilder()
-      .insert()
-      .into(LabModule)
-      .values(data.map((entry) => this.createAddLabModuleParam(entry)))
-      .returning('*')
-      .execute();
-
-    const storedLabModule = this.labModuleRepository.create(
-      insertResult.raw as LabModule[],
-    );
-
-    this.logger.debug(`Stored lab module: ${JSON.stringify(storedLabModule)}`);
-
-    return storedLabModule;
-  }
-
-  async find() {
-    return await this.labModuleRepository.find({
-      order: { code: 'ASC', language: 'ASC' },
+  async find({ order, ...options }: FindManyOptions<LabModule> = {}) {
+    const data = await this.repository.find({
+      order: {
+        id: 'asc',
+        ...order,
+      },
+      ...options,
     });
+
+    return data;
   }
 
-  async getPretask() {
-    return await this.labModuleRepository.find({
-      select: [
-        'id',
-        'name',
-        'code',
-        'language',
-        'pretask_url',
-        'is_pretask_visible',
-        'created_at',
-        'updated_at',
-      ],
-      where: { is_pretask_visible: true },
-      order: { code: 'ASC', language: 'ASC' },
-    });
-  }
-
-  async getVideo() {
-    return await this.labModuleRepository.find({
-      select: [
-        'id',
-        'name',
-        'code',
-        'language',
-        'video_url',
-        'is_video_visible',
-        'created_at',
-        'updated_at',
-      ],
-      where: { is_video_visible: true },
-      order: { code: 'ASC', language: 'ASC' },
-    });
-  }
-
-  async getSimulator() {
-    return await this.labModuleRepository.find({
-      select: [
-        'id',
-        'name',
-        'code',
-        'language',
-        'simulator_url',
-        'is_simulator_visible',
-        'created_at',
-        'updated_at',
-      ],
-      where: { is_simulator_visible: true },
-      order: { code: 'ASC', language: 'ASC' },
-    });
-  }
-
-  async getJournalCover() {
-    return await this.labModuleRepository.find({
-      select: [
-        'id',
-        'name',
-        'code',
-        'language',
-        'journal_cover_url',
-        'is_journal_cover_visible',
-        'created_at',
-        'updated_at',
-      ],
-      where: { is_journal_cover_visible: true },
-      order: { code: 'ASC', language: 'ASC' },
-    });
-  }
-
-  private createUpdateLabModuleParam(
-    data: Record<string, any>,
-  ): UpdateLabModuleParam {
-    return {
-      name: data.name,
-      code: data.code,
-      language: data.language,
-      pretask_url: data.pretask_url,
-      is_pretask_visible: data.is_pretask_visible,
-      video_url: data.video_url,
-      is_video_visible: data.is_video_visible,
-      simulator_url: data.simulator_url,
-      is_simulator_visible: data.is_simulator_visible,
-      journal_cover_url: data.journal_cover_url,
-      is_journal_cover_visible: data.is_journal_cover_visible,
-    };
-  }
-
-  async update(id: LabModule['id'], data: UpdateLabModuleParam) {
-    const updateResult = await this.labModuleRepository
+  async update(
+    id: LabModule['id'],
+    data: Partial<
+      Pick<
+        LabModule,
+        | 'name'
+        | 'code'
+        | 'pretask_link'
+        | 'pretask_is_published'
+        | 'video_link'
+        | 'video_is_published'
+        | 'simulator_link'
+        | 'simulator_is_published'
+        | 'journal_cover_link'
+        | 'journal_cover_is_published'
+      >
+    >,
+    options: {
+      returning?: (keyof LabModule)[];
+    } = {},
+  ) {
+    const updateResult = await this.repository
       .createQueryBuilder()
       .update()
-      .set(this.createUpdateLabModuleParam(data))
-      .where('id = :id', { id })
-      .returning('*')
+      .set({
+        name: data.name,
+        code: data.code,
+        pretask_link: data.pretask_link,
+        pretask_is_published: data.pretask_is_published,
+        video_link: data.video_link,
+        video_is_published: data.video_is_published,
+        simulator_link: data.simulator_link,
+        simulator_is_published: data.simulator_is_published,
+        journal_cover_link: data.journal_cover_link,
+        journal_cover_is_published: data.journal_cover_is_published,
+      })
+      .where({
+        id: id,
+        deleted_at: IsNull(),
+      })
+      .returning(options?.returning?.join(', ') || '*')
       .execute();
 
-    const updatedLabModule = this.labModuleRepository.create(
+    const updatedData = this.repository.create(
       updateResult.raw[0] as LabModule,
     );
 
-    this.logger.debug(
-      `Lab module updated: ${JSON.stringify(updatedLabModule)}`,
+    if (updateResult.affected === undefined) {
+      updateResult.affected = 0;
+    }
+
+    return {
+      result: updateResult,
+      updated: updatedData,
+    };
+  }
+
+  async softDeleteById(
+    id: LabModule['id'],
+    options: {
+      returning?: (keyof LabModule)[];
+    } = {},
+  ) {
+    const deleteResult = await this.repository
+      .createQueryBuilder()
+      .softDelete()
+      .where({
+        id: id,
+        deleted_at: IsNull(),
+      })
+      .returning(options?.returning?.join(', ') || '*')
+      .execute();
+
+    const deletedData = this.repository.create(
+      deleteResult.raw[0] as LabModule,
     );
 
-    return updatedLabModule;
+    if (deleteResult.affected === undefined) {
+      deleteResult.affected = 0;
+    }
+
+    return {
+      result: deleteResult as UpdateResult,
+      deleted: deletedData,
+    };
   }
 }

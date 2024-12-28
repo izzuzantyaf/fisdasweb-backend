@@ -1,9 +1,6 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { isNotEmpty } from 'class-validator';
 import { ErrorResponseDto } from 'src/common/dto/response.dto';
-import { UpdateLabModuleDto } from 'src/lab-module/dto';
 import { LabModule } from 'src/lab-module/entities';
-import { UpdateLabModuleValidationHelper } from 'src/lab-module/helpers';
 import { LabModuleRepository } from 'src/lab-module/repo';
 
 @Injectable()
@@ -12,45 +9,229 @@ export class LabModuleService {
 
   constructor(private labModuleRepository: LabModuleRepository) {}
 
-  async getAll() {
-    return await this.labModuleRepository.find();
-  }
+  private readonly MIN_NAME_LENGTH = 1;
+  private readonly MAX_NAME_LENGTH = 255;
 
-  async getPreTasks() {
-    return await this.labModuleRepository.getPretask();
-  }
+  private readonly MIN_CODE_LENGTH = 1;
+  private readonly MAX_CODE_LENGTH = 8;
 
-  async getVideos() {
-    return await this.labModuleRepository.getVideo();
-  }
+  async add(
+    data: Pick<LabModule, 'name' | 'code'> &
+      Partial<
+        Pick<
+          LabModule,
+          | 'pretask_link'
+          | 'pretask_is_published'
+          | 'video_link'
+          | 'video_is_published'
+          | 'simulator_link'
+          | 'simulator_is_published'
+          | 'journal_cover_link'
+          | 'journal_cover_is_published'
+        >
+      >,
+  ) {
+    try {
+      const MIN_NAME_LENGTH = this.MIN_NAME_LENGTH;
+      const MAX_NAME_LENGTH = this.MAX_NAME_LENGTH;
 
-  async getSimulators() {
-    return await this.labModuleRepository.getSimulator();
-  }
+      if (
+        data.name.length < MIN_NAME_LENGTH ||
+        data.name.length > MAX_NAME_LENGTH
+      ) {
+        throw new BadRequestException(
+          new ErrorResponseDto(
+            `Name must be between ${MIN_NAME_LENGTH} and ${MAX_NAME_LENGTH} characters`,
+          ),
+        );
+      }
 
-  async getJournalCovers() {
-    return await this.labModuleRepository.getJournalCover();
-  }
+      const MIN_CODE_LENGTH = this.MIN_CODE_LENGTH;
+      const MAX_CODE_LENGTH = this.MAX_CODE_LENGTH;
 
-  async update(id: LabModule['id'], data: UpdateLabModuleDto) {
-    this.logger.debug(`update lab module dto: ${JSON.stringify(data)}`);
+      if (
+        data.code.length < MIN_CODE_LENGTH ||
+        data.code.length > MAX_CODE_LENGTH
+      ) {
+        throw new BadRequestException(
+          new ErrorResponseDto(
+            `Code must be between ${MIN_CODE_LENGTH} and ${MAX_CODE_LENGTH} characters`,
+          ),
+        );
+      }
 
-    const validationError = new UpdateLabModuleValidationHelper(
-      data,
-    ).validateProps();
+      const storedData = await this.labModuleRepository.store(data, {
+        returning: [
+          'id',
+          'name',
+          'code',
+          'pretask_link',
+          'pretask_is_published',
+          'video_link',
+          'video_is_published',
+          'simulator_link',
+          'simulator_is_published',
+          'journal_cover_link',
+          'journal_cover_is_published',
+        ],
+      });
 
-    if (isNotEmpty(validationError)) {
+      return storedData;
+    } catch (error) {
       this.logger.debug(
-        `lab module data is not valid ${JSON.stringify(validationError)}`,
+        JSON.stringify({
+          event: 'Add Lab Module failed',
+          timestamp: new Date().toISOString(),
+          error: error,
+        }),
       );
 
-      throw new BadRequestException(
-        new ErrorResponseDto('Data tidak valid', validationError),
-      );
+      throw error;
     }
+  }
 
-    const updatedLabModule = await this.labModuleRepository.update(id, data);
+  async get() {
+    return await this.labModuleRepository.find({
+      select: [
+        'id',
+        'name',
+        'code',
+        'pretask_link',
+        'pretask_is_published',
+        'video_link',
+        'video_is_published',
+        'simulator_link',
+        'simulator_is_published',
+        'journal_cover_link',
+        'journal_cover_is_published',
+      ],
+    });
+  }
 
-    return updatedLabModule;
+  async getPretaskPublished() {
+    return await this.labModuleRepository.find({
+      select: ['id', 'name', 'code', 'pretask_link'],
+      where: { pretask_is_published: true },
+    });
+  }
+
+  async getVideoPublished() {
+    return await this.labModuleRepository.find({
+      select: ['id', 'name', 'code', 'video_link'],
+      where: { video_is_published: true },
+    });
+  }
+
+  async getSimulatorPublished() {
+    return await this.labModuleRepository.find({
+      select: ['id', 'name', 'code', 'simulator_link'],
+      where: { simulator_is_published: true },
+    });
+  }
+
+  async getJournalCoverPublished() {
+    return await this.labModuleRepository.find({
+      select: ['id', 'name', 'code', 'journal_cover_link'],
+      where: { journal_cover_is_published: true },
+    });
+  }
+
+  async update(
+    id: LabModule['id'],
+    data: Partial<
+      Pick<
+        LabModule,
+        | 'name'
+        | 'code'
+        | 'pretask_link'
+        | 'pretask_is_published'
+        | 'video_link'
+        | 'video_is_published'
+        | 'simulator_link'
+        | 'simulator_is_published'
+        | 'journal_cover_link'
+        | 'journal_cover_is_published'
+      >
+    >,
+  ) {
+    try {
+      const MIN_NAME_LENGTH = this.MIN_NAME_LENGTH;
+      const MAX_NAME_LENGTH = this.MAX_NAME_LENGTH;
+
+      if (
+        data.name !== undefined &&
+        (data.name.length < MIN_NAME_LENGTH ||
+          data.name.length > MAX_NAME_LENGTH)
+      ) {
+        throw new BadRequestException(
+          new ErrorResponseDto(
+            `Name must be between ${MIN_NAME_LENGTH} and ${MAX_NAME_LENGTH} characters`,
+          ),
+        );
+      }
+
+      const MIN_CODE_LENGTH = this.MIN_CODE_LENGTH;
+      const MAX_CODE_LENGTH = this.MAX_CODE_LENGTH;
+
+      if (
+        data.code !== undefined &&
+        (data.code.length < MIN_CODE_LENGTH ||
+          data.code.length > MAX_CODE_LENGTH)
+      ) {
+        throw new BadRequestException(
+          new ErrorResponseDto(
+            `Code must be between ${MIN_CODE_LENGTH} and ${MAX_CODE_LENGTH} characters`,
+          ),
+        );
+      }
+
+      const updateResult = await this.labModuleRepository.update(id, data, {
+        returning: [
+          'id',
+          'name',
+          'code',
+          'pretask_link',
+          'pretask_is_published',
+          'video_link',
+          'video_is_published',
+          'simulator_link',
+          'simulator_is_published',
+          'journal_cover_link',
+          'journal_cover_is_published',
+        ],
+      });
+
+      return updateResult;
+    } catch (error) {
+      this.logger.debug(
+        JSON.stringify({
+          event: 'Update Lab Module failed',
+          timestamp: new Date().toISOString(),
+          error: error,
+        }),
+      );
+
+      throw error;
+    }
+  }
+
+  async delete(id: LabModule['id']) {
+    try {
+      const deletedData = await this.labModuleRepository.softDeleteById(id, {
+        returning: ['id'],
+      });
+
+      return deletedData;
+    } catch (error) {
+      this.logger.debug(
+        JSON.stringify({
+          event: 'Delete Lab Module failed',
+          timestamp: new Date().toISOString(),
+          error: error,
+        }),
+      );
+
+      throw error;
+    }
   }
 }

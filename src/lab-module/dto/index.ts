@@ -3,19 +3,25 @@ import { LabModule } from 'src/lab-module/entities';
 export class AddLabModuleDto {
   name: LabModule['name'];
   code: LabModule['code'];
-  language: LabModule['language'];
+  pretask_link?: LabModule['pretask_link'] | null;
+  pretask_is_published?: LabModule['pretask_is_published'];
+  video_link?: LabModule['video_link'] | null;
+  video_is_published?: LabModule['video_is_published'];
+  simulator_link?: LabModule['simulator_link'] | null;
+  simulator_is_published?: LabModule['simulator_is_published'];
+  journal_cover_link?: LabModule['journal_cover_link'] | null;
+  journal_cover_is_published?: LabModule['journal_cover_is_published'];
 }
 
 export class UpdateLabModuleDto {
   name?: LabModule['name'];
   code?: LabModule['code'];
-  language?: LabModule['language'];
-  pretask_url?: LabModule['pretask_url'];
-  is_pretask_visible?: LabModule['is_pretask_visible'];
-  video_url?: LabModule['video_url'];
-  is_video_visible?: LabModule['is_video_visible'];
-  simulator_url?: LabModule['simulator_url'];
-  is_simulator_visible?: LabModule['is_simulator_visible'];
-  journal_cover_url?: LabModule['journal_cover_url'];
-  is_journal_cover_visible?: LabModule['is_journal_cover_visible'];
+  pretask_link?: LabModule['pretask_link'] | null;
+  pretask_is_published?: LabModule['pretask_is_published'];
+  video_link?: LabModule['video_link'] | null;
+  video_is_published?: LabModule['video_is_published'];
+  simulator_link?: LabModule['simulator_link'] | null;
+  simulator_is_published?: LabModule['simulator_is_published'];
+  journal_cover_link?: LabModule['journal_cover_link'] | null;
+  journal_cover_is_published?: LabModule['journal_cover_is_published'];
 }

@@ -1,4 +1,3 @@
-import { Language } from 'src/common/constants';
 import {
   Column,
   CreateDateColumn,
@@ -15,38 +14,35 @@ export class LabModule {
   })
   id: number;
 
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'text' })
   name: string;
 
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'text' })
   code: string;
 
-  @Column({ type: 'enum', enum: Language })
-  language: `${Language}`;
+  @Column({ type: 'text', nullable: true })
+  pretask_link: string | null;
+
+  @Column({ type: 'boolean', default: false })
+  pretask_is_published: boolean;
 
   @Column({ type: 'text', nullable: true })
-  pretask_url?: string;
+  video_link: string | null;
 
-  @Column({ type: 'boolean', nullable: false, default: true })
-  is_pretask_visible: boolean;
-
-  @Column({ type: 'text', nullable: true })
-  video_url?: string;
-
-  @Column({ type: 'boolean', nullable: false, default: true })
-  is_video_visible: boolean;
+  @Column({ type: 'boolean', default: false })
+  video_is_published: boolean;
 
   @Column({ type: 'text', nullable: true })
-  simulator_url?: string;
+  simulator_link: string | null;
 
-  @Column({ type: 'boolean', nullable: false, default: true })
-  is_simulator_visible: boolean;
+  @Column({ type: 'boolean', default: false })
+  simulator_is_published: boolean;
 
   @Column({ type: 'text', nullable: true })
-  journal_cover_url?: string;
+  journal_cover_link: string | null;
 
-  @Column({ type: 'boolean', nullable: false, default: true })
-  is_journal_cover_visible: boolean;
+  @Column({ type: 'boolean', default: false })
+  journal_cover_is_published: boolean;
 
   @CreateDateColumn()
   created_at: Date;

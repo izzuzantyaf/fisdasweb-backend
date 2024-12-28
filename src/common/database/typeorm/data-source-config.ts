@@ -19,7 +19,7 @@ export const typeOrmModuleOptions: TypeOrmModuleOptions = {
   autoLoadEntities: true,
   applicationName: 'fisdasweb',
   extra: {
-    idleTimeoutMillis: 30_000,
+    max: 20,
   },
 };
 

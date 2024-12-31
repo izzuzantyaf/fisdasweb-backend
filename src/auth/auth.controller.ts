@@ -69,7 +69,6 @@ export class AuthController {
       secure: process.env.APP_ENV === 'production' ? true : false,
       sameSite: 'lax',
       maxAge: COOKIE_MAX_AGE,
-      domain: process.env.FISDASWEB_ADMIN_DOMAIN,
     });
 
     this.logger.log(
@@ -82,7 +81,12 @@ export class AuthController {
       }),
     );
 
-    return res.send(new SuccessfulResponseDto());
+    return res.send(
+      new SuccessfulResponseDto({
+        access_token: result.access_token,
+        expires_in: ACCESS_TOKEN_LIFETIME_IN_MILLISECONDS / 1000,
+      }),
+    );
   }
 
   @Get('/admin/check-access-token')
@@ -94,9 +98,7 @@ export class AuthController {
   @Post('/admin/logout')
   @HttpCode(HttpStatus.OK)
   async signout(@Response() res: ResponseExpress) {
-    res.clearCookie(ACCESS_TOKEN_NAME, {
-      domain: process.env.FISDASWEB_ADMIN_DOMAIN,
-    });
+    res.clearCookie(ACCESS_TOKEN_NAME);
 
     return res.send(new SuccessfulResponseDto());
   }

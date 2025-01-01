@@ -2,12 +2,12 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN apk update && npm install
+RUN apk update && npm install -g pnpm && pnpm install
 
 COPY . .
 
-RUN npm run build && npm prune && rm -rf src
+RUN pnpm run build && pnpm prune && rm -rf src
 
-CMD npm run migration:run && npm start
+CMD npm run migration:run && pnpm start

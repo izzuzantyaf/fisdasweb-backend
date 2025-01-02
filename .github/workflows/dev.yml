@@ -32,5 +32,5 @@ jobs:
         run: |
           curl -X POST -H "Content-Type: application/json" \
           -d '{
-            "content": "**[DEPLOY ${{ job.status == 'success' && 'SUCCESS' || 'FAILED' }}]**\nProject: Fisdasweb API\nEnvironment: Development\nRepository: ${{ github.repositoryUrl }}"
+            "content": "**[DEPLOYMENT ${{ job.status == 'success' && 'SUCCESS' || 'FAILED' }}]**\n\nProject: Fisdasweb API\nBranch: `${{ github.head_ref }}`\nRepository: https://github.com/${{ github.repository }}"
           }' ${{ secrets.DISCORD_WEBHOOK }}

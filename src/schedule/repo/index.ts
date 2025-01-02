@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateResult } from 'src/common/database/typeorm/types';
 import { Schedule } from 'src/schedule/entities';
-import { FindManyOptions, IsNull, Repository } from 'typeorm';
+import { FindManyOptions, ILike, IsNull, Repository } from 'typeorm';
 
 export class ScheduleRepository {
   constructor(
@@ -32,10 +32,17 @@ export class ScheduleRepository {
     return storedData;
   }
 
-  async find({ order, ...options }: FindManyOptions<Schedule> = {}) {
+  async find({
+    where,
+    order,
+    ...options
+  }: FindManyOptions<Schedule> & { search?: string } = {}) {
     const data = await this.repository.find({
+      where: {
+        name: options.search ? ILike(`%${options.search}%`) : undefined,
+        ...where,
+      },
       order: {
-        id: 'asc',
         ...order,
       },
       ...options,

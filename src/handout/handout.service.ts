@@ -1,6 +1,11 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ErrorResponseDto } from 'src/common/dto/response.dto';
-import { AddHandoutDto, UpdateHandoutDto } from 'src/handout/dto';
+import { SortOrder } from 'src/common/types';
+import {
+  AddHandoutDto,
+  HandoutSortKey,
+  UpdateHandoutDto,
+} from 'src/handout/dto';
 import { Handout } from 'src/handout/entities';
 import { HandoutRepository } from 'src/handout/repo';
 
@@ -47,18 +52,32 @@ export class HandoutService {
     }
   }
 
-  async get() {
+  async get(
+    options: {
+      sort?: Partial<Record<HandoutSortKey, SortOrder>>;
+      search?: string;
+    } = {},
+  ) {
     const data = await this.repository.find({
       select: ['id', 'name', 'link', 'is_published'],
+      search: options.search,
+      order: options.sort,
     });
 
     return data;
   }
 
-  async getPublished() {
+  async getPublished(
+    options: {
+      sort?: Partial<Record<HandoutSortKey, SortOrder>>;
+      search?: string;
+    } = {},
+  ) {
     const data = await this.repository.find({
       select: ['id', 'name', 'link'],
       where: { is_published: true },
+      search: options.search,
+      order: options.sort,
     });
 
     return data;

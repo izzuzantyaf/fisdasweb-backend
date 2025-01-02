@@ -8,10 +8,16 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { AddHandoutDto, UpdateHandoutDto } from 'src/handout/dto';
+import {
+  AddHandoutDto,
+  GetHandoutQueryParams,
+  HandoutSortKey,
+  UpdateHandoutDto,
+} from 'src/handout/dto';
 import {
   ErrorResponseDto,
   SuccessfulResponseDto,
@@ -21,6 +27,7 @@ import { AdminJwtAuthGuard } from 'src/auth/guard/admin-jwt-auth.guard';
 import { isURL } from 'class-validator';
 import { AuthenticatedRequest } from 'src/auth/types';
 import { isIntIdValid, isNotUndefinedOrNull } from 'src/common/utils';
+import { SortOrder } from 'src/common/types';
 
 @Controller('/handouts')
 export class HandoutController {
@@ -76,15 +83,65 @@ export class HandoutController {
 
   @Get()
   @UseGuards(AdminJwtAuthGuard)
-  async get() {
-    const data = await this.service.get();
+  async get(@Query() query: GetHandoutQueryParams) {
+    const sort = query.sort;
+
+    const [sortKey, sortOrder] = (sort?.split('-') ?? []) as [
+      HandoutSortKey,
+      SortOrder,
+    ];
+
+    const VALID_SORT_KEYS: Set<HandoutSortKey> = new Set([
+      'created_at',
+      'is_published',
+    ]);
+
+    if (sortKey && !VALID_SORT_KEYS.has(sortKey as HandoutSortKey)) {
+      throw new BadRequestException(
+        new ErrorResponseDto(
+          `sort must be one of ${Array.from(VALID_SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
+        ),
+      );
+    }
+
+    const data = await this.service.get({
+      sort: {
+        [sortKey]: sortOrder,
+      },
+      search: query.search,
+    });
 
     return new SuccessfulResponseDto(data);
   }
 
   @Get('/published')
-  async getPublished() {
-    const data = await this.service.getPublished();
+  async getPublished(@Query() query: GetHandoutQueryParams) {
+    const sort = query.sort;
+
+    const [sortKey, sortOrder] = (sort?.split('-') ?? []) as [
+      HandoutSortKey,
+      SortOrder,
+    ];
+
+    const VALID_SORT_KEYS: Set<HandoutSortKey> = new Set([
+      'created_at',
+      'is_published',
+    ]);
+
+    if (sortKey && !VALID_SORT_KEYS.has(sortKey as HandoutSortKey)) {
+      throw new BadRequestException(
+        new ErrorResponseDto(
+          `sort must be one of ${Array.from(VALID_SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
+        ),
+      );
+    }
+
+    const data = await this.service.getPublished({
+      sort: {
+        [sortKey]: sortOrder,
+      },
+      search: query.search,
+    });
 
     return new SuccessfulResponseDto(data);
   }

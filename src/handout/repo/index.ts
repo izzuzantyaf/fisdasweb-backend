@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateResult } from 'src/common/database/typeorm/types';
 import { Handout } from 'src/handout/entities';
-import { FindManyOptions, IsNull, Repository } from 'typeorm';
+import { FindManyOptions, ILike, IsNull, Repository } from 'typeorm';
 
 export class HandoutRepository {
   constructor(
@@ -32,10 +32,17 @@ export class HandoutRepository {
     return storedData;
   }
 
-  async find({ order, ...options }: FindManyOptions<Handout> = {}) {
+  async find({
+    where,
+    order,
+    ...options
+  }: FindManyOptions<Handout> & { search?: string } = {}) {
     const data = await this.repository.find({
+      where: {
+        name: options.search ? ILike(`%${options.search}%`) : undefined,
+        ...where,
+      },
       order: {
-        id: 'asc',
         ...order,
       },
       ...options,

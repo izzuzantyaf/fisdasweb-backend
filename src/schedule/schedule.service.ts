@@ -1,6 +1,11 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ErrorResponseDto } from 'src/common/dto/response.dto';
-import { AddScheduleDto, UpdateScheduleDto } from 'src/schedule/dto';
+import { SortOrder } from 'src/common/types';
+import {
+  AddScheduleDto,
+  ScheduleSortKey,
+  UpdateScheduleDto,
+} from 'src/schedule/dto';
 import { Schedule } from 'src/schedule/entities';
 import { ScheduleRepository } from 'src/schedule/repo';
 
@@ -47,18 +52,32 @@ export class ScheduleService {
     }
   }
 
-  async get() {
+  async get(
+    options: {
+      sort?: Partial<Record<ScheduleSortKey, SortOrder>>;
+      search?: string;
+    } = {},
+  ) {
     const data = await this.repository.find({
       select: ['id', 'name', 'link', 'is_published'],
+      search: options.search,
+      order: options.sort,
     });
 
     return data;
   }
 
-  async getPublished() {
+  async getPublished(
+    options: {
+      sort?: Partial<Record<ScheduleSortKey, SortOrder>>;
+      search?: string;
+    } = {},
+  ) {
     const data = await this.repository.find({
       select: ['id', 'name', 'link'],
       where: { is_published: true },
+      search: options.search,
+      order: options.sort,
     });
 
     return data;

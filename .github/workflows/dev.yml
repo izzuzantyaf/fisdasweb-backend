@@ -28,7 +28,7 @@ jobs:
           chmod 600 ~/.ssh/id_private_key
           ssh -i ~/.ssh/id_private_key root@$SERVER_HOST "$SCRIPT"
       - name: Notify Discord
-        if: !cancelled()
+        if: ${{ !cancelled() }}
         run: |
           curl -X POST -H "Content-Type: application/json" \
           -d '{
@@ -36,5 +36,5 @@ jobs:
 
             Project: Fisdasweb API
             Branch: `${{ github.ref_name }}`
-            Repository: https://github.com/${{ github.repository }}"
+            Job: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs/${{ github.job }}
           }' ${{ secrets.DISCORD_WEBHOOK }}

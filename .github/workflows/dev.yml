@@ -27,3 +27,10 @@ jobs:
           echo "$SERVER_SSH_PRIVATE_KEY" > ~/.ssh/id_private_key
           chmod 600 ~/.ssh/id_private_key
           ssh -i ~/.ssh/id_private_key root@$SERVER_HOST "$SCRIPT"
+      - name: Notify Discord
+        if: always() # Ensures this runs on both success and failure
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{
+            "content": "**[DEPLOY ${{ job.status == 'success' && 'SUCCESS' || 'FAILED' }}]**\nProject: Fisdasweb API\nEnvironment: Development\nRepository: ${{ github.repositoryUrl }}"
+          }' ${{ secrets.DISCORD_WEBHOOK }}

@@ -2,7 +2,7 @@ import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateResult } from 'src/common/database/typeorm/types';
 import { LabModule } from 'src/lab-module/entities';
-import { FindManyOptions, IsNull, Repository } from 'typeorm';
+import { Brackets, FindManyOptions, ILike, IsNull, Repository } from 'typeorm';
 
 export class LabModuleRepository {
   private logger = new Logger(LabModuleRepository.name);
@@ -54,14 +54,43 @@ export class LabModuleRepository {
     return storedData;
   }
 
-  async find({ order, ...options }: FindManyOptions<LabModule> = {}) {
-    const data = await this.repository.find({
-      order: {
-        id: 'asc',
-        ...order,
-      },
-      ...options,
-    });
+  async find({
+    where,
+    order,
+    ...options
+  }: FindManyOptions<LabModule> & { search?: string } = {}) {
+    const qb = this.repository
+      .createQueryBuilder()
+      .select(options.select as string[]);
+
+    if (where) {
+      for (const key in where) {
+        qb.andWhere({ [key]: where[key] });
+      }
+    }
+
+    if (options.search) {
+      qb.andWhere(
+        new Brackets((qb) => {
+          qb.where({
+            name: options.search ? ILike(`%${options.search}%`) : undefined,
+          }).orWhere({
+            code: options.search ? ILike(`%${options.search}%`) : undefined,
+          });
+        }),
+      );
+    }
+
+    if (order) {
+      for (const key in order) {
+        qb.addOrderBy(
+          key,
+          order[key]?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC',
+        );
+      }
+    }
+
+    const data = await qb.execute();
 
     return data;
   }

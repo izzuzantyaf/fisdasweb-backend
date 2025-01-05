@@ -1,3 +1,4 @@
+import { SortOrder } from 'src/common/types';
 import { LabModule } from 'src/lab-module/entities';
 
 export class AddLabModuleDto {
@@ -11,6 +12,18 @@ export class AddLabModuleDto {
   simulator_is_published?: LabModule['simulator_is_published'];
   journal_cover_link?: LabModule['journal_cover_link'] | null;
   journal_cover_is_published?: LabModule['journal_cover_is_published'];
+}
+
+export type LabModuleSortKey = keyof Pick<
+  LabModule,
+  'name' | 'code' | 'created_at'
+>;
+
+type Sort = `${LabModuleSortKey}-${SortOrder}`;
+
+export interface GetLabModuleQueryParams {
+  sort?: Sort;
+  search?: string;
 }
 
 export class UpdateLabModuleDto {

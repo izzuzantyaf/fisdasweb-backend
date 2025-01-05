@@ -8,10 +8,16 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { AddLabModuleDto, UpdateLabModuleDto } from 'src/lab-module/dto';
+import {
+  AddLabModuleDto,
+  GetLabModuleQueryParams,
+  LabModuleSortKey,
+  UpdateLabModuleDto,
+} from 'src/lab-module/dto';
 import {
   ErrorResponseDto,
   SuccessfulResponseDto,
@@ -20,13 +26,20 @@ import { LabModuleService } from './lab-module.service';
 import { AdminJwtAuthGuard } from 'src/auth/guard/admin-jwt-auth.guard';
 import { AuthenticatedRequest } from 'src/auth/types';
 import { isURL } from 'class-validator';
-import { isIntIdValid } from 'src/common/utils';
+import { isIntIdValid, normalizeDto } from 'src/common/utils';
+import { SortOrder } from 'src/common/types';
 
 @Controller('/lab-modules')
 export class LabModuleController {
   private readonly logger = new Logger(LabModuleController.name);
 
   constructor(private labModuleService: LabModuleService) {}
+
+  private readonly VALID_SORT_KEYS: Set<LabModuleSortKey> = new Set([
+    'name',
+    'code',
+    'created_at',
+  ]);
 
   @Post()
   @UseGuards(AdminJwtAuthGuard)
@@ -121,6 +134,33 @@ export class LabModuleController {
       );
     }
 
+    if (
+      dto.simulator_link !== undefined &&
+      dto.simulator_link !== null &&
+      typeof dto.simulator_link !== 'string'
+    ) {
+      throw new BadRequestException(
+        new ErrorResponseDto('simulator_link must be string'),
+      );
+    }
+
+    if (typeof dto.simulator_link === 'string' && !isURL(dto.simulator_link)) {
+      throw new BadRequestException(
+        new ErrorResponseDto('simulator_link must be a valid URL'),
+      );
+    }
+
+    if (
+      dto.simulator_is_published !== undefined &&
+      typeof dto.simulator_is_published !== 'boolean'
+    ) {
+      throw new BadRequestException(
+        new ErrorResponseDto('simulator_is_published must be boolean'),
+      );
+    }
+
+    normalizeDto(dto);
+
     const storedData = await this.labModuleService.add(dto);
 
     this.logger.log(
@@ -139,36 +179,146 @@ export class LabModuleController {
 
   @Get()
   @UseGuards(AdminJwtAuthGuard)
-  async get() {
-    const data = await this.labModuleService.get();
+  async get(@Query() query: GetLabModuleQueryParams) {
+    const sort = query.sort;
+
+    const [sortKey, sortOrder] = (sort?.split('-') ?? []) as [
+      LabModuleSortKey,
+      SortOrder,
+    ];
+
+    const VALID_SORT_KEYS = this.VALID_SORT_KEYS;
+
+    if (sortKey && !VALID_SORT_KEYS.has(sortKey as LabModuleSortKey)) {
+      throw new BadRequestException(
+        new ErrorResponseDto(
+          `sort must be one of ${Array.from(VALID_SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
+        ),
+      );
+    }
+
+    const data = await this.labModuleService.get({
+      sort: {
+        [sortKey]: sortOrder,
+      },
+      search: query.search,
+    });
 
     return new SuccessfulResponseDto(data);
   }
 
   @Get('/pretasks/published')
-  async getPreTasks() {
-    const data = await this.labModuleService.getPretaskPublished();
+  async getPreTasks(@Query() query: GetLabModuleQueryParams) {
+    const sort = query.sort;
+
+    const [sortKey, sortOrder] = (sort?.split('-') ?? []) as [
+      LabModuleSortKey,
+      SortOrder,
+    ];
+
+    const VALID_SORT_KEYS = this.VALID_SORT_KEYS;
+
+    if (sortKey && !VALID_SORT_KEYS.has(sortKey as LabModuleSortKey)) {
+      throw new BadRequestException(
+        new ErrorResponseDto(
+          `sort must be one of ${Array.from(VALID_SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
+        ),
+      );
+    }
+
+    const data = await this.labModuleService.getPretaskPublished({
+      sort: {
+        [sortKey]: sortOrder,
+      },
+      search: query.search,
+    });
 
     return new SuccessfulResponseDto(data);
   }
 
   @Get('/videos/published')
-  async getVideos() {
-    const data = await this.labModuleService.getVideoPublished();
+  async getVideos(@Query() query: GetLabModuleQueryParams) {
+    const sort = query.sort;
+
+    const [sortKey, sortOrder] = (sort?.split('-') ?? []) as [
+      LabModuleSortKey,
+      SortOrder,
+    ];
+
+    const VALID_SORT_KEYS = this.VALID_SORT_KEYS;
+
+    if (sortKey && !VALID_SORT_KEYS.has(sortKey as LabModuleSortKey)) {
+      throw new BadRequestException(
+        new ErrorResponseDto(
+          `sort must be one of ${Array.from(VALID_SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
+        ),
+      );
+    }
+
+    const data = await this.labModuleService.getVideoPublished({
+      sort: {
+        [sortKey]: sortOrder,
+      },
+      search: query.search,
+    });
 
     return new SuccessfulResponseDto(data);
   }
 
   @Get('/simulators/published')
-  async getSimulators() {
-    const data = await this.labModuleService.getSimulatorPublished();
+  async getSimulators(@Query() query: GetLabModuleQueryParams) {
+    const sort = query.sort;
+
+    const [sortKey, sortOrder] = (sort?.split('-') ?? []) as [
+      LabModuleSortKey,
+      SortOrder,
+    ];
+
+    const VALID_SORT_KEYS = this.VALID_SORT_KEYS;
+
+    if (sortKey && !VALID_SORT_KEYS.has(sortKey as LabModuleSortKey)) {
+      throw new BadRequestException(
+        new ErrorResponseDto(
+          `sort must be one of ${Array.from(VALID_SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
+        ),
+      );
+    }
+
+    const data = await this.labModuleService.getSimulatorPublished({
+      sort: {
+        [sortKey]: sortOrder,
+      },
+      search: query.search,
+    });
 
     return new SuccessfulResponseDto(data);
   }
 
   @Get('/journal-covers/published')
-  async getJournalCovers() {
-    const data = await this.labModuleService.getJournalCoverPublished();
+  async getJournalCovers(@Query() query: GetLabModuleQueryParams) {
+    const sort = query.sort;
+
+    const [sortKey, sortOrder] = (sort?.split('-') ?? []) as [
+      LabModuleSortKey,
+      SortOrder,
+    ];
+
+    const VALID_SORT_KEYS = this.VALID_SORT_KEYS;
+
+    if (sortKey && !VALID_SORT_KEYS.has(sortKey as LabModuleSortKey)) {
+      throw new BadRequestException(
+        new ErrorResponseDto(
+          `sort must be one of ${Array.from(VALID_SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
+        ),
+      );
+    }
+
+    const data = await this.labModuleService.getJournalCoverPublished({
+      sort: {
+        [sortKey]: sortOrder,
+      },
+      search: query.search,
+    });
 
     return new SuccessfulResponseDto(data);
   }
@@ -275,6 +425,33 @@ export class LabModuleController {
         new ErrorResponseDto('journal_cover_is_published must be boolean'),
       );
     }
+
+    if (
+      dto.simulator_link !== undefined &&
+      dto.simulator_link !== null &&
+      typeof dto.simulator_link !== 'string'
+    ) {
+      throw new BadRequestException(
+        new ErrorResponseDto('simulator_link must be string'),
+      );
+    }
+
+    if (typeof dto.simulator_link === 'string' && !isURL(dto.simulator_link)) {
+      throw new BadRequestException(
+        new ErrorResponseDto('simulator_link must be a valid URL'),
+      );
+    }
+
+    if (
+      dto.simulator_is_published !== undefined &&
+      typeof dto.simulator_is_published !== 'boolean'
+    ) {
+      throw new BadRequestException(
+        new ErrorResponseDto('simulator_is_published must be boolean'),
+      );
+    }
+
+    normalizeDto(dto);
 
     const updateResult = await this.labModuleService.update(parsedId, dto);
 

@@ -18,3 +18,26 @@ export function isIntIdValid(value: string | number) {
 
   return true;
 }
+
+/**
+ * This function do mutation in-place
+ * @param dto
+ */
+export function normalizeDto(dto: object) {
+  // trim every string
+  for (const key in dto) {
+    if (typeof dto[key] === undefined || dto[key] === null) {
+      continue;
+    }
+
+    if (typeof dto[key] === 'string') {
+      dto[key] = dto[key].trim();
+    } else if (Array.isArray(dto[key])) {
+      dto[key].forEach((item) => {
+        normalizeDto(item);
+      });
+    } else if (typeof dto[key] === 'object') {
+      normalizeDto(dto[key]);
+    }
+  }
+}

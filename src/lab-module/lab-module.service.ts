@@ -1,5 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ErrorResponseDto } from 'src/common/dto/response.dto';
+import { SortOrder } from 'src/common/types';
+import { LabModuleSortKey } from 'src/lab-module/dto';
 import { LabModule } from 'src/lab-module/entities';
 import { LabModuleRepository } from 'src/lab-module/repo';
 
@@ -90,7 +92,12 @@ export class LabModuleService {
     }
   }
 
-  async get() {
+  async get(
+    options: {
+      sort?: Partial<Record<LabModuleSortKey, SortOrder>>;
+      search?: string;
+    } = {},
+  ) {
     return await this.labModuleRepository.find({
       select: [
         'id',
@@ -105,34 +112,64 @@ export class LabModuleService {
         'journal_cover_link',
         'journal_cover_is_published',
       ],
+      search: options.search,
+      order: options.sort,
     });
   }
 
-  async getPretaskPublished() {
+  async getPretaskPublished(
+    options: {
+      sort?: Partial<Record<LabModuleSortKey, SortOrder>>;
+      search?: string;
+    } = {},
+  ) {
     return await this.labModuleRepository.find({
       select: ['id', 'name', 'code', 'pretask_link'],
       where: { pretask_is_published: true },
+      search: options.search,
+      order: options.sort,
     });
   }
 
-  async getVideoPublished() {
+  async getVideoPublished(
+    options: {
+      sort?: Partial<Record<LabModuleSortKey, SortOrder>>;
+      search?: string;
+    } = {},
+  ) {
     return await this.labModuleRepository.find({
       select: ['id', 'name', 'code', 'video_link'],
       where: { video_is_published: true },
+      search: options.search,
+      order: options.sort,
     });
   }
 
-  async getSimulatorPublished() {
+  async getSimulatorPublished(
+    options: {
+      sort?: Partial<Record<LabModuleSortKey, SortOrder>>;
+      search?: string;
+    } = {},
+  ) {
     return await this.labModuleRepository.find({
       select: ['id', 'name', 'code', 'simulator_link'],
       where: { simulator_is_published: true },
+      search: options.search,
+      order: options.sort,
     });
   }
 
-  async getJournalCoverPublished() {
+  async getJournalCoverPublished(
+    options: {
+      sort?: Partial<Record<LabModuleSortKey, SortOrder>>;
+      search?: string;
+    } = {},
+  ) {
     return await this.labModuleRepository.find({
       select: ['id', 'name', 'code', 'journal_cover_link'],
       where: { journal_cover_is_published: true },
+      search: options.search,
+      order: options.sort,
     });
   }
 

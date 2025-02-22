@@ -92,15 +92,15 @@ export class ScheduleController {
       SortOrder,
     ];
 
-    const VALID_SORT_KEYS: Set<HandoutSortKey> = new Set([
+    const SORT_KEYS: Set<HandoutSortKey> = new Set([
       'created_at',
       'is_published',
     ]);
 
-    if (sortKey && !VALID_SORT_KEYS.has(sortKey as HandoutSortKey)) {
+    if (sortKey && !SORT_KEYS.has(sortKey as HandoutSortKey)) {
       throw new BadRequestException(
         new ErrorResponseDto(
-          `sort must be one of ${Array.from(VALID_SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
+          `sort must be one of ${Array.from(SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
         ),
       );
     }
@@ -124,15 +124,15 @@ export class ScheduleController {
       SortOrder,
     ];
 
-    const VALID_SORT_KEYS: Set<HandoutSortKey> = new Set([
+    const SORT_KEYS: Set<HandoutSortKey> = new Set([
       'created_at',
       'is_published',
     ]);
 
-    if (sortKey && !VALID_SORT_KEYS.has(sortKey as HandoutSortKey)) {
+    if (sortKey && !SORT_KEYS.has(sortKey as HandoutSortKey)) {
       throw new BadRequestException(
         new ErrorResponseDto(
-          `sort must be one of ${Array.from(VALID_SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
+          `sort must be one of ${Array.from(SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
         ),
       );
     }

@@ -35,7 +35,7 @@ export class LabModuleController {
 
   constructor(private labModuleService: LabModuleService) {}
 
-  private readonly VALID_SORT_KEYS: Set<LabModuleSortKey> = new Set([
+  private readonly SORT_KEYS: Set<LabModuleSortKey> = new Set([
     'name',
     'code',
     'created_at',
@@ -187,18 +187,18 @@ export class LabModuleController {
       SortOrder,
     ];
 
-    const VALID_SORT_KEYS = this.VALID_SORT_KEYS;
+    const SORT_KEYS = this.SORT_KEYS;
 
-    if (sortKey && !VALID_SORT_KEYS.has(sortKey as LabModuleSortKey)) {
+    if (sortKey && !SORT_KEYS.has(sortKey as LabModuleSortKey)) {
       throw new BadRequestException(
         new ErrorResponseDto(
-          `sort must be one of ${Array.from(VALID_SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
+          `sort must be one of ${Array.from(SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
         ),
       );
     }
 
     const data = await this.labModuleService.get({
-      sort: {
+      sort: sortKey && {
         [sortKey]: sortOrder,
       },
       search: query.search,
@@ -216,20 +216,21 @@ export class LabModuleController {
       SortOrder,
     ];
 
-    const VALID_SORT_KEYS = this.VALID_SORT_KEYS;
+    const SORT_KEYS = this.SORT_KEYS;
 
-    if (sortKey && !VALID_SORT_KEYS.has(sortKey as LabModuleSortKey)) {
+    if (sortKey && !SORT_KEYS.has(sortKey as LabModuleSortKey)) {
       throw new BadRequestException(
         new ErrorResponseDto(
-          `sort must be one of ${Array.from(VALID_SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
+          `sort must be one of ${Array.from(SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
         ),
       );
     }
 
     const data = await this.labModuleService.getPretaskPublished({
-      sort: {
-        [sortKey]: sortOrder,
-      },
+      sort: sortKey &&
+        sortKey && {
+          [sortKey]: sortOrder,
+        },
       search: query.search,
     });
 
@@ -245,18 +246,18 @@ export class LabModuleController {
       SortOrder,
     ];
 
-    const VALID_SORT_KEYS = this.VALID_SORT_KEYS;
+    const SORT_KEYS = this.SORT_KEYS;
 
-    if (sortKey && !VALID_SORT_KEYS.has(sortKey as LabModuleSortKey)) {
+    if (sortKey && !SORT_KEYS.has(sortKey as LabModuleSortKey)) {
       throw new BadRequestException(
         new ErrorResponseDto(
-          `sort must be one of ${Array.from(VALID_SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
+          `sort must be one of ${Array.from(SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
         ),
       );
     }
 
     const data = await this.labModuleService.getVideoPublished({
-      sort: {
+      sort: sortKey && {
         [sortKey]: sortOrder,
       },
       search: query.search,
@@ -274,18 +275,18 @@ export class LabModuleController {
       SortOrder,
     ];
 
-    const VALID_SORT_KEYS = this.VALID_SORT_KEYS;
+    const SORT_KEYS = this.SORT_KEYS;
 
-    if (sortKey && !VALID_SORT_KEYS.has(sortKey as LabModuleSortKey)) {
+    if (sortKey && !SORT_KEYS.has(sortKey as LabModuleSortKey)) {
       throw new BadRequestException(
         new ErrorResponseDto(
-          `sort must be one of ${Array.from(VALID_SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
+          `sort must be one of ${Array.from(SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
         ),
       );
     }
 
     const data = await this.labModuleService.getSimulatorPublished({
-      sort: {
+      sort: sortKey && {
         [sortKey]: sortOrder,
       },
       search: query.search,
@@ -303,18 +304,18 @@ export class LabModuleController {
       SortOrder,
     ];
 
-    const VALID_SORT_KEYS = this.VALID_SORT_KEYS;
+    const SORT_KEYS = this.SORT_KEYS;
 
-    if (sortKey && !VALID_SORT_KEYS.has(sortKey as LabModuleSortKey)) {
+    if (sortKey && !SORT_KEYS.has(sortKey as LabModuleSortKey)) {
       throw new BadRequestException(
         new ErrorResponseDto(
-          `sort must be one of ${Array.from(VALID_SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
+          `sort must be one of ${Array.from(SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
         ),
       );
     }
 
     const data = await this.labModuleService.getJournalCoverPublished({
-      sort: {
+      sort: sortKey && {
         [sortKey]: sortOrder,
       },
       search: query.search,

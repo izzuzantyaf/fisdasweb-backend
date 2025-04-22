@@ -1,6 +1,6 @@
 import { Assistant } from '../entities';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, IsNull, Repository } from 'typeorm';
+import { Brackets, FindManyOptions, ILike, IsNull, Repository } from 'typeorm';
 import { Logger } from '@nestjs/common';
 import { UpdateResult } from 'src/common/database/typeorm/types';
 
@@ -12,15 +12,55 @@ export class AssistantRepository {
     private repository: Repository<Assistant>,
   ) {}
 
-  async find({ order, ...options }: FindManyOptions<Assistant> = {}) {
-    return await this.repository.find({
-      order: { id: 'asc', ...order },
-      ...options,
-    });
+  async find({
+    where,
+    order,
+    ...options
+  }: FindManyOptions<Assistant> & { search?: string } = {}) {
+    const qb = this.repository
+      .createQueryBuilder()
+      .select(options.select as string[]);
+
+    if (where) {
+      for (const key in where) {
+        qb.andWhere({ [key]: where[key] });
+      }
+    }
+
+    if (options.search) {
+      qb.andWhere(
+        new Brackets((qb) => {
+          qb.where({
+            name: options.search ? ILike(`%${options.search}%`) : undefined,
+          })
+            .orWhere({
+              code: options.search ? ILike(`%${options.search}%`) : undefined,
+            })
+            .orWhere({
+              line_id: options.search
+                ? ILike(`%${options.search}%`)
+                : undefined,
+            });
+        }),
+      );
+    }
+
+    if (order) {
+      for (const key in order) {
+        qb.addOrderBy(
+          key,
+          order[key]?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC',
+        );
+      }
+    }
+
+    const data = await qb.execute();
+
+    return data;
   }
 
   async store(
-    data: Pick<Assistant, 'code' | 'name'> &
+    data: Pick<Assistant, 'code' | 'name' | 'level'> &
       Partial<Pick<Assistant, 'line_id' | 'is_published'>>,
     options: {
       returning?: (keyof Assistant)[];
@@ -32,6 +72,7 @@ export class AssistantRepository {
       .values({
         name: data.name,
         code: data.code,
+        level: data.level,
         line_id: data.line_id,
         is_published: data.is_published,
       })
@@ -46,7 +87,7 @@ export class AssistantRepository {
   async update(
     id: Assistant['id'],
     data: Partial<
-      Pick<Assistant, 'code' | 'name' | 'line_id' | 'is_published'>
+      Pick<Assistant, 'code' | 'name' | 'level' | 'line_id' | 'is_published'>
     >,
     options: {
       returning?: (keyof Assistant)[];
@@ -58,6 +99,7 @@ export class AssistantRepository {
       .set({
         name: data.name,
         code: data.code,
+        level: data.level,
         line_id: data.line_id,
         is_published: data.is_published,
       })

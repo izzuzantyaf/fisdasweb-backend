@@ -8,10 +8,16 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { AddAssistantDto, UpdateAssistantDto } from 'src/assistant/dto';
+import {
+  AddAssistantDto,
+  AssistantSortKey,
+  GetAssistantQueryParams,
+  UpdateAssistantDto,
+} from 'src/assistant/dto';
 import {
   ErrorResponseDto,
   SuccessfulResponseDto,
@@ -20,12 +26,21 @@ import { AssistantService } from 'src/assistant/assistant.service';
 import { AdminJwtAuthGuard } from 'src/auth/guard/admin-jwt-auth.guard';
 import { AuthenticatedRequest } from 'src/auth/types';
 import { isIntIdValid } from 'src/common/utils';
+import { ASSISTANT_LEVEL } from 'src/assistant/constants';
+import { SortOrder } from 'src/common/types';
 
 @Controller('/assistants')
 export class AssistantController {
   private readonly logger = new Logger(AssistantController.name);
 
   constructor(private assistantService: AssistantService) {}
+
+  private readonly SORT_KEYS: Set<AssistantSortKey> = new Set([
+    'name',
+    'code',
+    'level',
+    'line_id',
+  ]);
 
   @Post()
   @UseGuards(AdminJwtAuthGuard)
@@ -39,6 +54,15 @@ export class AssistantController {
     if (typeof dto.code !== 'string') {
       throw new BadRequestException(
         new ErrorResponseDto('code must be string'),
+      );
+    }
+
+    const levelSet = new Set(Object.values(ASSISTANT_LEVEL));
+    if (!levelSet.has(dto.level)) {
+      throw new BadRequestException(
+        new ErrorResponseDto(
+          `level must be one of ${Array.from(levelSet).join(', ')}`,
+        ),
       );
     }
 
@@ -63,7 +87,7 @@ export class AssistantController {
 
     const storedData = await this.assistantService.add(dto);
 
-    this.logger.debug(
+    this.logger.log(
       JSON.stringify({
         event: 'Assistant added',
         timestamp: new Date().toISOString(),
@@ -79,15 +103,61 @@ export class AssistantController {
 
   @Get()
   @UseGuards(AdminJwtAuthGuard)
-  async get() {
-    const data = await this.assistantService.get();
+  async get(@Query() query: GetAssistantQueryParams) {
+    const sort = query.sort;
+
+    const [sortKey, sortOrder] = (sort?.split('-') ?? []) as [
+      AssistantSortKey,
+      SortOrder,
+    ];
+
+    const SORT_KEYS = this.SORT_KEYS;
+
+    if (sortKey && !SORT_KEYS.has(sortKey as AssistantSortKey)) {
+      throw new BadRequestException(
+        new ErrorResponseDto(
+          `sort must be one of ${Array.from(SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
+        ),
+      );
+    }
+
+    const data = await this.assistantService.get({
+      sort: sortKey && {
+        [sortKey]: sortOrder,
+      },
+      search: query.search,
+      level: query.level,
+    });
 
     return new SuccessfulResponseDto(data);
   }
 
   @Get('/published')
-  async getPublished() {
-    const data = await this.assistantService.getPublished();
+  async getPublished(@Query() query: GetAssistantQueryParams) {
+    const sort = query.sort;
+
+    const [sortKey, sortOrder] = (sort?.split('-') ?? []) as [
+      AssistantSortKey,
+      SortOrder,
+    ];
+
+    const SORT_KEYS = this.SORT_KEYS;
+
+    if (sortKey && !SORT_KEYS.has(sortKey as AssistantSortKey)) {
+      throw new BadRequestException(
+        new ErrorResponseDto(
+          `sort must be one of ${Array.from(SORT_KEYS).join(', ')} and optionally followed by '-asc' or '-desc'`,
+        ),
+      );
+    }
+
+    const data = await this.assistantService.getPublished({
+      sort: sortKey && {
+        [sortKey]: sortOrder,
+      },
+      search: query.search,
+      level: query.level,
+    });
 
     return new SuccessfulResponseDto(data);
   }
@@ -114,6 +184,15 @@ export class AssistantController {
     if (dto.code !== undefined && typeof dto.code !== 'string') {
       throw new BadRequestException(
         new ErrorResponseDto('code must be string'),
+      );
+    }
+
+    const levelSet = new Set(Object.values(ASSISTANT_LEVEL));
+    if (dto.level !== undefined && !levelSet.has(dto.level)) {
+      throw new BadRequestException(
+        new ErrorResponseDto(
+          `level must be one of ${Array.from(levelSet).join(', ')}`,
+        ),
       );
     }
 
@@ -145,7 +224,7 @@ export class AssistantController {
       );
     }
 
-    this.logger.debug(
+    this.logger.log(
       JSON.stringify({
         event: 'Assistant updated',
         timestamp: new Date().toISOString(),

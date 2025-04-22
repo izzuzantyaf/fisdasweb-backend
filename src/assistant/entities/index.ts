@@ -1,3 +1,4 @@
+import { ASSISTANT_LEVEL } from 'src/assistant/constants';
 import {
   CreateDateColumn,
   UpdateDateColumn,
@@ -19,6 +20,13 @@ export class Assistant {
 
   @Column({ type: 'text' })
   code: string;
+
+  @Column({
+    type: 'enum',
+    enum: Object.values(ASSISTANT_LEVEL),
+    nullable: true,
+  })
+  level: `${(typeof ASSISTANT_LEVEL)[keyof typeof ASSISTANT_LEVEL]}`;
 
   @Column({ type: 'text', nullable: true })
   line_id: string | null;

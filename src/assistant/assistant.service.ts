@@ -3,6 +3,8 @@ import { ErrorResponseDto } from 'src/common/dto/response.dto';
 import { Logger } from '@nestjs/common/services';
 import { AssistantRepository } from 'src/assistant/repo';
 import { Assistant } from 'src/assistant/entities';
+import { SortOrder } from 'src/common/types';
+import { AssistantSortKey } from 'src/assistant/dto';
 
 @Injectable()
 export class AssistantService {
@@ -19,7 +21,7 @@ export class AssistantService {
   private readonly LINE_ID_REGEX = /^[a-zA-Z0-9._@-]+$/;
 
   async add(
-    data: Pick<Assistant, 'code' | 'name'> &
+    data: Pick<Assistant, 'code' | 'name' | 'level'> &
       Partial<Pick<Assistant, 'line_id' | 'is_published'>>,
   ) {
     try {
@@ -62,7 +64,7 @@ export class AssistantService {
       }
 
       const storedData = await this.assistantRepository.store(data, {
-        returning: ['id', 'name', 'code', 'line_id', 'is_published'],
+        returning: ['id', 'name', 'code', 'level', 'line_id', 'is_published'],
       });
 
       return storedData;
@@ -79,18 +81,38 @@ export class AssistantService {
     }
   }
 
-  async get() {
+  async get(
+    options: {
+      sort?: Partial<Record<AssistantSortKey, SortOrder>>;
+      search?: string;
+      level?: Assistant['level'];
+    } = {},
+  ) {
     const data = await this.assistantRepository.find({
-      select: ['id', 'name', 'code', 'line_id', 'is_published'],
+      select: ['id', 'name', 'code', 'level', 'line_id', 'is_published'],
+      where: { ...(options.level && { level: options.level }) },
+      search: options.search,
+      order: options.sort,
     });
 
     return data;
   }
 
-  async getPublished() {
+  async getPublished(
+    options: {
+      sort?: Partial<Record<AssistantSortKey, SortOrder>>;
+      search?: string;
+      level?: Assistant['level'];
+    } = {},
+  ) {
     const data = await this.assistantRepository.find({
-      select: ['id', 'name', 'code', 'line_id'],
-      where: { is_published: true },
+      select: ['id', 'name', 'code', 'level', 'line_id'],
+      where: {
+        is_published: true,
+        ...(options.level && { level: options.level }),
+      },
+      search: options.search,
+      order: options.sort,
     });
 
     return data;
@@ -99,7 +121,7 @@ export class AssistantService {
   async update(
     id: Assistant['id'],
     data: Partial<
-      Pick<Assistant, 'code' | 'name' | 'line_id' | 'is_published'>
+      Pick<Assistant, 'code' | 'name' | 'level' | 'line_id' | 'is_published'>
     >,
   ) {
     try {
@@ -144,7 +166,7 @@ export class AssistantService {
       }
 
       const updateResult = await this.assistantRepository.update(id, data, {
-        returning: ['id', 'name', 'code', 'line_id', 'is_published'],
+        returning: ['id', 'name', 'code', 'level', 'line_id', 'is_published'],
       });
 
       return updateResult;

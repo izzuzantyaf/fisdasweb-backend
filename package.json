@@ -123,6 +123,10 @@
       "follow-redirects@<=1.15.5": ">=1.15.6",
       "@babel/traverse@<7.23.2": ">=7.23.2",
       "tar@<6.2.1": ">=6.2.1"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "bcrypt"
+    ]
   }
 }
